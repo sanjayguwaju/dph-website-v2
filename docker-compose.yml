@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  payload:
+    build: .
+    restart: always
+    expose:
+      - "3000"
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - .env
