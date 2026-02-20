@@ -1,0 +1,79 @@
+import type { CollectionConfig } from "payload";
+
+export const Services: CollectionConfig = {
+  slug: "services",
+  admin: {
+    useAsTitle: "name",
+    defaultColumns: ["name", "icon", "category", "order", "isActive"],
+  },
+  access: {
+    read: () => true,
+    create: ({ req: { user } }) => Boolean(user),
+    update: ({ req: { user } }) => Boolean(user),
+    delete: ({ req: { user } }) => Boolean(user),
+  },
+  fields: [
+    {
+      name: "name",
+      type: "text",
+      required: true,
+      localized: true,
+    },
+    {
+      name: "slug",
+      type: "text",
+      admin: {
+        description: "URL-friendly identifier (auto-generated if blank)",
+      },
+    },
+    {
+      name: "icon",
+      type: "text",
+      label: "Icon (emoji or Lucide icon name)",
+      admin: {
+        description: 'e.g. "🏥" or "stethoscope"',
+      },
+    },
+    {
+      name: "image",
+      type: "upload",
+      relationTo: "media",
+      label: "Service Image (optional)",
+    },
+    {
+      name: "shortDescription",
+      type: "textarea",
+      localized: true,
+    },
+    {
+      name: "category",
+      type: "select",
+      options: [
+        { label: "Outpatient", value: "opd" },
+        { label: "Inpatient", value: "ipd" },
+        { label: "Emergency", value: "emergency" },
+        { label: "Diagnostic", value: "diagnostic" },
+        { label: "Maternal & Child", value: "maternal-child" },
+        { label: "Specialized", value: "specialized" },
+        { label: "Support Services", value: "support" },
+      ],
+    },
+    {
+      name: "link",
+      type: "text",
+      label: "Detail Page URL (optional)",
+    },
+    {
+      name: "order",
+      type: "number",
+      defaultValue: 0,
+      admin: { position: "sidebar" },
+    },
+    {
+      name: "isActive",
+      type: "checkbox",
+      defaultValue: true,
+      admin: { position: "sidebar" },
+    },
+  ],
+};

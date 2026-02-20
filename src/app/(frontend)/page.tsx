@@ -1,136 +1,116 @@
 import { Metadata } from "next";
-import { getArticles, getTrendingArticles } from "@/lib/queries/articles";
-import { getCategories } from "@/lib/queries/categories";
 import { getSiteSettings } from "@/lib/queries/globals";
-import { FeaturedArticle, ArticleCard, ArticleGrid } from "@/components/article";
+import { getHeroSlides } from "@/lib/queries/hero-slides";
 import {
-  BreakingNews,
-  TrendingSection,
-  CategoryNav,
-  NewsletterSection,
-} from "@/components/sections";
+  getHomepageStaff,
+  getHomepageServices,
+  getHomepageNews,
+  getNoticesByType,
+  getPhotoGalleryPreview,
+  getVideoGalleryPreview,
+  getQuickLinks,
+  getOpdStats,
+} from "@/lib/queries/homepage";
+
+import { HeroSlider } from "@/components/sections";
+import { StaffCards } from "@/components/sections/staff-cards";
+import { AboutUs } from "@/components/sections/about-us";
+import { NewsActivities } from "@/components/sections/news-activities";
+import { NepaliCalendar } from "@/components/sections/nepali-calendar";
+import { OpdStatsBanner } from "@/components/sections/opd-stats-banner";
+import { ServicesGrid } from "@/components/sections/services-grid";
+import { NoticesTabs } from "@/components/sections/notices-tabs";
+import { PhotoGallery } from "@/components/sections/photo-gallery";
+import { VideoGallery } from "@/components/sections/video-gallery";
+import { QuickAccessLinks } from "@/components/sections/quick-access-links";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const s = settings as any;
 
   return {
-    title: settings.siteName || "The Daily Chronicle",
-    description:
-      settings.siteDescription || "Your trusted source for breaking news and in-depth reporting",
+    title: s.hospitalNameEn || s.hospitalNameNe || "District Hospital",
+    description: s.taglineEn || s.taglineNe || "Government Hospital",
   };
 }
 
 export default async function HomePage() {
   // Parallel data fetching for optimal performance
-  const [featuredArticles, breakingNews, latestArticles, trendingArticles, categories] =
-    await Promise.all([
-      getArticles({ featured: true, limit: 4 }),
-      getArticles({ breaking: true, limit: 5 }),
-      getArticles({ limit: 12 }),
-      getTrendingArticles(5),
-      getCategories(),
-    ]);
+  const [
+    heroSlides,
+    settings,
+    staff,
+    services,
+    newsData,
+    noticesData,
+    photoAlbums,
+    videos,
+    quickLinks,
+    opdStats,
+  ] = await Promise.all([
+    getHeroSlides(),
+    getSiteSettings(),
+    getHomepageStaff(),
+    getHomepageServices(),
+    getHomepageNews(),
+    getNoticesByType(),
+    getPhotoGalleryPreview(),
+    getVideoGalleryPreview(),
+    getQuickLinks(),
+    getOpdStats(),
+  ]);
 
-  const heroArticle = featuredArticles.docs[0];
-  const secondaryFeatured = featuredArticles.docs.slice(1, 4);
+  const s = settings as any;
 
   return (
     <>
-      {/* Breaking News Ticker */}
-      {breakingNews.docs.length > 0 && <BreakingNews articles={breakingNews.docs} />}
+      {/* ── Hero Image Slider ─────────────────────────────────────── */}
+      {heroSlides.length > 0 && <HeroSlider slides={heroSlides} />}
 
-      {/* Category Navigation */}
-      <CategoryNav categories={categories} />
+      {/* ── OPD Stats Banner ─────────────────────────────────────── */}
+      <OpdStatsBanner stats={opdStats as any} />
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-[var(--spacing-page)] py-8">
-        {heroArticle && (
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Main hero article */}
-            <div className="lg:col-span-2">
-              <FeaturedArticle article={heroArticle} variant="hero" priority />
-            </div>
+      {/* ── Main Content ──────────────────────────────────────────── */}
+      <div className="homepage-layout">
+        {/* Left / Main column */}
+        <div className="homepage-main">
+          {/* About Us */}
+          <AboutUs aboutText={s.aboutUs} />
 
-            {/* Secondary featured articles */}
-            <div className="flex flex-col gap-4">
-              {secondaryFeatured.map((article, index) => (
-                <FeaturedArticle
-                  key={article.id}
-                  article={article}
-                  variant="standard"
-                  priority={index === 0}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
+          {/* News & Activities */}
+          <NewsActivities featured={newsData.featured as any} recent={newsData.recent as any} />
 
-      {/* Trending Section */}
-      {trendingArticles.length > 0 && <TrendingSection articles={trendingArticles} />}
+          {/* Notices Tabs */}
+          <NoticesTabs
+            notices={noticesData.notices as any}
+            news={noticesData.news as any}
+            pressReleases={noticesData.pressReleases as any}
+            publications={noticesData.publications as any}
+            bids={noticesData.bids as any}
+          />
 
-      {/* Latest Articles */}
-      <section className="container mx-auto px-[var(--spacing-page)] py-[var(--spacing-section)]">
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-2xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)]">
-            Latest News
-          </h2>
-          <a
-            href="/category/all"
-            className="text-sm text-[var(--color-ink-400)] transition-colors hover:text-white"
-          >
-            View all →
-          </a>
+          {/* Services Grid */}
+          <ServicesGrid services={services as any} />
         </div>
 
-        <ArticleGrid articles={latestArticles.docs} columns={4} />
-      </section>
+        {/* Right Sidebar */}
+        <aside className="homepage-sidebar">
+          {/* Staff Cards */}
+          <StaffCards staff={staff as any} />
 
-      {/* Category Sections */}
-      {categories.slice(0, 3).map(async (category) => {
-        const categoryArticles = await getArticles({
-          category: category.id,
-          limit: 4,
-        });
+          {/* Nepali Calendar */}
+          <NepaliCalendar />
+        </aside>
+      </div>
 
-        if (categoryArticles.docs.length === 0) return null;
+      {/* ── Photo Gallery ─────────────────────────────────── */}
+      <PhotoGallery albums={photoAlbums as any} />
 
-        return (
-          <section
-            key={category.id}
-            className="container mx-auto border-t border-[var(--color-ink-800)] px-[var(--spacing-page)] py-[var(--spacing-section)]"
-          >
-            <div className="mb-8 flex items-center justify-between">
-              <h2 className="text-2xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)]">
-                {category.name}
-              </h2>
-              <a
-                href={`/category/${category.slug}`}
-                className="text-sm text-[var(--color-ink-400)] transition-colors hover:text-white"
-              >
-                More in {category.name} →
-              </a>
-            </div>
+      {/* ── Video Gallery ─────────────────────────────────── */}
+      <VideoGallery videos={videos as any} />
 
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-              {/* Featured category article */}
-              <div className="lg:col-span-2">
-                <FeaturedArticle article={categoryArticles.docs[0]} variant="large" />
-              </div>
-
-              {/* Category article list */}
-              <div className="flex flex-col gap-4 lg:col-span-2">
-                {categoryArticles.docs.slice(1, 4).map((article) => (
-                  <ArticleCard key={article.id} article={article} variant="horizontal" />
-                ))}
-              </div>
-            </div>
-          </section>
-        );
-      })}
-
-      {/* Newsletter Section */}
-      <NewsletterSection />
+      {/* ── Quick Access Links ────────────────────────────── */}
+      <QuickAccessLinks links={quickLinks as any} />
     </>
   );
 }

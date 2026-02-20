@@ -18,16 +18,30 @@ export const SiteSettings: GlobalConfig = {
           label: "General",
           fields: [
             {
-              name: "siteName",
+              name: "hospitalNameNe",
               type: "text",
+              label: "Hospital Name (Nepali)",
               required: true,
-              defaultValue: "The Daily Chronicle",
+              defaultValue: "अस्पताल",
             },
             {
-              name: "siteDescription",
-              type: "textarea",
+              name: "hospitalNameEn",
+              type: "text",
+              label: "Hospital Name (English)",
               required: true,
-              defaultValue: "Your trusted source for breaking news and in-depth reporting",
+              defaultValue: "District Hospital",
+            },
+            {
+              name: "taglineNe",
+              type: "text",
+              label: "Tagline (Nepali)",
+              defaultValue: "स्वास्थ्य सेवा, सबैका लागि",
+            },
+            {
+              name: "taglineEn",
+              type: "text",
+              label: "Tagline (English)",
+              defaultValue: "Healthcare for All",
             },
             {
               name: "logo",
@@ -45,16 +59,41 @@ export const SiteSettings: GlobalConfig = {
               required: true,
               defaultValue: "http://localhost:3000",
             },
+            {
+              name: "aboutUs",
+              type: "textarea",
+              label: "About Us (short paragraph for homepage)",
+              localized: true,
+            },
+          ],
+        },
+        {
+          label: "Contact",
+          fields: [
+            { name: "contactEmail", type: "email", label: "Email" },
+            { name: "contactPhone", type: "text", label: "Main Phone" },
+            { name: "emergencyNumber", type: "text", label: "Emergency Number" },
+            { name: "faxNumber", type: "text", label: "Fax Number" },
+            { name: "address", type: "textarea", label: "Address (Nepali)" },
+            { name: "addressEn", type: "text", label: "Address (English)" },
+            {
+              name: "mapEmbedUrl",
+              type: "text",
+              label: "Google Maps Embed URL",
+              admin: {
+                description: "Paste the src URL from Google Maps > Share > Embed a map",
+              },
+            },
           ],
         },
         {
           label: "Social Media",
           fields: [
-            { name: "twitter", type: "text" },
             { name: "facebook", type: "text" },
-            { name: "instagram", type: "text" },
+            { name: "twitter", type: "text" },
             { name: "youtube", type: "text" },
-            { name: "linkedin", type: "text" },
+            { name: "instagram", type: "text" },
+            { name: "tiktok", type: "text" },
           ],
         },
         {
@@ -67,18 +106,6 @@ export const SiteSettings: GlobalConfig = {
                 description: "GA4 Measurement ID (e.g., G-XXXXXXXXXX)",
               },
             },
-            {
-              name: "googleTagManagerId",
-              type: "text",
-            },
-          ],
-        },
-        {
-          label: "Contact",
-          fields: [
-            { name: "contactEmail", type: "email" },
-            { name: "contactPhone", type: "text" },
-            { name: "address", type: "textarea" },
           ],
         },
       ],

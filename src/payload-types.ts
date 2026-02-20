@@ -68,14 +68,22 @@ export interface Config {
   blocks: {};
   collections: {
     users: User;
+    media: Media;
+    pages: Page;
     articles: Article;
     categories: Category;
     tags: Tag;
     authors: Author;
-    media: Media;
     comments: Comment;
     newsletters: Newsletter;
-    pages: Page;
+    notices: Notice;
+    'hero-slides': HeroSlide;
+    staff: Staff;
+    services: Service;
+    news: News;
+    'photo-gallery': PhotoGallery;
+    'video-gallery': VideoGallery;
+    'quick-links': QuickLink;
     redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -85,14 +93,22 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     authors: AuthorsSelect<false> | AuthorsSelect<true>;
-    media: MediaSelect<false> | MediaSelect<true>;
     comments: CommentsSelect<false> | CommentsSelect<true>;
     newsletters: NewslettersSelect<false> | NewslettersSelect<true>;
-    pages: PagesSelect<false> | PagesSelect<true>;
+    notices: NoticesSelect<false> | NoticesSelect<true>;
+    'hero-slides': HeroSlidesSelect<false> | HeroSlidesSelect<true>;
+    staff: StaffSelect<false> | StaffSelect<true>;
+    services: ServicesSelect<false> | ServicesSelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
+    'photo-gallery': PhotoGallerySelect<false> | PhotoGallerySelect<true>;
+    'video-gallery': VideoGallerySelect<false> | VideoGallerySelect<true>;
+    'quick-links': QuickLinksSelect<false> | QuickLinksSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -107,16 +123,16 @@ export interface Config {
     'site-settings': SiteSetting;
     navigation: Navigation;
     footer: Footer;
+    'opd-stats': OpdStat;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
     footer: FooterSelect<false> | FooterSelect<true>;
+    'opd-stats': OpdStatsSelect<false> | OpdStatsSelect<true>;
   };
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user: User;
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -169,6 +185,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -227,6 +244,42 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: string;
+  title: string;
+  slug: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  status: 'draft' | 'published';
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     */
+    image?: (string | null) | Media;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -290,14 +343,6 @@ export interface Article {
   };
   createdBy?: (string | null) | User;
   updatedBy?: (string | null) | User;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -322,22 +367,6 @@ export interface Category {
   parent?: (string | null) | Category;
   featuredImage?: (string | null) | Media;
   order?: number | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
-     */
-    image?: (string | null) | Media;
-  };
-  breadcrumbs?:
-    | {
-        doc?: (string | null) | Category;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -414,13 +443,99 @@ export interface Newsletter {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
+ * via the `definition` "notices".
  */
-export interface Page {
+export interface Notice {
   id: string;
   title: string;
+  description?: string | null;
+  image?: (string | null) | Media;
+  file?: (string | null) | Media;
+  publishedDate: string;
+  showInPopup?: boolean | null;
+  popupStartDate?: string | null;
+  popupEndDate?: string | null;
+  status?: ('draft' | 'published') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-slides".
+ */
+export interface HeroSlide {
+  id: string;
+  image: string | Media;
+  title: string;
+  caption: string;
+  link?: string | null;
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "staff".
+ */
+export interface Staff {
+  id: string;
+  name: string;
+  nameEn?: string | null;
+  designation: string;
+  department?: string | null;
+  photo?: (string | null) | Media;
+  phone?: string | null;
+  email?: string | null;
+  bio?: string | null;
+  role?: ('chair' | 'cms' | 'info-officer' | 'doctor' | 'nurse' | 'administrative' | 'other') | null;
+  showOnHomepage?: boolean | null;
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: string;
+  name: string;
+  /**
+   * URL-friendly identifier (auto-generated if blank)
+   */
+  slug?: string | null;
+  /**
+   * e.g. "🏥" or "stethoscope"
+   */
+  icon?: string | null;
+  image?: (string | null) | Media;
+  shortDescription?: string | null;
+  category?: ('opd' | 'ipd' | 'emergency' | 'diagnostic' | 'maternal-child' | 'specialized' | 'support') | null;
+  link?: string | null;
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: string;
+  title: string;
+  /**
+   * URL-friendly identifier
+   */
   slug: string;
-  content: {
+  type: 'news' | 'press-release' | 'publication' | 'bid';
+  status?: ('draft' | 'published') | null;
+  publishedDate: string;
+  featuredImage?: (string | null) | Media;
+  excerpt?: string | null;
+  content?: {
     root: {
       type: string;
       children: {
@@ -434,8 +549,9 @@ export interface Page {
       version: number;
     };
     [k: string]: unknown;
-  };
-  status: 'draft' | 'published';
+  } | null;
+  file?: (string | null) | Media;
+  isFeatured?: boolean | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -446,7 +562,63 @@ export interface Page {
   };
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photo-gallery".
+ */
+export interface PhotoGallery {
+  id: string;
+  title: string;
+  description?: string | null;
+  coverImage?: (string | null) | Media;
+  images?:
+    | {
+        image: string | Media;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  publishedDate?: string | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "video-gallery".
+ */
+export interface VideoGallery {
+  id: string;
+  title: string;
+  description?: string | null;
+  /**
+   * Full YouTube URL (e.g. https://www.youtube.com/watch?v=xxxxx)
+   */
+  youtubeUrl: string;
+  thumbnail?: (string | null) | Media;
+  publishedDate?: string | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quick-links".
+ */
+export interface QuickLink {
+  id: string;
+  label: string;
+  /**
+   * e.g. "📢" or "bell"
+   */
+  icon?: string | null;
+  url: string;
+  openInNewTab?: boolean | null;
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -459,8 +631,8 @@ export interface Redirect {
     type?: ('reference' | 'custom') | null;
     reference?:
       | ({
-          relationTo: 'articles';
-          value: string | Article;
+          relationTo: 'news';
+          value: string | News;
         } | null)
       | ({
           relationTo: 'pages';
@@ -500,6 +672,14 @@ export interface PayloadLockedDocument {
         value: string | User;
       } | null)
     | ({
+        relationTo: 'media';
+        value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'pages';
+        value: string | Page;
+      } | null)
+    | ({
         relationTo: 'articles';
         value: string | Article;
       } | null)
@@ -516,10 +696,6 @@ export interface PayloadLockedDocument {
         value: string | Author;
       } | null)
     | ({
-        relationTo: 'media';
-        value: string | Media;
-      } | null)
-    | ({
         relationTo: 'comments';
         value: string | Comment;
       } | null)
@@ -528,8 +704,36 @@ export interface PayloadLockedDocument {
         value: string | Newsletter;
       } | null)
     | ({
-        relationTo: 'pages';
-        value: string | Page;
+        relationTo: 'notices';
+        value: string | Notice;
+      } | null)
+    | ({
+        relationTo: 'hero-slides';
+        value: string | HeroSlide;
+      } | null)
+    | ({
+        relationTo: 'staff';
+        value: string | Staff;
+      } | null)
+    | ({
+        relationTo: 'services';
+        value: string | Service;
+      } | null)
+    | ({
+        relationTo: 'news';
+        value: string | News;
+      } | null)
+    | ({
+        relationTo: 'photo-gallery';
+        value: string | PhotoGallery;
+      } | null)
+    | ({
+        relationTo: 'video-gallery';
+        value: string | VideoGallery;
+      } | null)
+    | ({
+        relationTo: 'quick-links';
+        value: string | QuickLink;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -607,118 +811,6 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "articles_select".
- */
-export interface ArticlesSelect<T extends boolean = true> {
-  title?: T;
-  slug?: T;
-  status?: T;
-  featured?: T;
-  breaking?: T;
-  excerpt?: T;
-  content?: T;
-  featuredImage?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        caption?: T;
-        id?: T;
-      };
-  category?: T;
-  tags?: T;
-  author?: T;
-  coAuthors?: T;
-  publishedDate?: T;
-  readTime?: T;
-  views?: T;
-  allowComments?: T;
-  relatedArticles?: T;
-  source?:
-    | T
-    | {
-        name?: T;
-        url?: T;
-      };
-  createdBy?: T;
-  updatedBy?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-  _status?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories_select".
- */
-export interface CategoriesSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  description?: T;
-  color?: T;
-  icon?: T;
-  parent?: T;
-  featuredImage?: T;
-  order?: T;
-  meta?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        image?: T;
-      };
-  breadcrumbs?:
-    | T
-    | {
-        doc?: T;
-        url?: T;
-        label?: T;
-        id?: T;
-      };
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags_select".
- */
-export interface TagsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "authors_select".
- */
-export interface AuthorsSelect<T extends boolean = true> {
-  name?: T;
-  slug?: T;
-  email?: T;
-  bio?: T;
-  avatar?: T;
-  role?: T;
-  social?:
-    | T
-    | {
-        twitter?: T;
-        linkedin?: T;
-        facebook?: T;
-        instagram?: T;
-      };
-  featured?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -783,6 +875,116 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  content?: T;
+  status?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  status?: T;
+  featured?: T;
+  breaking?: T;
+  excerpt?: T;
+  content?: T;
+  featuredImage?: T;
+  gallery?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  category?: T;
+  tags?: T;
+  author?: T;
+  coAuthors?: T;
+  publishedDate?: T;
+  readTime?: T;
+  views?: T;
+  allowComments?: T;
+  relatedArticles?: T;
+  source?:
+    | T
+    | {
+        name?: T;
+        url?: T;
+      };
+  createdBy?: T;
+  updatedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  color?: T;
+  icon?: T;
+  parent?: T;
+  featuredImage?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags_select".
+ */
+export interface TagsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "authors_select".
+ */
+export interface AuthorsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  email?: T;
+  bio?: T;
+  avatar?: T;
+  role?: T;
+  social?:
+    | T
+    | {
+        twitter?: T;
+        linkedin?: T;
+        facebook?: T;
+        instagram?: T;
+      };
+  featured?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "comments_select".
  */
 export interface CommentsSelect<T extends boolean = true> {
@@ -813,13 +1015,87 @@ export interface NewslettersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages_select".
+ * via the `definition` "notices_select".
  */
-export interface PagesSelect<T extends boolean = true> {
+export interface NoticesSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  image?: T;
+  file?: T;
+  publishedDate?: T;
+  showInPopup?: T;
+  popupStartDate?: T;
+  popupEndDate?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "hero-slides_select".
+ */
+export interface HeroSlidesSelect<T extends boolean = true> {
+  image?: T;
+  title?: T;
+  caption?: T;
+  link?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "staff_select".
+ */
+export interface StaffSelect<T extends boolean = true> {
+  name?: T;
+  nameEn?: T;
+  designation?: T;
+  department?: T;
+  photo?: T;
+  phone?: T;
+  email?: T;
+  bio?: T;
+  role?: T;
+  showOnHomepage?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services_select".
+ */
+export interface ServicesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  icon?: T;
+  image?: T;
+  shortDescription?: T;
+  category?: T;
+  link?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
-  content?: T;
+  type?: T;
   status?: T;
+  publishedDate?: T;
+  featuredImage?: T;
+  excerpt?: T;
+  content?: T;
+  file?: T;
+  isFeatured?: T;
   meta?:
     | T
     | {
@@ -829,7 +1105,54 @@ export interface PagesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
-  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photo-gallery_select".
+ */
+export interface PhotoGallerySelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  coverImage?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  publishedDate?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "video-gallery_select".
+ */
+export interface VideoGallerySelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  youtubeUrl?: T;
+  thumbnail?: T;
+  publishedDate?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quick-links_select".
+ */
+export interface QuickLinksSelect<T extends boolean = true> {
+  label?: T;
+  icon?: T;
+  url?: T;
+  openInNewTab?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -893,24 +1216,33 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteSetting {
   id: string;
-  siteName: string;
-  siteDescription: string;
+  hospitalNameNe: string;
+  hospitalNameEn: string;
+  taglineNe?: string | null;
+  taglineEn?: string | null;
   logo?: (string | null) | Media;
   favicon?: (string | null) | Media;
   siteUrl: string;
-  twitter?: string | null;
+  aboutUs?: string | null;
+  contactEmail?: string | null;
+  contactPhone?: string | null;
+  emergencyNumber?: string | null;
+  faxNumber?: string | null;
+  address?: string | null;
+  addressEn?: string | null;
+  /**
+   * Paste the src URL from Google Maps > Share > Embed a map
+   */
+  mapEmbedUrl?: string | null;
   facebook?: string | null;
-  instagram?: string | null;
+  twitter?: string | null;
   youtube?: string | null;
-  linkedin?: string | null;
+  instagram?: string | null;
+  tiktok?: string | null;
   /**
    * GA4 Measurement ID (e.g., G-XXXXXXXXXX)
    */
   googleAnalyticsId?: string | null;
-  googleTagManagerId?: string | null;
-  contactEmail?: string | null;
-  contactPhone?: string | null;
-  address?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -986,25 +1318,51 @@ export interface Footer {
   createdAt?: string | null;
 }
 /**
+ * Daily OPD statistics shown in the homepage banner. Update daily.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opd-stats".
+ */
+export interface OpdStat {
+  id: string;
+  lastUpdatedDate?: string | null;
+  opdMale?: number | null;
+  opdFemale?: number | null;
+  opdTotal?: number | null;
+  inpatientMale?: number | null;
+  inpatientFemale?: number | null;
+  inpatientTotal?: number | null;
+  totalBeds?: number | null;
+  bedOccupancy?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
-  siteName?: T;
-  siteDescription?: T;
+  hospitalNameNe?: T;
+  hospitalNameEn?: T;
+  taglineNe?: T;
+  taglineEn?: T;
   logo?: T;
   favicon?: T;
   siteUrl?: T;
-  twitter?: T;
-  facebook?: T;
-  instagram?: T;
-  youtube?: T;
-  linkedin?: T;
-  googleAnalyticsId?: T;
-  googleTagManagerId?: T;
+  aboutUs?: T;
   contactEmail?: T;
   contactPhone?: T;
+  emergencyNumber?: T;
+  faxNumber?: T;
   address?: T;
+  addressEn?: T;
+  mapEmbedUrl?: T;
+  facebook?: T;
+  twitter?: T;
+  youtube?: T;
+  instagram?: T;
+  tiktok?: T;
+  googleAnalyticsId?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1070,6 +1428,24 @@ export interface FooterSelect<T extends boolean = true> {
         customUrl?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "opd-stats_select".
+ */
+export interface OpdStatsSelect<T extends boolean = true> {
+  lastUpdatedDate?: T;
+  opdMale?: T;
+  opdFemale?: T;
+  opdTotal?: T;
+  inpatientMale?: T;
+  inpatientFemale?: T;
+  inpatientTotal?: T;
+  totalBeds?: T;
+  bedOccupancy?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
