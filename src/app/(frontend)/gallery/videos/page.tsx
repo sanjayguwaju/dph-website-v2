@@ -1,10 +1,15 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
+import { getLocale, getTranslations } from "next-intl/server";
+import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: "भिडियो ग्यालरी | Video Gallery",
-  description: "अस्पतालका भिडियोहरूको संग्रह",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("gallery");
+  const tc = await getTranslations("common");
+  return {
+    title: `${t("videos")} | ${tc("hospitalName")}`,
+  };
+}
 
 function getYouTubeEmbedUrl(url: string): string | null {
   try {
@@ -21,6 +26,8 @@ function getYouTubeEmbedUrl(url: string): string | null {
   }
 }
 
+import { PageLayout } from "@/components/layout/page-layout";
+
 export default async function VideoGalleryPage({
   searchParams,
 }: {
@@ -29,6 +36,9 @@ export default async function VideoGalleryPage({
   const { page } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
+  const locale = await getLocale();
+  const t = await getTranslations("gallery");
+  const tc = await getTranslations("common");
 
   const payload = await getPayloadClient();
   const result = await payload.find({
@@ -38,18 +48,24 @@ export default async function VideoGalleryPage({
     limit,
     page: currentPage,
     depth: 0,
+    locale: locale as any,
   });
 
   const { docs, totalPages } = result;
 
   return (
-    <main className="page-container">
-      <div className="page-hero">
-        <h1 className="page-hero-title">🎥 भिडियो ग्यालरी</h1>
+    <PageLayout
+      breadcrumbs={[
+        { label: t("videos") },
+      ]}
+      maxWidth="max-w-7xl"
+    >
+      <div className="mb-10 border-b border-gray-100 pb-6">
+        <h1 className="text-3xl font-bold text-[#003580]">🎥 {t("videos")}</h1>
       </div>
 
       {docs.length === 0 ? (
-        <p className="page-empty">कुनै भिडियो उपलब्ध छैन।</p>
+        <p className="page-empty text-center py-20 text-gray-400">{tc("noData")}</p>
       ) : (
         <div className="video-grid video-grid-page">
           {docs.map((video: any) => {
@@ -76,22 +92,22 @@ export default async function VideoGalleryPage({
       )}
 
       {totalPages > 1 && (
-        <div className="page-pagination">
+        <div className="page-pagination mt-12">
           {currentPage > 1 && (
-            <a href={`/gallery/videos?page=${currentPage - 1}`} className="page-nav-btn">
-              ‹ अघिल्लो
-            </a>
+            <Link href={`/gallery/videos?page=${currentPage - 1}`} className="page-nav-btn">
+              ‹ {tc("prev")}
+            </Link>
           )}
           <span className="page-num">
             {currentPage} / {totalPages}
           </span>
           {currentPage < totalPages && (
-            <a href={`/gallery/videos?page=${currentPage + 1}`} className="page-nav-btn">
-              अर्को ›
-            </a>
+            <Link href={`/gallery/videos?page=${currentPage + 1}`} className="page-nav-btn">
+              {tc("next")} ›
+            </Link>
           )}
         </div>
       )}
-    </main>
+    </PageLayout>
   );
 }

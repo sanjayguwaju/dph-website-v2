@@ -1,10 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { X, ChevronLeft, ChevronRight } from "lucide-react";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { useTranslations } from "next-intl";
 
 type GalleryImage = {
-  image: any;
+  image?: any;
+  externalImage?: string | null;
   caption?: string | null;
 };
 
@@ -12,88 +17,154 @@ type Album = {
   id: string;
   title: string;
   coverImage?: any;
+  externalCoverImage?: string | null;
   images?: GalleryImage[];
 };
 
+type FlatImage = { url: string; alt: string };
+
+// ── resolve helpers ───────────────────────────────────────────────────────────
+function resolveImg(img: GalleryImage): string | null {
+  if (img.image && typeof img.image === "object" && img.image.url) return img.image.url;
+  return img.externalImage || null;
+}
+
+function resolveCover(album: Album): string | null {
+  if (album.coverImage && typeof album.coverImage === "object" && album.coverImage.url)
+    return album.coverImage.url;
+  if (album.externalCoverImage) return album.externalCoverImage;
+  // Fall back to first album image
+  const first = album.images?.[0];
+  return first ? resolveImg(first) : null;
+}
+
 export function PhotoGallery({ albums }: { albums: Album[] }) {
-  const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const [lightboxAlt, setLightboxAlt] = useState<string>("");
+  const t = useTranslations("home");
+  const tc = useTranslations("common");
 
-  if (albums.length === 0) return null;
+  const [lightbox, setLightbox] = useState<{ images: FlatImage[]; idx: number } | null>(null);
 
-  // Flatten all images for the strip
-  const allImages: { url: string; alt: string; caption?: string | null }[] = [];
+  // Flatten all images from all albums for lightbox navigation
+  const allImages: FlatImage[] = [];
   for (const album of albums) {
-    const cover =
-      album.coverImage && typeof album.coverImage === "object" ? album.coverImage : null;
-    if (cover?.url) allImages.push({ url: cover.url, alt: album.title });
+    const cover = resolveCover(album);
+    if (cover) allImages.push({ url: cover, alt: album.title });
     for (const img of album.images ?? []) {
-      const imageObj = img.image && typeof img.image === "object" ? img.image : null;
-      if (imageObj?.url)
-        allImages.push({
-          url: imageObj.url,
-          alt: img.caption || album.title,
-          caption: img.caption,
-        });
+      const url = resolveImg(img);
+      if (url) allImages.push({ url, alt: img.caption || album.title });
     }
   }
 
+  const prev = useCallback(
+    () => setLightbox((lb) => lb && { ...lb, idx: (lb.idx - 1 + lb.images.length) % lb.images.length }),
+    []
+  );
+  const next = useCallback(
+    () => setLightbox((lb) => lb && { ...lb, idx: (lb.idx + 1) % lb.images.length }),
+    []
+  );
+
+  useEffect(() => {
+    if (!lightbox) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightbox(null);
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    document.addEventListener("keydown", handler);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", handler);
+      document.body.style.overflow = "";
+    };
+  }, [lightbox, prev, next]);
+
+  if (allImages.length === 0) return null;
+
+  const previewImages = allImages.slice(0, 8);
+
   return (
-    <section className="gallery-section">
-      <div className="section-header">
-        <h2 className="section-heading">📷 फोटो ग्यालरी</h2>
-        <a href="/gallery/photos" className="section-view-all">
-          सबै हेर्नुस् →
-        </a>
+    <section className="gallery-section-v2">
+      <div className="gallery-header-v2 flex items-center justify-between gap-4">
+        <div className="gallery-header-line flex-1"></div>
+        <h2 className="flex-shrink-0">{t("photoGallery")}</h2>
+        <div className="gallery-header-line flex-1"></div>
+        <Link
+          href="/gallery/photos"
+          className="gallery-view-all text-sm font-bold text-white uppercase tracking-wider hover:text-white/80 transition-colors"
+        >
+          {tc("viewAll")}
+        </Link>
       </div>
 
-      <div className="photo-strip">
-        {allImages.slice(0, 12).map((img, i) => (
-          <button
+      <div className="photo-grid-v2">
+        {previewImages.map((img, i) => (
+          <ScrollReveal
             key={i}
-            className="photo-strip-item"
-            onClick={() => {
-              setLightboxSrc(img.url);
-              setLightboxAlt(img.alt);
-            }}
-            aria-label={`View ${img.alt}`}
+            delay={i * 75}
+            animation="animate-in fade-in zoom-in-95"
+            duration={400}
           >
-            <Image
-              src={img.url}
-              alt={img.alt}
-              width={200}
-              height={150}
-              className="photo-strip-img"
-            />
-          </button>
+            <button
+              className="photo-item-v2"
+              onClick={() => setLightbox({ images: allImages, idx: i })}
+              aria-label={`View: ${img.alt}`}
+            >
+              <Image
+                src={img.url}
+                alt={img.alt}
+                width={400}
+                height={300}
+                className="photo-strip-img"
+              />
+              <div className="photo-item-overlay">
+                <span className="photo-item-caption">{img.alt}</span>
+              </div>
+            </button>
+          </ScrollReveal>
         ))}
       </div>
 
-      {/* Lightbox */}
-      {lightboxSrc && (
+      {/* ── Lightbox Refined ── */}
+      {lightbox && (
         <div
-          className="lightbox-overlay"
+          className="gallery-lightbox-overlay"
+          onClick={() => setLightbox(null)}
           role="dialog"
           aria-modal="true"
-          aria-label="Photo viewer"
-          onClick={() => setLightboxSrc(null)}
         >
-          <button
-            className="lightbox-close"
-            onClick={() => setLightboxSrc(null)}
-            aria-label="Close"
-          >
-            ✕
-          </button>
-          <div className="lightbox-inner" onClick={(e) => e.stopPropagation()}>
-            <Image
-              src={lightboxSrc}
-              alt={lightboxAlt}
-              width={1200}
-              height={800}
-              className="lightbox-img"
-            />
-            {lightboxAlt && <p className="lightbox-caption">{lightboxAlt}</p>}
+          <div className="gallery-lb-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="gallery-lb-close-btn" onClick={() => setLightbox(null)}>
+              <X size={20} />
+            </button>
+
+            <div className="gallery-lb-img-container">
+              <img
+                src={lightbox.images[lightbox.idx].url}
+                alt={lightbox.images[lightbox.idx].alt}
+                className="gallery-lb-img-actual"
+              />
+
+              {lightbox.images.length > 1 && (
+                <>
+                  <button className="gallery-lb-nav-btn prev" onClick={prev}>
+                    <ChevronLeft size={24} />
+                  </button>
+                  <button className="gallery-lb-nav-btn next" onClick={next}>
+                    <ChevronRight size={24} />
+                  </button>
+                </>
+              )}
+            </div>
+
+            <div className="gallery-lb-caption-bar">
+              <p className="gallery-lb-title">{lightbox.images[lightbox.idx].alt}</p>
+              {lightbox.images.length > 1 && (
+                <span className="gallery-lb-index">
+                  {lightbox.idx + 1} / {lightbox.images.length}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       )}

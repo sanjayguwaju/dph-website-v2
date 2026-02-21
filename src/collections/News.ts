@@ -66,6 +66,11 @@ export const News: CollectionConfig = {
       relationTo: "media",
     },
     {
+      name: "externalFeaturedImage",
+      type: "text",
+      label: "External Featured Image URL (for demo/seeding)",
+    },
+    {
       name: "excerpt",
       type: "textarea",
       localized: true,

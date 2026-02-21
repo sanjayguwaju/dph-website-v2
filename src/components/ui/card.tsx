@@ -7,8 +7,8 @@ export function Card({ className, children, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-[var(--color-ink-800)] bg-[var(--color-ink-900)] transition-all duration-300",
-        "hover:border-[var(--color-ink-700)] hover:shadow-[var(--shadow-card)]",
+        "overflow-hidden rounded-xl border border-[var(--card-border)] bg-[var(--card)] transition-all duration-300",
+        "hover:border-[var(--brand-blue)] hover:shadow-xl",
         className,
       )}
       {...props}

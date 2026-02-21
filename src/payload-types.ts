@@ -118,7 +118,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ne' | 'en') | ('ne' | 'en')[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -131,7 +131,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     'opd-stats': OpdStatsSelect<false> | OpdStatsSelect<true>;
   };
-  locale: null;
+  locale: 'ne' | 'en';
   user: User;
   jobs: {
     tasks: unknown;
@@ -199,6 +199,7 @@ export interface Media {
    * Photo credit or source
    */
   credit?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -450,6 +451,10 @@ export interface Notice {
   title: string;
   description?: string | null;
   image?: (string | null) | Media;
+  /**
+   * Direct URL to a scanned notice image for testing.
+   */
+  externalImage?: string | null;
   file?: (string | null) | Media;
   publishedDate: string;
   showInPopup?: boolean | null;
@@ -465,7 +470,11 @@ export interface Notice {
  */
 export interface HeroSlide {
   id: string;
-  image: string | Media;
+  image?: (string | null) | Media;
+  /**
+   * Direct URL to an image (e.g. from Unsplash). Overrides/Fallbacks if no upload.
+   */
+  externalImage?: string | null;
   title: string;
   caption: string;
   link?: string | null;
@@ -485,10 +494,13 @@ export interface Staff {
   designation: string;
   department?: string | null;
   photo?: (string | null) | Media;
+  externalPhoto?: string | null;
   phone?: string | null;
   email?: string | null;
   bio?: string | null;
-  role?: ('chair' | 'cms' | 'info-officer' | 'doctor' | 'nurse' | 'administrative' | 'other') | null;
+  role?:
+    | ('chair' | 'cms' | 'info-officer' | 'doctor' | 'nurse' | 'administrative' | 'other' | 'management-committee')
+    | null;
   showOnHomepage?: boolean | null;
   order?: number | null;
   isActive?: boolean | null;
@@ -512,7 +524,26 @@ export interface Service {
   icon?: string | null;
   image?: (string | null) | Media;
   shortDescription?: string | null;
-  category?: ('opd' | 'ipd' | 'emergency' | 'diagnostic' | 'maternal-child' | 'specialized' | 'support') | null;
+  category?:
+    | ('opd' | 'ipd' | 'emergency' | 'diagnostic' | 'maternal-child' | 'specialized' | 'support' | 'other')
+    | null;
+  time?: string | null;
+  fee?: string | null;
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   link?: string | null;
   order?: number | null;
   isActive?: boolean | null;
@@ -534,6 +565,7 @@ export interface News {
   status?: ('draft' | 'published') | null;
   publishedDate: string;
   featuredImage?: (string | null) | Media;
+  externalFeaturedImage?: string | null;
   excerpt?: string | null;
   content?: {
     root: {
@@ -572,9 +604,11 @@ export interface PhotoGallery {
   title: string;
   description?: string | null;
   coverImage?: (string | null) | Media;
+  externalCoverImage?: string | null;
   images?:
     | {
-        image: string | Media;
+        image?: (string | null) | Media;
+        externalImage?: string | null;
         caption?: string | null;
         id?: string | null;
       }[]
@@ -817,6 +851,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   credit?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1021,6 +1056,7 @@ export interface NoticesSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   image?: T;
+  externalImage?: T;
   file?: T;
   publishedDate?: T;
   showInPopup?: T;
@@ -1036,6 +1072,7 @@ export interface NoticesSelect<T extends boolean = true> {
  */
 export interface HeroSlidesSelect<T extends boolean = true> {
   image?: T;
+  externalImage?: T;
   title?: T;
   caption?: T;
   link?: T;
@@ -1054,6 +1091,7 @@ export interface StaffSelect<T extends boolean = true> {
   designation?: T;
   department?: T;
   photo?: T;
+  externalPhoto?: T;
   phone?: T;
   email?: T;
   bio?: T;
@@ -1075,6 +1113,9 @@ export interface ServicesSelect<T extends boolean = true> {
   image?: T;
   shortDescription?: T;
   category?: T;
+  time?: T;
+  fee?: T;
+  content?: T;
   link?: T;
   order?: T;
   isActive?: T;
@@ -1092,6 +1133,7 @@ export interface NewsSelect<T extends boolean = true> {
   status?: T;
   publishedDate?: T;
   featuredImage?: T;
+  externalFeaturedImage?: T;
   excerpt?: T;
   content?: T;
   file?: T;
@@ -1114,10 +1156,12 @@ export interface PhotoGallerySelect<T extends boolean = true> {
   title?: T;
   description?: T;
   coverImage?: T;
+  externalCoverImage?: T;
   images?:
     | T
     | {
         image?: T;
+        externalImage?: T;
         caption?: T;
         id?: T;
       };

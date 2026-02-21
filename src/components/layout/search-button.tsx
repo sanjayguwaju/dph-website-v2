@@ -4,12 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const t = useTranslations("common");
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -45,20 +47,20 @@ export function SearchButton() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 rounded-lg bg-[var(--color-ink-800)] px-3 py-2 text-sm text-[var(--color-ink-400)] transition-colors hover:bg-[var(--color-ink-700)]"
-        aria-label="Search"
+        className="flex items-center gap-2 rounded bg-[var(--card)] px-3 py-1.5 text-sm text-[var(--brand-blue)] border border-[var(--brand-blue)] transition-all hover:bg-[var(--brand-blue)] hover:text-white group"
+        aria-label={t("search")}
       >
-        <Search className="h-4 w-4" />
-        <span className="hidden sm:inline">Search</span>
-        <kbd className="hidden items-center gap-1 rounded bg-[var(--color-ink-700)] px-1.5 py-0.5 font-mono text-xs md:inline-flex">
-          ⌘K
+        <Search className="h-4 w-4 transition-transform group-hover:scale-110" />
+        <span className="hidden sm:inline font-bold">{t("search")}</span>
+        <kbd className="hidden items-center gap-1 rounded bg-[var(--muted)] px-1 font-mono text-[10px] text-[var(--muted-foreground)] md:inline-flex border border-[var(--border)]">
+          Ctrl K
         </kbd>
       </button>
 
       {/* Search modal overlay */}
       <div
         className={cn(
-          "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-200",
+          "fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm transition-opacity duration-300",
           isOpen ? "opacity-100" : "pointer-events-none opacity-0",
         )}
         onClick={() => setIsOpen(false)}
@@ -67,44 +69,39 @@ export function SearchButton() {
       {/* Search modal */}
       <div
         className={cn(
-          "fixed inset-x-4 top-24 z-50 mx-auto max-w-2xl transform transition-all duration-200",
-          isOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-4 opacity-0",
+          "fixed inset-x-4 top-[15vh] z-[101] mx-auto max-w-2xl transform transition-all duration-300 ease-out",
+          isOpen ? "translate-y-0 opacity-100" : "pointer-events-none -translate-y-8 opacity-0",
         )}
       >
-        <div className="overflow-hidden rounded-xl border border-[var(--color-ink-700)] bg-[var(--color-ink-900)] shadow-2xl">
+        <div className="overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--card)] shadow-2xl transition-colors duration-300">
           <form onSubmit={handleSubmit}>
-            <div className="flex items-center border-b border-[var(--color-ink-800)] px-4">
-              <Search className="h-5 w-5 text-[var(--color-ink-400)]" />
+            <div className="flex items-center border-b border-[var(--border)] px-4">
+              <Search className="h-5 w-5 text-[var(--muted-foreground)]" />
               <input
                 ref={inputRef}
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search articles, topics, authors..."
-                className="h-14 flex-1 bg-transparent px-4 text-[var(--color-ink-100)] placeholder:text-[var(--color-ink-500)] focus:outline-none"
+                placeholder={t("searchPlaceholder")}
+                className="h-14 flex-1 bg-transparent px-4 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none font-medium"
               />
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-[var(--color-ink-400)] transition-colors hover:text-white"
+                className="p-2 text-[var(--muted-foreground)] transition-colors hover:text-[var(--brand-red)]"
               >
-                <X className="h-5 w-5" />
+                <X className="h-6 w-6" />
               </button>
             </div>
           </form>
 
-          <div className="p-4">
-            <p className="text-xs text-[var(--color-ink-500)]">
-              Press{" "}
-              <kbd className="rounded bg-[var(--color-ink-800)] px-1.5 py-0.5 font-mono text-xs">
-                Enter
-              </kbd>{" "}
-              to search or{" "}
-              <kbd className="rounded bg-[var(--color-ink-800)] px-1.5 py-0.5 font-mono text-xs">
-                Esc
-              </kbd>{" "}
-              to close
+          <div className="bg-[var(--muted)] p-3 flex justify-between items-center transition-colors duration-300">
+            <p className="text-[11px] text-[var(--muted-foreground)] flex gap-2">
+              <span>{t("searchPress")} <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Enter</kbd> {t("searchToSearch")}</span>
+              <span className="opacity-50">|</span>
+              <span>{t("searchPress")} <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Esc</kbd> {t("searchToClose")}</span>
             </p>
+            <div className="text-[var(--brand-blue)] font-bold text-xs">{t("searchEngine")}</div>
           </div>
         </div>
       </div>

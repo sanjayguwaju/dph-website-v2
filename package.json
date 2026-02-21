@@ -19,7 +19,8 @@
     "format": "cross-env NODE_OPTIONS=--no-deprecation prettier --write .",
     "format:check": "cross-env NODE_OPTIONS=--no-deprecation prettier --check .",
     "format:fix": "cross-env NODE_OPTIONS=--no-deprecation prettier --write . && next lint --fix",
-    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/seed.ts"
+    "seed": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/seed.ts",
+    "seed:hospital": "cross-env NODE_OPTIONS=--no-deprecation tsx src/scripts/seed-hospital.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",

@@ -1,38 +1,42 @@
+"use client";
+
 import Link from "next/link";
-import { Home, Search, ArrowLeft } from "lucide-react";
+import { Home, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslations } from "next-intl";
 
 export default function NotFound() {
+  const t = useTranslations("errors");
+  const tc = useTranslations("common");
+
   return (
-    <div className="flex min-h-[60vh] items-center justify-center">
-      <div className="px-4 text-center">
-        <div className="relative">
-          <span className="text-[12rem] font-[var(--font-display)] font-bold text-[var(--color-ink-800)] select-none">
+    <div className="flex min-h-[70vh] items-center justify-center p-6">
+      <div className="max-w-xl text-center">
+        <div className="relative mb-12">
+          <span className="text-[12rem] font-black tracking-tighter text-[var(--brand-blue)]/10 select-none">
             404
           </span>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="mb-2 text-2xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)]">
-                Page Not Found
-              </h1>
-              <p className="max-w-md text-[var(--color-ink-400)]">
-                The page you're looking for doesn't exist or has been moved.
-              </p>
-            </div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <h1 className="text-4xl font-extrabold text-[var(--brand-blue)] mb-2">
+              {t("notFound")}
+            </h1>
+            <p className="text-lg text-[var(--muted-foreground)] max-w-md mx-auto">
+              {t("notFoundDesc")}
+            </p>
           </div>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-4">
           <Link href="/">
-            <Button variant="primary" className="gap-2">
-              <Home className="h-4 w-4" />
-              Go Home
+            <Button className="gap-2 bg-[var(--brand-blue)] hover:bg-[var(--brand-blue)]/90 h-11 px-6">
+              <Home size={18} />
+              {t("backToHome")}
             </Button>
           </Link>
           <Link href="/search">
-            <Button variant="outline" className="gap-2">
-              <Search className="h-4 w-4" />
-              Search
+            <Button variant="outline" className="gap-2 border-[var(--brand-blue)] text-[var(--brand-blue)] hover:bg-[var(--brand-blue)] hover:text-white h-11 px-6">
+              <Search size={18} />
+              {tc("search")}
             </Button>
           </Link>
         </div>
@@ -40,3 +44,4 @@ export default function NotFound() {
     </div>
   );
 }
+

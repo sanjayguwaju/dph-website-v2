@@ -1,96 +1,118 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronRight, X, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
+interface NavItem {
+  label: string;
+  href: string;
+  submenu?: { label: string; href: string }[];
 }
 
 interface MobileMenuProps {
-  categories: Category[];
+  items: NavItem[];
 }
 
-export function MobileMenu({ categories }: MobileMenuProps) {
+export function MobileMenu({ items }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const t = useTranslations("nav");
+  const tc = useTranslations("common");
+
+  const toggleExpand = (label: string) => {
+    setExpandedItems((prev) => ({ ...prev, [label]: !prev[label] }));
+  };
 
   return (
     <>
+      {/* Hamburger trigger */}
       <button
+        id="mobile-menu-btn"
         onClick={() => setIsOpen(true)}
-        className="rounded-lg p-2 text-[var(--color-ink-300)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white lg:hidden"
-        aria-label="Open menu"
+        className="mobile-menu-trigger"
+        aria-label={t("openMenu")}
       >
-        <Menu className="h-5 w-5" />
+        <span className="hamburger-bar" />
+        <span className="hamburger-bar" />
+        <span className="hamburger-bar" />
       </button>
 
-      {/* Overlay */}
-      <div
-        className={cn(
-          "fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity duration-300 lg:hidden",
-          isOpen ? "opacity-100" : "pointer-events-none opacity-0",
-        )}
-        onClick={() => setIsOpen(false)}
-      />
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="mobile-menu-backdrop"
+          onClick={() => setIsOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       {/* Drawer */}
-      <div
-        className={cn(
-          "fixed inset-y-0 left-0 z-50 w-72 transform border-r border-[var(--color-ink-800)] bg-[var(--color-ink-900)] transition-transform duration-300 ease-out lg:hidden",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-        )}
-      >
-        <div className="flex h-16 items-center justify-between border-b border-[var(--color-ink-800)] px-4">
-          <span className="text-lg font-[var(--font-display)] font-bold text-[var(--color-ink-50)]">
-            Menu
-          </span>
+      <div className={`mobile-menu-drawer${isOpen ? " open" : ""}`}>
+        <div className="mobile-menu-head">
+          <span className="mobile-menu-title">{t("menu")}</span>
           <button
             onClick={() => setIsOpen(false)}
-            className="rounded-lg p-2 text-[var(--color-ink-300)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white"
-            aria-label="Close menu"
+            className="mobile-menu-close"
+            aria-label={t("closeMenu")}
           >
-            <X className="h-5 w-5" />
+            <X size={24} />
           </button>
         </div>
 
-        <nav className="p-4">
-          <div className="space-y-1">
-            <p className="px-3 py-2 text-xs font-semibold tracking-wider text-[var(--color-ink-400)] uppercase">
-              Categories
-            </p>
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/category/${category.slug}`}
-                onClick={() => setIsOpen(false)}
-                className="block rounded-lg px-3 py-2 text-sm font-medium text-[var(--color-ink-200)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white"
-              >
-                {category.name}
-              </Link>
-            ))}
-          </div>
+        <nav className="mobile-nav">
+          <Link href="/" onClick={() => setIsOpen(false)} className="mobile-nav-link">
+            {t("home")}
+          </Link>
+          {items.map((item) => {
+            const hasSub = item.submenu && item.submenu.length > 0;
+            const isExpanded = expandedItems[item.label];
 
-          <div className="mt-6 space-y-1 border-t border-[var(--color-ink-800)] pt-6">
-            <Link
-              href="/about"
-              onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-2 text-sm font-medium text-[var(--color-ink-200)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white"
-            >
-              About Us
-            </Link>
-            <Link
-              href="/contact"
-              onClick={() => setIsOpen(false)}
-              className="block rounded-lg px-3 py-2 text-sm font-medium text-[var(--color-ink-200)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white"
-            >
-              Contact
-            </Link>
-          </div>
+            return (
+              <div key={item.label} className="mobile-nav-item">
+                <div className="mobile-nav-link-row">
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="mobile-nav-link"
+                  >
+                    {item.label}
+                  </Link>
+                  {hasSub && (
+                    <button
+                      className="mobile-expand-btn"
+                      onClick={() => toggleExpand(item.label)}
+                      aria-label="Expand submenu"
+                    >
+                      {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
+                    </button>
+                  )}
+                </div>
+
+                {hasSub && isExpanded && (
+                  <div className="mobile-submenu">
+                    {item.submenu?.map((sub) => (
+                      <Link
+                        key={sub.label}
+                        href={sub.href}
+                        onClick={() => setIsOpen(false)}
+                        className="mobile-submenu-link"
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </nav>
+
+        <div className="mobile-menu-footer">
+          <Link href="/search" className="mobile-search-link" onClick={() => setIsOpen(false)}>
+            <Search size={18} /> {tc("search")}
+          </Link>
+        </div>
       </div>
     </>
   );

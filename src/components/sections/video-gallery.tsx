@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+
 type Video = {
   id: string;
   title: string;
@@ -20,16 +22,16 @@ function getYouTubeEmbedUrl(url: string): string | null {
   }
 }
 
-export function VideoGallery({ videos }: { videos: Video[] }) {
+export async function VideoGallery({ videos }: { videos: Video[] }) {
+  const t = await getTranslations("home");
   if (videos.length === 0) return null;
 
   return (
-    <section className="video-gallery-section">
-      <div className="section-header">
-        <h2 className="section-heading">🎥 भिडियो ग्यालरी</h2>
-        <a href="/gallery/videos" className="section-view-all">
-          सबै हेर्नुस् →
-        </a>
+    <section className="gallery-section-v2" style={{ borderTop: '1px solid #eee' }}>
+      <div className="gallery-header-v2">
+        <div className="gallery-header-line"></div>
+        <h2>{t("videoGallery")}</h2>
+        <div className="gallery-header-line"></div>
       </div>
       <div className="video-grid">
         {videos.map((video) => {

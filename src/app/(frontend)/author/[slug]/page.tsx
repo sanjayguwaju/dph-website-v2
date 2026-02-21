@@ -29,6 +29,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+import { PageLayout } from "@/components/layout/page-layout";
+
 export default async function AuthorPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const { page: pageParam } = await searchParams;
@@ -54,34 +56,39 @@ export default async function AuthorPage({ params, searchParams }: PageProps) {
   ].filter((link) => link.href);
 
   return (
-    <>
-      <div className="container mx-auto px-[var(--spacing-page)] py-[var(--spacing-section)]">
+    <PageLayout
+      breadcrumbs={[
+        { label: author.name as string },
+      ]}
+      maxWidth="max-w-7xl"
+    >
+      <div className="py-8">
         {/* Author header */}
-        <header className="mb-12 flex flex-col items-start gap-6 border-b border-[var(--color-ink-800)] pb-12 md:flex-row md:items-center">
+        <header className="mb-12 flex flex-col items-start gap-6 border-b border-gray-100 pb-12 md:flex-row md:items-center">
           {author.avatar && (
             <Image
               src={getImageUrl(author.avatar, "card")}
               alt={getImageAlt(author.avatar) || author.name}
               width={128}
               height={128}
-              className="rounded-full object-cover"
+              className="rounded-full object-cover border-4 border-white shadow-sm"
             />
           )}
           <div className="flex-1">
-            <h1 className="text-3xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)] lg:text-4xl">
+            <h1 className="text-3xl font-[var(--font-display)] font-bold text-black lg:text-4xl">
               {author.name}
             </h1>
             {author.role && (
-              <p className="mt-1 font-medium text-[var(--color-crimson)]">{author.role}</p>
+              <p className="mt-1 font-medium text-[#2563eb]">{author.role}</p>
             )}
             {author.bio && (
-              <p className="mt-4 max-w-2xl leading-relaxed text-[var(--color-ink-300)]">
+              <p className="mt-4 max-w-2xl leading-relaxed text-gray-600">
                 {author.bio}
               </p>
             )}
 
             {/* Social links */}
-            {socialLinks.length > 0 && (
+            {(socialLinks.length > 0 || author.email) && (
               <div className="mt-4 flex items-center gap-2">
                 {socialLinks.map((link) => (
                   <a
@@ -89,7 +96,7 @@ export default async function AuthorPage({ params, searchParams }: PageProps) {
                     href={link.href!}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="rounded-lg p-2 text-[var(--color-ink-400)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white"
+                    className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-[#2563eb]"
                     aria-label={link.name}
                   >
                     <link.icon className="h-5 w-5" />
@@ -98,7 +105,7 @@ export default async function AuthorPage({ params, searchParams }: PageProps) {
                 {author.email && (
                   <a
                     href={`mailto:${author.email}`}
-                    className="rounded-lg p-2 text-[var(--color-ink-400)] transition-colors hover:bg-[var(--color-ink-800)] hover:text-white"
+                    className="rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-[#2563eb]"
                     aria-label="Email"
                   >
                     <Mail className="h-5 w-5" />
@@ -111,7 +118,7 @@ export default async function AuthorPage({ params, searchParams }: PageProps) {
 
         {/* Articles */}
         <section>
-          <h2 className="mb-8 text-2xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)]">
+          <h2 className="mb-8 text-2xl font-[var(--font-display)] font-bold text-black">
             Articles by {author.name}
           </h2>
 
@@ -126,13 +133,13 @@ export default async function AuthorPage({ params, searchParams }: PageProps) {
             </>
           ) : (
             <div className="py-12 text-center">
-              <p className="text-[var(--color-ink-400)]">No articles by this author yet.</p>
+              <p className="text-gray-400">No articles by this author yet.</p>
             </div>
           )}
         </section>
       </div>
 
       <NewsletterSection />
-    </>
+    </PageLayout>
   );
 }

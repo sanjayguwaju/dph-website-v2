@@ -16,7 +16,15 @@ export const HeroSlides: CollectionConfig = {
       name: "image",
       type: "upload",
       relationTo: "media",
-      required: true,
+      required: false, // Make optional if external image is provided
+    },
+    {
+      name: "externalImage",
+      type: "text",
+      label: "External Image URL",
+      admin: {
+        description: "Direct URL to an image (e.g. from Unsplash). Overrides/Fallbacks if no upload.",
+      },
     },
     {
       name: "title",

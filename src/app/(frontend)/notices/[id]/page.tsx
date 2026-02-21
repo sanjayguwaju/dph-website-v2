@@ -1,59 +1,120 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
-import { formatDate } from "@/utils/format";
+import { getLocale, getTranslations } from "next-intl/server";
+import { PageLayout } from "@/components/layout/page-layout";
+import { NoticeDetailView } from "@/components/notices/NoticeDetailView";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+export async function generateMetadata({ params }: Props) {
+  const { id } = await params;
+  const payload = await getPayloadClient();
+  const locale = await getLocale();
+  const tc = await getTranslations("common");
+
+  const result = await payload.find({
+    collection: "notices",
+    where: { id: { equals: id } },
+    limit: 1,
+    depth: 0,
+    locale: locale as any,
+  });
+
+  const notice = result.docs[0] as any;
+  if (!notice) return { title: tc("notFound") };
+
+  return {
+    title: `${notice.title} | ${tc("hospitalName")}`,
+    description: notice.description?.slice(0, 160) || "Notice detail",
+    openGraph: {
+      title: notice.title,
+      description: notice.description?.slice(0, 160),
+    },
+  };
+}
+
 export default async function NoticeDetailPage({ params }: Props) {
   const { id } = await params;
   const payload = await getPayloadClient();
+  const locale = await getLocale();
+  const th = await getTranslations("nav");
+  const tnot = await getTranslations("notices");
 
   const result = await payload.find({
     collection: "notices",
     where: { id: { equals: id } },
     limit: 1,
     depth: 1,
+    locale: locale as any,
   });
 
-  const notice = result.docs[0];
+  const notice = result.docs[0] as any;
   if (!notice) notFound();
 
+  // Extract file and image
+  const file =
+    notice.file && typeof notice.file === "object"
+      ? {
+          url: notice.file.url as string,
+          filename: notice.file.filename as string,
+          mimeType: notice.file.mimeType as string,
+        }
+      : null;
+
+  const image =
+    notice.image && typeof notice.image === "object"
+      ? {
+          url: notice.image.url as string,
+          alt: notice.image.alt as string,
+        }
+      : (notice.externalImage ? { url: notice.externalImage as string, alt: notice.title as string } : null);
+
+
+  // Format date in Nepali style
+  const dateStr = notice.publishedDate
+    ? new Date(notice.publishedDate).toLocaleDateString(
+        locale === "ne" ? "ne-NP" : "en-NP",
+        { year: "numeric", month: "long", day: "numeric", weekday: "long" }
+      )
+    : undefined;
+
+  const siteUrl = "https://dph.gandaki.gov.np";
+  const shareUrl = `${siteUrl}/notices/${id}`;
+
   return (
-    <main className="page-container">
-      <div className="news-detail-breadcrumb">
-        <Link href="/" className="breadcrumb-link">
-          गृहपृष्ठ
-        </Link>
-        <span>›</span>
-        <Link href="/notices" className="breadcrumb-link">
-          सूचनाहरू
-        </Link>
-        <span>›</span>
-        <span>{notice.title as string}</span>
-      </div>
-
-      <article className="news-detail">
-        <div className="news-detail-body">
-          <div className="news-detail-meta">
-            <span className="news-badge">सूचना</span>
-            {notice.publishedDate && (
-              <time className="news-detail-date">
-                {formatDate(notice.publishedDate as string, "long")}
-              </time>
-            )}
-          </div>
-          <h1 className="news-detail-title">{notice.title as string}</h1>
+    <PageLayout
+      breadcrumbs={[
+        { label: th("notices"), href: "/notices" },
+        { label: notice.title as string },
+      ]}
+      maxWidth="max-w-7xl"
+    >
+      <div className="notice-detail-layout">
+        <div className="notice-detail-main">
+          <NoticeDetailView
+            title={notice.title}
+            description={notice.description}
+            date={dateStr}
+            file={file}
+            image={image}
+            views={notice.views || 31}
+            shareUrl={shareUrl}
+            tweetUrl={shareUrl}
+          />
         </div>
-      </article>
+      </div>
 
-      <div className="news-detail-back">
-        <Link href="/notices" className="page-nav-btn">
-          ← सूचनामा फर्कनुस्
+      <div className="news-detail-back mt-12 text-center border-t border-[#eee] pt-8">
+        <Link
+          href="/notices"
+          className="inline-flex items-center gap-2 text-[#2563eb] hover:underline font-medium"
+        >
+          ‹ {tnot("backToNotices")}
         </Link>
       </div>
-    </main>
+    </PageLayout>
   );
 }

@@ -26,6 +26,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+import { PageLayout } from "@/components/layout/page-layout";
+
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const { page: pageParam } = await searchParams;
@@ -44,17 +46,22 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
   });
 
   return (
-    <>
+    <PageLayout
+      breadcrumbs={[
+        { label: category.name as string },
+      ]}
+      maxWidth="max-w-7xl"
+    >
       <CategoryNav categories={categories} activeSlug={slug} />
 
-      <div className="container mx-auto px-[var(--spacing-page)] py-[var(--spacing-section)]">
+      <div className="py-8">
         {/* Category header */}
         <header className="mb-12">
-          <h1 className="text-4xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)] lg:text-5xl">
+          <h1 className="text-4xl font-[var(--font-display)] font-bold text-black lg:text-5xl">
             {category.name}
           </h1>
           {category.description && (
-            <p className="mt-4 max-w-2xl text-lg text-[var(--color-ink-400)]">
+            <p className="mt-4 max-w-2xl text-lg text-gray-600">
               {category.description}
             </p>
           )}
@@ -72,12 +79,12 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
           </>
         ) : (
           <div className="py-12 text-center">
-            <p className="text-[var(--color-ink-400)]">No articles found in this category yet.</p>
+            <p className="text-gray-400">No articles found in this category yet.</p>
           </div>
         )}
       </div>
 
       <NewsletterSection />
-    </>
+    </PageLayout>
   );
 }

@@ -34,6 +34,14 @@ export const Notices: CollectionConfig = {
       relationTo: "media",
     },
     {
+      name: "externalImage",
+      type: "text",
+      label: "External Image URL",
+      admin: {
+        description: "Direct URL to a scanned notice image for testing.",
+      },
+    },
+    {
       name: "file",
       type: "upload",
       relationTo: "media",

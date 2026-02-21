@@ -4,8 +4,10 @@ import { useState, useTransition } from "react";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useTranslations } from "next-intl";
 
 export function NewsletterSection() {
+  const t = useTranslations("newsletter");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -28,15 +30,15 @@ export function NewsletterSection() {
 
         if (data.success) {
           setStatus("success");
-          setMessage("Thanks for subscribing!");
+          setMessage(t("success"));
           setEmail("");
         } else {
           setStatus("error");
-          setMessage(data.error || "Something went wrong");
+          setMessage(data.error || t("error"));
         }
       } catch {
         setStatus("error");
-        setMessage("Failed to subscribe. Please try again.");
+        setMessage(t("failed"));
       }
 
       // Reset status after 5 seconds
@@ -61,11 +63,10 @@ export function NewsletterSection() {
             </div>
 
             <h2 className="text-2xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)] lg:text-3xl">
-              Stay in the loop
+              {t("title")}
             </h2>
             <p className="mx-auto mt-3 max-w-md text-[var(--color-ink-300)]">
-              Get the latest news delivered to your inbox every morning. No spam, unsubscribe
-              anytime.
+              {t("subtitle")}
             </p>
 
             <form
@@ -76,13 +77,13 @@ export function NewsletterSection() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder={t("placeholder")}
                 required
                 disabled={isPending}
                 className="w-full sm:flex-1"
               />
               <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
-                {isPending ? "Subscribing..." : "Subscribe"}
+                {isPending ? t("subscribing") : t("subscribe")}
               </Button>
             </form>
 

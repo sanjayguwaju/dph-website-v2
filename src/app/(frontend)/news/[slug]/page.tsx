@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
 import { formatDate } from "@/utils/format";
+import { RichText } from "@/components/RichText";
+import { getLocale, getTranslations } from "next-intl/server";
+import { PageLayout } from "@/components/layout/page-layout";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -12,6 +15,8 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const payload = await getPayloadClient();
+  const locale = await getLocale();
+  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "news",
@@ -20,16 +25,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     limit: 1,
     depth: 1,
+    locale: locale as any,
   });
 
   const item = result.docs[0];
-  if (!item) return { title: "Not Found" };
+  if (!item) return { title: tc("notFound") };
 
   const img =
     item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
 
   return {
-    title: item.title as string,
+    title: `${item.title as string} | ${tc("hospitalName")}`,
     description: (item.excerpt as string) || undefined,
     openGraph: {
       title: item.title as string,
@@ -42,6 +48,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
   const payload = await getPayloadClient();
+  const locale = await getLocale();
+  const tn = await getTranslations("news");
+  const th = await getTranslations("nav");
+  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "news",
@@ -50,6 +60,7 @@ export default async function NewsDetailPage({ params }: Props) {
     },
     limit: 1,
     depth: 1,
+    locale: locale as any,
   });
 
   const item = result.docs[0];
@@ -57,27 +68,22 @@ export default async function NewsDetailPage({ params }: Props) {
 
   const img =
     item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
+  const imgUrl = (img as any)?.url || (item as any).externalFeaturedImage || null;
   const file = item.file && typeof item.file === "object" ? item.file : null;
 
   return (
-    <main className="page-container">
-      <div className="news-detail-breadcrumb">
-        <Link href="/" className="breadcrumb-link">
-          गृहपृष्ठ
-        </Link>
-        <span>›</span>
-        <Link href="/news" className="breadcrumb-link">
-          समाचार
-        </Link>
-        <span>›</span>
-        <span>{item.title as string}</span>
-      </div>
-
-      <article className="news-detail">
-        {img?.url && (
-          <div className="news-detail-img-wrap">
+    <PageLayout
+      breadcrumbs={[
+        { label: tn("newsAndActivities"), href: "/news" },
+        { label: item.title as string },
+      ]}
+      maxWidth="max-w-4xl"
+    >
+      <article className="text-[#212529]">
+        {imgUrl && (
+          <div className="news-detail-img-wrap mb-10">
             <Image
-              src={img.url as string}
+              src={imgUrl}
               alt={item.title as string}
               fill
               priority
@@ -87,48 +93,54 @@ export default async function NewsDetailPage({ params }: Props) {
           </div>
         )}
 
-        <div className="news-detail-body">
-          <div className="news-detail-meta">
+
+        <div className="news-detail-meta mb-8 border-b border-[#eee] pb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
             {item.type && <span className="news-badge">{item.type as string}</span>}
             {item.publishedDate && (
-              <time className="news-detail-date">
+              <time className="news-detail-date text-[15px] font-medium text-gray-600">
                 {formatDate(item.publishedDate as string, "long")}
               </time>
             )}
           </div>
+        </div>
 
-          <h1 className="news-detail-title">{item.title as string}</h1>
+        <h1 className="text-[28px] font-bold mb-6 text-black leading-tight">
+          {item.title as string}
+        </h1>
 
-          {item.excerpt && <p className="news-detail-excerpt">{item.excerpt as string}</p>}
+        {item.excerpt && (
+          <p className="text-lg text-gray-700 italic border-l-4 border-[#2563eb] pl-4 mb-8">
+            {item.excerpt as string}
+          </p>
+        )}
 
-          {/* Rich text content placeholder */}
-          {item.content && (
-            <div className="news-detail-content">
-              {/* Content rendered via RichText component */}
-              <p className="news-detail-body-text">
-                {/* TODO: wire up RichText renderer when needed */}
-              </p>
-            </div>
-          )}
+        {/* Rich text content */}
+        {item.content && <RichText data={item.content as any} className="prose-editorial" />}
 
-          {file?.url && (
+        {file?.url && (
+          <div className="mt-12 bg-[#f8fbff] border border-[#d1e3ff] p-6 rounded-lg text-center">
+            <p className="mb-4 text-[#2563eb] font-medium">{tc("download")}</p>
             <a
               href={file.url as string}
               target="_blank"
               rel="noopener noreferrer"
-              className="news-detail-download"
+              className="inline-flex items-center justify-center gap-2 bg-[#dc2626] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-red-700 rounded shadow-sm"
             >
-              📄 फाइल डाउनलोड गर्नुस्
+              📄 {tc("download")} (PDF)
             </a>
-          )}
-        </div>
+          </div>
+        )}
       </article>
 
-      <div className="news-detail-back">
-        <Link href="/news" className="page-nav-btn">
-          ← समाचारमा फर्कनुस्
+      <div className="news-detail-back mt-16 text-center pt-8 border-t border-gray-100">
+        <Link
+          href="/news"
+          className="inline-flex items-center gap-2 text-[#2563eb] hover:underline font-medium"
+        >
+          ‹ {tn("backToNews")}
         </Link>
       </div>
-    </main>
+    </PageLayout>
   );
 }

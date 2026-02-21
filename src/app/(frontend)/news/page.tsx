@@ -3,24 +3,25 @@ import { getPayloadClient } from "@/lib/payload";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/utils/format";
+import { getLocale, getTranslations } from "next-intl/server";
+import { FileText, Calendar, ChevronRight } from "lucide-react";
 
-export const metadata: Metadata = {
-  title: "समाचार तथा गतिविधि | News & Activities",
-  description: "अस्पतालका ताजा समाचार, प्रेस विज्ञप्ति, प्रकाशन र बोलपत्रहरू",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("news");
+  const tc = await getTranslations("common");
+  return {
+    title: `${t("newsAndActivities")} | ${tc("hospitalName")}`,
+    description: `Latest news, press releases, publications and bid notices from ${tc("hospitalName")}.`,
+  };
+}
 
-const TYPE_LABELS: Record<string, string> = {
-  news: "समाचार",
-  "press-release": "प्रेस विज्ञप्ति",
-  publication: "प्रकाशन",
-  bid: "बोलपत्र",
-};
+import { PageLayout } from "@/components/layout/page-layout";
 
-const TYPE_COLORS: Record<string, string> = {
-  news: "news-badge-news",
-  "press-release": "news-badge-press",
-  publication: "news-badge-pub",
-  bid: "news-badge-bid",
+const TYPE_COLORS: Record<string, { bg: string; text: string }> = {
+  news: { bg: "rgba(16,185,129,0.12)", text: "#059669" },
+  "press-release": { bg: "rgba(59,130,246,0.12)", text: "#2563eb" },
+  publication: { bg: "rgba(245,158,11,0.12)", text: "#d97706" },
+  bid: { bg: "rgba(239,68,68,0.12)", text: "#dc2626" },
 };
 
 export default async function NewsPage({
@@ -31,6 +32,16 @@ export default async function NewsPage({
   const { type, page } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
+  const locale = await getLocale();
+  const t = await getTranslations("news");
+  const tc = await getTranslations("common");
+
+  const TYPE_LABELS: Record<string, string> = {
+    news: t("newsType"),
+    "press-release": t("pressRelease"),
+    publication: t("publication"),
+    bid: t("bid"),
+  };
 
   const payload = await getPayloadClient();
 
@@ -46,30 +57,41 @@ export default async function NewsPage({
     limit,
     page: currentPage,
     depth: 1,
+    locale: locale as any,
   });
 
-  const { docs, totalPages } = result;
+  const { docs, totalPages, totalDocs } = result;
   const tabs = [
-    { id: "all", label: "सबै" },
-    { id: "news", label: "समाचार" },
-    { id: "press-release", label: "प्रेस विज्ञप्ति" },
-    { id: "publication", label: "प्रकाशन" },
-    { id: "bid", label: "बोलपत्र" },
+    { id: "all", label: tc("all") },
+    { id: "news", label: t("newsType") },
+    { id: "press-release", label: t("pressRelease") },
+    { id: "publication", label: t("publication") },
+    { id: "bid", label: t("bid") },
   ];
 
   return (
-    <main className="page-container">
-      <div className="page-hero">
-        <h1 className="page-hero-title">📰 समाचार तथा गतिविधि</h1>
+    <PageLayout
+      breadcrumbs={[
+        { label: t("newsAndActivities") },
+      ]}
+      maxWidth="max-w-7xl"
+    >
+      <div className="mb-8 border-b border-gray-100 pb-6">
+        <h1 className="text-3xl font-bold text-[#003580] mb-2">📰 {t("newsAndActivities")}</h1>
+        <p className="text-gray-500">
+          {locale === "ne"
+            ? `कुल ${totalDocs} समाचार र सूचनाहरू`
+            : `${totalDocs} articles, press releases and announcements`}
+        </p>
       </div>
 
       {/* Type filter tabs */}
-      <div className="page-filter-tabs">
+      <div className="page-filter-tabs mb-8">
         {tabs.map((tab) => (
           <Link
             key={tab.id}
             href={tab.id === "all" ? "/news" : `/news?type=${tab.id}`}
-            className={`page-filter-tab${(!type && tab.id === "all") || type === tab.id ? "active" : ""}`}
+            className={`page-filter-tab${(!type && tab.id === "all") || type === tab.id ? " active" : ""}`}
           >
             {tab.label}
           </Link>
@@ -78,7 +100,7 @@ export default async function NewsPage({
 
       {/* News grid */}
       {docs.length === 0 ? (
-        <p className="page-empty">कुनै सामग्री उपलब्ध छैन।</p>
+        <p className="page-empty">{tc("noData")}</p>
       ) : (
         <div className="news-list-grid">
           {docs.map((item: any) => {
@@ -86,32 +108,56 @@ export default async function NewsPage({
               item.featuredImage && typeof item.featuredImage === "object"
                 ? item.featuredImage
                 : null;
+            const imgUrl = img?.url || (item as any).externalFeaturedImage || null;
+            const typeColor = TYPE_COLORS[item.type] || TYPE_COLORS.news;
+
             return (
-              <Link key={item.id} href={`/news/${item.slug || item.id}`} className="news-list-card">
-                {img?.url && (
-                  <div className="news-list-img-wrap">
+              <Link
+                key={item.id}
+                href={`/news/${item.slug || item.id}`}
+                className="news-list-card"
+              >
+                <div className="news-list-img-wrap">
+                  {imgUrl ? (
                     <Image
-                      src={img.url}
+                      src={imgUrl}
                       alt={item.title}
                       fill
                       className="news-list-img"
                       sizes="(max-width: 640px) 100vw, 33vw"
                     />
-                  </div>
-                )}
-                <div className="news-list-body">
+                  ) : (
+                    <div className="news-list-img-placeholder">
+                      <FileText size={40} className="opacity-20" />
+                    </div>
+                  )}
                   {item.type && (
-                    <span className={`news-badge ${TYPE_COLORS[item.type] || ""}`}>
+                    <span
+                      className="news-list-type-badge"
+                      style={{ background: typeColor.bg, color: typeColor.text }}
+                    >
                       {TYPE_LABELS[item.type] || item.type}
                     </span>
                   )}
+                </div>
+
+                <div className="news-list-body">
                   <h2 className="news-list-title">{item.title}</h2>
-                  {item.excerpt && <p className="news-list-excerpt">{item.excerpt}</p>}
-                  {item.publishedDate && (
-                    <time className="news-list-date">
-                      {formatDate(item.publishedDate, "short")}
-                    </time>
+                  {item.excerpt && (
+                    <p className="news-list-excerpt line-clamp-2">{item.excerpt}</p>
                   )}
+                  <div className="news-list-footer">
+                    {item.publishedDate && (
+                      <time className="news-list-date">
+                        <Calendar size={11} style={{ display: "inline", marginRight: 3 }} />
+                        {formatDate(item.publishedDate, "short")}
+                      </time>
+                    )}
+                    <span className="news-list-read-more">
+                      {tc("readMore")}
+                      <ChevronRight size={12} style={{ display: "inline" }} />
+                    </span>
+                  </div>
                 </div>
               </Link>
             );
@@ -121,13 +167,13 @@ export default async function NewsPage({
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="page-pagination">
+        <div className="page-pagination mt-12">
           {currentPage > 1 && (
             <Link
               href={`/news?${type ? `type=${type}&` : ""}page=${currentPage - 1}`}
               className="page-nav-btn"
             >
-              ‹ अघिल्लो
+              ‹ {tc("prev")}
             </Link>
           )}
           <span className="page-num">
@@ -138,11 +184,11 @@ export default async function NewsPage({
               href={`/news?${type ? `type=${type}&` : ""}page=${currentPage + 1}`}
               className="page-nav-btn"
             >
-              अर्को ›
+              {tc("next")} ›
             </Link>
           )}
         </div>
       )}
-    </main>
+    </PageLayout>
   );
 }

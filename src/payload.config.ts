@@ -250,12 +250,26 @@ export default buildConfig({
       }),
     ],
   }),
+  localization: {
+    locales: [
+      {
+        label: "Nepali",
+        code: "ne",
+      },
+      {
+        label: "English",
+        code: "en",
+      },
+    ],
+    defaultLocale: "ne",
+    fallback: true,
+  },
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: mongooseAdapter({
-    url: process.env.DATABASE_URL || "",
+    url: process.env.DATABASE_URI || "",
   }),
   sharp,
   plugins: [

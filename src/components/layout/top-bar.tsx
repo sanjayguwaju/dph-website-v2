@@ -1,44 +1,44 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Network, RefreshCw, Accessibility, Moon, Sun, PhoneCall, Calendar, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { formatNepaliDate } from "@/utils/nepali-date";
+import { setLocale } from "@/i18n/actions";
+import { useLocale, useTranslations } from "next-intl";
 
 export function TopBar({
+  contactPhone,
   emergencyNumber,
-  facebook,
-  youtube,
-  twitter,
 }: {
+  contactPhone?: string | null;
   emergencyNumber?: string | null;
-  facebook?: string | null;
-  youtube?: string | null;
-  twitter?: string | null;
 }) {
+  const router = useRouter();
+  const t = useTranslations("accessibility");
+  const currentLocale = useLocale();
   const [fontSize, setFontSize] = useState<"sm" | "md" | "lg">("md");
-  const [contrast, setContrast] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const [nepaliDate, setNepaliDate] = useState("");
 
   useEffect(() => {
-    const savedSize = (localStorage.getItem("fontSize") as "sm" | "md" | "lg") || "md";
-    const savedContrast = localStorage.getItem("contrast") === "true";
-    setFontSize(savedSize);
-    setContrast(savedContrast);
-    applyFontSize(savedSize);
-    if (savedContrast) document.documentElement.classList.add("high-contrast");
+    // Initial Theme Load
+    const savedTheme = localStorage.getItem("theme");
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const shouldBeDark = savedTheme === "dark" || (!savedTheme && systemDark);
+    
+    setIsDark(shouldBeDark);
+    if (shouldBeDark) document.documentElement.classList.add("dark");
 
-    try {
-      const now = new Date();
-      setNepaliDate(
-        now.toLocaleDateString("ne-NP", {
-          weekday: "long",
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        }),
-      );
-    } catch {
-      setNepaliDate(new Date().toLocaleDateString());
-    }
+    // Accessibility Load
+    const savedSize = (localStorage.getItem("fontSize") as "sm" | "md" | "lg") || "md";
+    setFontSize(savedSize);
+    applyFontSize(savedSize);
+
+    // Format for Nepali Date (BS)
+    const now = new Date();
+    setNepaliDate(formatNepaliDate(now));
   }, []);
 
   function applyFontSize(size: "sm" | "md" | "lg") {
@@ -53,93 +53,70 @@ export function TopBar({
     applyFontSize(size);
   }
 
-  function toggleContrast() {
-    const next = !contrast;
-    setContrast(next);
-    localStorage.setItem("contrast", String(next));
-    document.documentElement.classList.toggle("high-contrast", next);
+  function toggleTheme() {
+    const next = !isDark;
+    setIsDark(next);
+    localStorage.setItem("theme", next ? "dark" : "light");
+    if (next) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
   }
+
+  const handleLanguageSwitch = async () => {
+    const nextLocale = currentLocale === "ne" ? "en" : "ne";
+    await setLocale(nextLocale);
+    router.refresh(); // Refresh the page to apply new locale
+  };
 
   return (
     <div className="top-bar">
-      {/* Left: Date + Emergency */}
       <div className="top-bar-left">
-        <span className="top-bar-date">{nepaliDate}</span>
-        {emergencyNumber && (
-          <a href={`tel:${emergencyNumber}`} className="top-bar-emergency">
-            🚨 आपतकालीन: {emergencyNumber}
-          </a>
-        )}
+        <div className="top-bar-icons">
+          <Link href="/sitemap" className="top-bar-btn">
+            <Network size={14} className="icon-blue" /> {t("sitemap")}
+          </Link>
+          <button className="top-bar-btn">
+             <RefreshCw size={14} className="icon-blue" /> {t("lowBandwidth")}
+          </button>
+          <button className="top-bar-btn">
+            <Accessibility size={14} className="icon-blue" /> {t("screenReader")}
+          </button>
+        </div>
+        <div className="top-bar-emergency-wrap">
+           {contactPhone && (
+             <span className="top-bar-info">
+               <PhoneCall size={13} className="icon-blue mr-1" /> {t("administration")} {contactPhone}
+             </span>
+           )}
+           {emergencyNumber && (
+             <span className="top-bar-info">
+               {t("emergency")} {emergencyNumber}
+             </span>
+           )}
+        </div>
       </div>
 
-      {/* Right: Accessibility + Language + Social */}
-      <div className="top-bar-right">
-        {/* Text size */}
-        <div className="top-bar-a11y" aria-label="Text size controls" role="group">
-          <button
-            onClick={() => changeSize("sm")}
-            aria-pressed={fontSize === "sm"}
-            aria-label="Small text"
-            className={`a11y-btn text-xs${fontSize === "sm" ? "active" : ""}`}
-          >
-            A-
-          </button>
-          <button
-            onClick={() => changeSize("md")}
-            aria-pressed={fontSize === "md"}
-            aria-label="Normal text"
-            className={`a11y-btn text-sm${fontSize === "md" ? "active" : ""}`}
-          >
-            A
-          </button>
-          <button
-            onClick={() => changeSize("lg")}
-            aria-pressed={fontSize === "lg"}
-            aria-label="Large text"
-            className={`a11y-btn text-base${fontSize === "lg" ? "active" : ""}`}
-          >
-            A+
-          </button>
-        </div>
+      <div className="top-bar-center">
+        <span className="top-bar-date"><Calendar size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '5px' }} /> {nepaliDate}</span>
+      </div>
 
-        {/* Contrast */}
-        <button
-          onClick={toggleContrast}
-          aria-pressed={contrast}
-          aria-label="Toggle high contrast"
-          className={`a11y-btn contrast-btn${contrast ? "active" : ""}`}
-        >
-          ◑
+      <div className="top-bar-right">
+        <button onClick={toggleTheme} className="top-bar-btn dark-toggle-btn">
+          {isDark ? <Sun size={14} /> : <Moon size={14} />} 
+          <span className="ml-1">{isDark ? t("light") : t("dark")}</span>
         </button>
 
-        {/* Language Switcher */}
-        <LanguageSwitcher />
-
-        {/* Social Links */}
-        <div className="top-bar-social">
-          {facebook && (
-            <a href={facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-              </svg>
-            </a>
-          )}
-          {youtube && (
-            <a href={youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.54C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
-                <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white" />
-              </svg>
-            </a>
-          )}
-          {twitter && (
-            <a href={twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter/X">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-              </svg>
-            </a>
-          )}
+        <div className="top-bar-a11y">
+          <button onClick={() => changeSize("lg")} className={`a11y-btn ${fontSize === "lg" ? "active" : ""}`}>{t("textLarge")}</button>
+          <button onClick={() => changeSize("md")} className={`a11y-btn ${fontSize === "md" ? "active" : ""}`}>{t("textNormal")}</button>
+          <button onClick={() => changeSize("sm")} className={`a11y-btn ${fontSize === "sm" ? "active" : ""}`}>{t("textSmall")}</button>
         </div>
+
+        <button onClick={handleLanguageSwitch} className="lang-toggle-btn">
+           <span className="lang-icon">🌐</span> {currentLocale === "ne" ? "English" : "नेपाली"}
+        </button>
       </div>
     </div>
   );

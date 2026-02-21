@@ -1,8 +1,10 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getArticleBySlug, getRelatedArticles } from "@/lib/queries/articles";
 import { ArticleContent, RelatedArticles } from "@/components/article";
 import { NewsletterSection } from "@/components/sections";
+import { getLocale, getTranslations } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -11,10 +13,11 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
+  const tc = await getTranslations("common");
 
   if (!article) {
     return {
-      title: "Article Not Found",
+      title: tc("notFound"),
     };
   }
 
@@ -22,7 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const featuredImage = typeof article.featuredImage === "object" ? article.featuredImage : null;
 
   return {
-    title: article.title,
+    title: `${article.title} | ${tc("hospitalName")}`,
     description: article.excerpt,
     openGraph: {
       title: article.title,
@@ -50,9 +53,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+import { PageLayout } from "@/components/layout/page-layout";
+
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
+  const th = await getTranslations("nav");
 
   if (!article) {
     notFound();
@@ -62,12 +68,14 @@ export default async function ArticlePage({ params }: PageProps) {
   const category = typeof article.category === "object" ? article.category : null;
   const relatedArticles = category ? await getRelatedArticles(article.id, category.id, 4) : [];
 
-  // Increment views (non-blocking)
-  // This would typically be done via a server action
-  // incrementArticleViews(article.id).catch(console.error)
-
   return (
-    <article>
+    <PageLayout
+      breadcrumbs={[
+        { label: article.title as string },
+      ]}
+      className="bg-[#fbfcff]"
+      maxWidth="max-w-4xl"
+    >
       <ArticleContent article={article} />
 
       {/* Related Articles */}
@@ -75,6 +83,6 @@ export default async function ArticlePage({ params }: PageProps) {
 
       {/* Newsletter Section */}
       <NewsletterSection />
-    </article>
+    </PageLayout>
   );
 }

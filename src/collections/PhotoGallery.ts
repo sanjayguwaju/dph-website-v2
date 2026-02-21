@@ -31,6 +31,11 @@ export const PhotoGallery: CollectionConfig = {
       label: "Cover / Thumbnail Image",
     },
     {
+      name: "externalCoverImage",
+      type: "text",
+      label: "External Cover Image URL",
+    },
+    {
       name: "images",
       type: "array",
       label: "Gallery Images",
@@ -39,7 +44,12 @@ export const PhotoGallery: CollectionConfig = {
           name: "image",
           type: "upload",
           relationTo: "media",
-          required: true,
+          required: false,
+        },
+        {
+          name: "externalImage",
+          type: "text",
+          label: "External Image URL",
         },
         {
           name: "caption",

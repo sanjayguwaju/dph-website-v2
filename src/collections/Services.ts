@@ -56,7 +56,26 @@ export const Services: CollectionConfig = {
         { label: "Maternal & Child", value: "maternal-child" },
         { label: "Specialized", value: "specialized" },
         { label: "Support Services", value: "support" },
+        { label: "Other", value: "other" },
       ],
+    },
+    {
+      name: "time",
+      type: "text",
+      localized: true,
+      label: "Time (e.g., 9:00 AM - 5:00 PM)",
+    },
+    {
+      name: "fee",
+      type: "text",
+      localized: true,
+      label: "Fee (e.g., Free, Rs. 500)",
+    },
+    {
+      name: "content",
+      type: "richText",
+      localized: true,
+      label: "Detailed Content",
     },
     {
       name: "link",

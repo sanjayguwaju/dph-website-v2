@@ -5,29 +5,61 @@ import { Header, Footer } from "@/components/layout";
 import { TopBar } from "@/components/layout/top-bar";
 import { Marquee } from "@/components/layout/marquee";
 import { NoticesPopup } from "@/components/notices";
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { getPopupNotices } from "@/lib/queries/notices";
 import { getSiteSettings } from "@/lib/queries/globals";
 import "./globals.css";
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [popupNotices, settings, messages] = await Promise.all([
+  const [popupNotices, settings, messagesData] = await Promise.all([
     getPopupNotices(),
     getSiteSettings(),
     getMessages(),
   ]);
 
   const s = settings as any;
+  const messages = messagesData as any;
+  const locale = messages?.locale || "ne";
 
   return (
-    <html lang="ne">
-      <body>
+    <html lang={locale} suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Disable transitions during init to prevent flash
+                document.documentElement.classList.add('no-transitions');
+                
+                var stored = null;
+                try { stored = localStorage.getItem('theme'); } catch(e) {}
+                
+                var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var isDark = stored === 'dark' || (!stored && prefersDark);
+                
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                } else {
+                  document.documentElement.classList.remove('dark');
+                }
+                
+                // Re-enable transitions after a frame
+                requestAnimationFrame(function() {
+                  requestAnimationFrame(function() {
+                    document.documentElement.classList.remove('no-transitions');
+                  });
+                });
+              })()
+            `,
+          }}
+        />
+      </head>
+      <body suppressHydrationWarning>
         <NextIntlClientProvider messages={messages}>
           {/* Accessibility + Date + Emergency + Social + Lang Switcher */}
           <TopBar
+            contactPhone={s.contactPhone}
             emergencyNumber={s.emergencyNumber}
-            facebook={s.facebook}
-            youtube={s.youtube}
-            twitter={s.twitter}
           />
 
           {/* Hospital Logo + Navigation */}
@@ -44,6 +76,9 @@ export default async function FrontendLayout({ children }: { children: React.Rea
 
           {/* Notices Popup Dialog */}
           <NoticesPopup notices={popupNotices} />
+
+          {/* Scroll to Top Arrow */}
+          <ScrollToTop />
         </NextIntlClientProvider>
       </body>
     </html>

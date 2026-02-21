@@ -42,6 +42,11 @@ export const Staff: CollectionConfig = {
       relationTo: "media",
     },
     {
+      name: "externalPhoto",
+      type: "text",
+      label: "External Photo URL (for demo)",
+    },
+    {
       name: "phone",
       type: "text",
     },
@@ -65,6 +70,7 @@ export const Staff: CollectionConfig = {
         { label: "Nurse", value: "nurse" },
         { label: "Administrative", value: "administrative" },
         { label: "Other", value: "other" },
+        { label: "Management Committee Member", value: "management-committee" },
       ],
     },
     {

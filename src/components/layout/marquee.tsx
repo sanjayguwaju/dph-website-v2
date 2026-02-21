@@ -1,6 +1,8 @@
 import { getLatestNoticesForMarquee } from "@/lib/queries/marquee-notices";
+import { getTranslations } from "next-intl/server";
 
 export async function Marquee() {
+  const t = await getTranslations("notices");
   const notices = await getLatestNoticesForMarquee();
   if (notices.length === 0) return null;
 
@@ -9,7 +11,7 @@ export async function Marquee() {
   return (
     <div className="marquee-bar" role="region" aria-label="Latest notices ticker">
       <div className="marquee-label">
-        <span>📢 सूचना</span>
+        <span>{t("title")}</span>
       </div>
       <div className="marquee-track-wrap">
         <div className="marquee-track">
@@ -18,7 +20,7 @@ export async function Marquee() {
               {notice.title}
               <span className="marquee-sep" aria-hidden="true">
                 {" "}
-                ⬥{" "}
+                ||{" "}
               </span>
             </a>
           ))}
