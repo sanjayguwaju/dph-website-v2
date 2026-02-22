@@ -22,7 +22,7 @@ export function LanguageSwitcher() {
     <div className="lang-switcher" aria-label="Language switcher">
       <button
         onClick={() => handleSwitch("ne")}
-        className={`lang-btn${locale === "ne" ? "active" : ""}`}
+        className={`lang-btn ${locale === "ne" ? "active" : ""}`}
         aria-pressed={locale === "ne"}
         disabled={isPending}
         title="नेपाली"
@@ -32,7 +32,7 @@ export function LanguageSwitcher() {
       <span className="lang-sep">|</span>
       <button
         onClick={() => handleSwitch("en")}
-        className={`lang-btn${locale === "en" ? "active" : ""}`}
+        className={`lang-btn ${locale === "en" ? "active" : ""}`}
         aria-pressed={locale === "en"}
         disabled={isPending}
         title="English"
