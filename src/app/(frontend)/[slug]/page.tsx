@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPageBySlug } from "@/lib/queries/pages";
 import { RichText } from "@/components/RichText";
 import { getLocale, getTranslations } from "next-intl/server";
+import { FeedbackForm } from "@/components/forms/feedback-form";
 
 import { PageLayout } from "@/components/layout/page-layout";
 import { getPayloadClient } from "@/lib/payload";
@@ -88,19 +89,37 @@ export default async function DynamicPage({ params }: PageProps) {
         </article>
 
         {slug === "contact" && contactSettings && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {[
-              { icon: "📞", label: locale === "ne" ? "फोन" : "Phone", value: contactSettings.contactPhone },
-              { icon: "✉️", label: locale === "ne" ? "इमेल" : "Email", value: contactSettings.contactEmail },
-              { icon: "🚨", label: locale === "ne" ? "आकस्मिक" : "Emergency", value: contactSettings.emergencyNumber },
-            ].map((item, idx) => (
-              <div key={idx} className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 flex flex-col items-center text-center">
-                <span className="text-3xl mb-3">{item.icon}</span>
-                <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">{item.label}</p>
-                <p className="text-lg font-bold text-gray-900">{item.value}</p>
-              </div>
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {[
+                { icon: "📞", label: locale === "ne" ? "फोन" : "Phone", value: contactSettings.contactPhone },
+                { icon: "✉️", label: locale === "ne" ? "इमेल" : "Email", value: contactSettings.contactEmail },
+                { icon: "🚨", label: locale === "ne" ? "आकस्मिक" : "Emergency", value: contactSettings.emergencyNumber },
+              ].map((item, idx) => (
+                <div key={idx} className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 flex flex-col items-center text-center">
+                  <span className="text-3xl mb-3">{item.icon}</span>
+                  <p className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-1">{item.label}</p>
+                  <p className="text-lg font-bold text-gray-900">{item.value}</p>
+                </div>
+              ))}
+            </div>
+            
+            <section className="mt-12 bg-gray-50/50 p-10 rounded-[3rem] border border-gray-100">
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <div>
+                     <h2 className="text-3xl font-black text-[#003580] mb-4">
+                        {locale === "ne" ? "हामीलाई सम्पर्क गर्नुहोस्" : "Get In Touch"}
+                     </h2>
+                     <p className="text-slate-600 font-bold mb-6">
+                        {locale === "ne" 
+                          ? "तपाईंको जिज्ञासा वा सुझाव छ? कृपया हामीलाई सन्देश पठाउनुहोस्।"
+                          : "Have a question or suggestion? Send us a message and we'll get back to you."}
+                     </p>
+                  </div>
+                  <FeedbackForm />
+               </div>
+            </section>
+          </>
         )}
 
         {slug === "contact" && contactSettings?.mapEmbedUrl && (

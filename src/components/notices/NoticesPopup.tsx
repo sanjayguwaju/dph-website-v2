@@ -76,98 +76,87 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
         if ((e.target as HTMLElement).classList.contains("notice-popup-overlay")) closePopup();
       }}
     >
-      <div className="notice-popup-frame">
-        <div className="notice-popup-header">
-          <div className="notice-popup-title-group">
-            <span className="notice-popup-tag">{tn("importantNotice")}</span>
-            {total > 1 && (
-              <p className="notice-popup-counter">
-                {current + 1} / {total}
-              </p>
-            )}
+      <div className="notice-popup-frame group">
+        <div className="notice-popup-header-v2">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-[#dc2626] rounded-full"></div>
+            <div>
+              <span className="text-[10px] font-black text-[#dc2626] uppercase tracking-[0.2em] block mb-0.5">{tn("importantNotice")}</span>
+              <h3 className="text-sm font-bold text-gray-900 truncate max-w-[200px] md:max-w-md">{notice.title}</h3>
+            </div>
           </div>
           <button
-            className="notice-popup-close-btn"
+            className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#dc2626] hover:text-white transition-all shadow-sm"
             onClick={closePopup}
             aria-label={tc("closeMenu") || "Close"}
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
-        <div className="notice-popup-scrollarea">
+        <div className="notice-popup-scrollarea-v2 shadow-inner bg-gray-50/50">
           {(image?.url || externalImage) ? (
-            <div className="notice-popup-image-container">
-              <Image
+            <div className="relative w-full">
+              <img
                 src={image?.url || externalImage}
                 alt={image?.alt || notice.title}
-                width={1200}
-                height={1600}
-                className="notice-popup-main-image"
-                priority
+                className="w-full h-auto block object-contain max-h-[70vh]"
               />
             </div>
           ) : (
-
-            <div className="notice-popup-text-container">
-              <h2 className="notice-popup-main-title">{notice.title}</h2>
-              {notice.description && <div className="notice-popup-main-desc">{notice.description}</div>}
+            <div className="p-10 md:p-16 text-center">
+              <div className="w-20 h-20 bg-red-50 text-[#dc2626] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🪧</div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{notice.title}</h2>
+              {notice.description && (
+                <div className="text-gray-600 leading-relaxed text-lg max-w-2xl mx-auto prose prose-red">
+                  {notice.description}
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        <div className="notice-popup-actions">
-          <div className="notice-popup-nav-group">
+        <div className="bg-white p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-gray-100">
+          <div className="flex items-center gap-4">
             {total > 1 && (
-              <>
+              <div className="flex items-center gap-3 bg-gray-50 p-1.5 rounded-full border border-gray-100">
                 <button 
-                  className="notice-popup-nav-btn" 
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white text-gray-600 shadow-sm hover:text-[#dc2626] transition-colors" 
                   onClick={prevNotice}
-                  aria-label={tc("prev")}
                 >
-                  <ChevronLeft size={18} />
+                  <ChevronLeft size={16} />
                 </button>
-                <div className="notice-popup-dots-v3">
-                  {notices.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrent(i)}
-                      className={`notice-popup-dot-v3${i === current ? " active" : ""}`}
-                      aria-label={`Go to slide ${i + 1}`}
-                    />
-                  ))}
-                </div>
+                <span className="text-xs font-bold text-gray-400 w-10 text-center">{current + 1} / {total}</span>
                 <button 
-                  className="notice-popup-nav-btn" 
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white text-gray-600 shadow-sm hover:text-[#dc2626] transition-colors" 
                   onClick={nextNotice}
-                  aria-label={tc("next")}
                 >
-                  <ChevronRight size={18} />
+                  <ChevronRight size={16} />
                 </button>
-              </>
+              </div>
             )}
           </div>
-          
-          <div className="notice-popup-cta-row">
+
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <Link 
               href={`/notices/${notice.id}`} 
-              className="notice-popup-link-btn"
+              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-lg shadow-gray-200"
               onClick={closePopup}
             >
-              <ExternalLink size={16} />
-              <span>{tc("readMore")?.replace(" →", "") || "Details"}</span>
+              <ExternalLink size={14} />
+              {tc("readMore")?.replace(" →", "") || "Details"}
             </Link>
             
             {file?.url && (
               <a
                 href={file.url}
                 download
-                className="notice-popup-link-btn secondary"
+                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#dc2626] text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <Download size={16} />
-                <span>{tc("download") || "PDF"}</span>
+                <Download size={14} />
+                {tc("download") || "PDF"}
               </a>
             )}
           </div>

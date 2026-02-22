@@ -1,0 +1,359 @@
+
+> hamro-news-v1@1.0.0 dev /home/socialworker/dph-website-v2
+> cross-env NODE_OPTIONS=--no-deprecation next dev
+
+   ▲ Next.js 15.4.10
+   - Local:        http://localhost:3000
+   - Network:      http://192.168.1.174:3000
+   - Environments: .env
+   - Experiments (use with caution):
+     · optimizePackageImports
+
+ ✓ Starting...
+ ✓ Ready in 1655ms
+ ✓ Compiled /middleware in 198ms (108 modules)
+ ○ Compiling / ...
+ ✓ Compiled / in 3.5s (2350 modules)
+[13:39:48] [33mWARN[39m: [36mNo email adapter provided. Email will be written to console. More info at https://payloadcms.com/docs/email/overview.[39m
+ ⨯ ReferenceError: Marquee is not defined
+    at FrontendLayout (src/app/(frontend)/layout.tsx:68:11)
+  66 |
+  67 |           {/* Scrolling notices marquee */}
+> 68 |           <Marquee />
+     |           ^
+  69 |
+  70 |           {/* Page Content */}
+  71 |           <main className="min-h-screen">{children}</main> {
+  digest: '3283538816'
+}
+ GET / 500 in 5513ms
+ ✓ Compiled in 1442ms (2364 modules)
+ ✓ Compiled in 1050ms (2358 modules)
+ ✓ Compiled in 587ms (2358 modules)
+ ✓ Compiled in 234ms (373 modules)
+ ✓ Compiled in 207ms (373 modules)
+ ✓ Compiled / in 454ms (1985 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 1159ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ○ Compiling /[slug] ...
+ ✓ Compiled /[slug] in 1789ms (2361 modules)
+ GET /favicon.ico 200 in 3646ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ✓ Compiled in 610ms (2375 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 432ms
+ ✓ Compiled in 757ms (2375 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 323ms
+ GET / 200 in 297ms
+ ✓ Compiled in 980ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 403ms
+ ✓ Compiled in 465ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 335ms
+ ✓ Compiled in 899ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 299ms
+ ✓ Compiled in 805ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 299ms
+ ✓ Compiled in 1185ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 310ms
+ ✓ Compiled in 776ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 314ms
+ ✓ Compiled in 645ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 302ms
+ ✓ Compiled in 619ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 323ms
+ GET / 200 in 304ms
+ ✓ Compiled in 917ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 360ms
+ ✓ Compiled in 527ms (2364 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 375ms
+ GET / 200 in 327ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 1312ms (2356 modules)
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ GET /_next/static/chunks/main-app.js?v=1771748010934 404 in 1621ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 1614ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 1582ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 1620ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 1618ms
+ ○ Compiling /[slug] ...
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ✓ Compiled /[slug] in 1191ms (1998 modules)
+Generating import map
+ ⨯ Failed to generate static paths for /[slug]:
+[Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+ ⨯ Failed to generate static paths for /[slug]:
+[Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array]
+}
+No new imports found, skipping writing import map
+ GET /favicon.ico 200 in 1842ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ GET / 200 in 329ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 87ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 87ms
+ GET /_next/static/chunks/main-app.js?v=1771748020368 404 in 89ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 87ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 23ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 227ms
+ GET / 200 in 191ms
+ GET /_next/static/chunks/main-app.js?v=1771748022422 404 in 102ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 84ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 72ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 86ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 73ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 229ms
+ GET / 200 in 325ms
+ GET /_next/static/chunks/main-app.js?v=1771748083246 404 in 83ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 62ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 63ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 63ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 24ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 281ms
+ GET /_next/static/chunks/main-app.js?v=1771748086392 404 in 105ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 101ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 72ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 48ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 23ms
+ GET / 200 in 296ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 295ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ✓ Compiled in 1354ms (2381 modules)
+ ✓ Compiled in 507ms (2381 modules)
+ ✓ Compiled in 430ms (2381 modules)
+Generating import map
+No new imports found, skipping writing import map
+ GET / 200 in 649ms
+ GET /_next/static/chunks/main-app.js?v=1771748371229 404 in 107ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 106ms
+ GET / 200 in 386ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 108ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 105ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 29ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 273ms
+ GET / 200 in 217ms
+ GET / 200 in 241ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 114ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 119ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 116ms
+ GET /_next/static/chunks/main-app.js?v=1771748472814 404 in 119ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 28ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 254ms
+ ○ Compiling /services ...
+ ✓ Compiled /services in 1332ms (2372 modules)
+ GET /services 200 in 1816ms
+ GET /_next/static/chunks/main-app.js?v=1771748477578 404 in 87ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 77ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 78ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 78ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 23ms
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 237ms
+ GET / 200 in 247ms
+ GET /_next/static/chunks/main-app.js?v=1771748480859 404 in 92ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 76ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 78ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 78ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 78ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 238ms
+ GET /_next/static/chunks/main-app.js?v=1771748484807 404 in 73ms
+ GET /_next/static/chunks/app/(frontend)/loading.js 404 in 62ms
+ GET /_next/static/chunks/app/(frontend)/not-found.js 404 in 55ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 65ms
+ GET / 200 in 252ms
+ GET /_next/static/chunks/app/(frontend)/page.js 404 in 19ms
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ upstream image response failed for https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800 404
+ ⨯ [Error: Cannot find module './vendor-chunks/@smithy+middleware-endpoint@4.4.16.js'
+Require stack:
+- /home/socialworker/dph-website-v2/.next/server/webpack-runtime.js
+- /home/socialworker/dph-website-v2/.next/server/app/(frontend)/[slug]/page.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/require.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/load-components.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/build/utils.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/server/dev/static-paths-worker.js
+- /home/socialworker/dph-website-v2/node_modules/.pnpm/next@15.4.10_@babel+core@7.29.0_@playwright+test@1.56.1_babel-plugin-macros@3.1.0_react_42bd3fa2cafd74e6037b40962c2f60b2/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/favicon.ico'
+}
+ GET /favicon.ico 500 in 289ms

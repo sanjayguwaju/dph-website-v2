@@ -1,10 +1,13 @@
-import { Home } from "lucide-react";
+import { Home, Network, Monitor, Eye, Phone, Moon, Sun, Languages } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getSiteSettings, getNavigation } from "@/lib/queries/globals";
 import { MobileMenu } from "./mobile-menu";
 import type { Navigation, Category, Page } from "@/payload-types";
 import { getLocale, getTranslations } from "next-intl/server";
+import { HeaderScrollWrapper } from "./header-scroll";
+import { Marquee } from "./marquee";
+import { formatNepaliDate } from "@/utils/nepali-date";
 
 function resolveHref(
   type: "category" | "page" | "custom",
@@ -26,6 +29,7 @@ function resolveHref(
 export async function Header() {
   const locale = await getLocale();
   const t = await getTranslations("nav");
+  const ta = await getTranslations("accessibility");
   const [settings, navGlobal] = await Promise.all([getSiteSettings(), getNavigation()]);
   const navigation = (navGlobal as Navigation)?.mainNav || [];
   const s = settings as any;
@@ -33,104 +37,120 @@ export async function Header() {
   const hospitalName = locale === "en" ? s.hospitalNameEn : s.hospitalNameNe;
 
   const address = locale === "en" ? s.addressEn : s.address;
+  const nepaliDate = formatNepaliDate(new Date());
 
   return (
-    <header className="hospital-header">
-      {/* Row 1: Branding */}
-      <div className="hospital-branding-row">
-        <div className="branding-container">
-          <Link href="/" className="hospital-logo-wrap">
-            {s.logo?.url ? (
+    <HeaderScrollWrapper>
+      <header className="hospital-header-v3">
+
+        {/* Row 1: Branding */}
+        <div className="hospital-branding-row-v3 relative">
+          <div className="container-refined flex items-center justify-between py-4">
+            {/* Left: Logo */}
+            <div className="header-logo-container flex-shrink-0">
+              <Link href="/">
+                {s.logo?.url ? (
+                  <Image
+                    src={s.logo.url}
+                    alt={hospitalName}
+                    width={100}
+                    height={100}
+                    priority
+                    className="header-logo-img"
+                  />
+                ) : (
+                  <Image
+                    src="https://upload.wikimedia.org/wikipedia/commons/2/23/Emblem_of_Nepal.svg"
+                    alt="Government of Nepal"
+                    width={90}
+                    height={90}
+                    priority
+                  />
+                )}
+              </Link>
+            </div>
+            
+            {/* Center: Title Block */}
+            <div className="header-title-block flex-1 text-center">
+              <p className="header-gov-text">{t("govText")}</p>
+              <p className="header-ministry-text">{t("ministryText")}</p>
+              <h1 className="header-hospital-title">{hospitalName}</h1>
+              <p className="header-location-text">
+                 {address || (locale === "en" ? "Baglung, Nepal" : "बागलुङ, नेपाल")}
+              </p>
+            </div>
+
+            {/* Right: Flag */}
+            <div className="header-flag-container flex-shrink-0">
               <Image
-                src={s.logo.url}
-                alt={hospitalName}
-                width={120}
-                height={120}
+                src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Flag_of_Nepal.svg"
+                alt="Nepal Flag"
+                width={60}
+                height={80}
                 priority
-                className="hospital-logo-img"
+                className="nepal-flag-v3"
               />
-            ) : (
-              <Image
-                src="https://upload.wikimedia.org/wikipedia/commons/2/23/Emblem_of_Nepal.svg"
-                alt="Government of Nepal"
-                width={100}
-                height={100}
-                priority
-              />
-            )}
-          </Link>
-          
-          <div className="hospital-title-block">
-            <span className="gov-text">{t("govText")}</span>
-            <span className="ministry-text">{t("ministryText")}</span>
-            <h1 className="hospital-main-title">{hospitalName || tc("hospitalName")}</h1>
-            <span className="location-text">{address || (locale === "en" ? "Baglung, Nepal" : "बागलुङ, नेपाल")}</span>
+            </div>
           </div>
+        </div>
 
-
-          <div className="nepal-flag">
-            <Image
-              src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Flag_of_Nepal.svg"
-              alt="Nepal Flag"
-              width={70}
-              height={100}
+        {/* Row 2: Navigation Bar */}
+        <div className="hospital-nav-bar-v3">
+          <div className="container-refined flex items-center w-full">
+            <MobileMenu
+              items={navigation.map((item) => ({
+                label: item.label,
+                href: resolveHref(item.type, item.category, item.page, item.customUrl),
+                submenu: item.subMenu?.map((sub) => ({
+                  label: sub.label,
+                  href: resolveHref(sub.type, sub.category, sub.page, sub.customUrl),
+                })),
+              }))}
             />
+
+            <nav className="header-desktop-nav flex-1 flex items-center" aria-label="Main navigation">
+              <Link href="/" className="nav-home-icon-v3">
+                <Home size={20} fill="currentColor" />
+              </Link>
+
+              {navigation.map((item, i) => {
+                const href = resolveHref(item.type, item.category, item.page, item.customUrl);
+                const hasSub = item.subMenu && item.subMenu.length > 0;
+
+                return (
+                  <div key={item.id || i} className="nav-item-v3 group">
+                    <Link href={href} className="nav-link-v3">
+                      {item.label}
+                      {hasSub && <span className="nav-arrow-v3">▼</span>}
+                    </Link>
+
+                    {hasSub && (
+                      <div className="nav-dropdown-v3">
+                        {item.subMenu?.map((sub, j) => (
+                          <Link
+                            key={sub.id || j}
+                            href={resolveHref(sub.type, sub.category, sub.page, sub.customUrl)}
+                            className="dropdown-link-v3"
+                          >
+                            {sub.label}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </nav>
+
+            <Link href="/appointments" className="nav-cta-v3 ml-auto">
+               {locale === 'ne' ? 'अनलाइन सेवा ▾' : 'Online Services ▾'}
+            </Link>
           </div>
         </div>
-      </div>
 
-      {/* Row 2: Navigation Bar */}
-      <div className="hospital-nav-bar">
-        <div className="nav-container">
-          {/* Mobile Menu Trigger */}
-          <MobileMenu
-            items={navigation.map((item) => ({
-              label: item.label,
-              href: resolveHref(item.type, item.category, item.page, item.customUrl),
-              submenu: item.subMenu?.map((sub) => ({
-                label: sub.label,
-                href: resolveHref(sub.type, sub.category, sub.page, sub.customUrl),
-              })),
-            }))}
-          />
-
-          {/* Desktop navigation */}
-          <nav className="hospital-nav" aria-label="Main navigation">
-            <Link href="/" className="nav-home-btn">
-              <Home size={20} fill="white" />
-            </Link>
-
-            {navigation.map((item, i) => {
-              const href = resolveHref(item.type, item.category, item.page, item.customUrl);
-              const hasSub = item.subMenu && item.subMenu.length > 0;
-
-              return (
-                <div key={item.id || i} className="hospital-nav-item">
-                  <Link href={href} className="hospital-nav-link">
-                    {item.label} {hasSub && <span className="nav-arrow">▾</span>}
-                  </Link>
-
-                  {hasSub && (
-                    <div className="hospital-nav-dropdown">
-                      {item.subMenu?.map((sub, j) => (
-                        <Link
-                          key={sub.id || j}
-                          href={resolveHref(sub.type, sub.category, sub.page, sub.customUrl)}
-                          className="hospital-dropdown-link"
-                        >
-                          {sub.label}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </nav>
-
-          <div className="nav-online-service">{t("onlineServices")} ▾</div>
-        </div>
-      </div>
-    </header>
+        {/* Row 3: Highlights Ticker */}
+        <Marquee />
+      </header>
+    </HeaderScrollWrapper>
   );
 }

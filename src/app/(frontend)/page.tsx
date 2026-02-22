@@ -17,6 +17,8 @@ import { StaffCards } from "@/components/sections/staff-cards";
 import { AboutUs } from "@/components/sections/about-us";
 import { NewsActivities } from "@/components/sections/news-activities";
 import { NepaliCalendar } from "@/components/sections/nepali-calendar";
+import { FacebookWidget } from "@/components/sections/facebook-widget";
+import { VisitorCounter } from "@/components/sections/visitor-counter";
 import { OpdStatsBanner } from "@/components/sections/opd-stats-banner";
 import { ServicesGrid } from "@/components/sections/services-grid";
 import { NoticesTabs } from "@/components/sections/notices-tabs";
@@ -26,6 +28,7 @@ import { QuickAccessLinks } from "@/components/sections/quick-access-links";
 import { getLocale, getTranslations } from "next-intl/server";
 import { toNepaliNum } from "@/utils/nepali-date";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { EmergencyFloatingButton } from "@/components/ui/emergency-float";
 
 export async function generateMetadata(): Promise<Metadata> {
   const tc = await getTranslations("common");
@@ -119,29 +122,18 @@ export default async function HomePage() {
 
         <aside className="home-sidebar-col">
           {/* Facebook Widget */}
-          <ScrollReveal delay={400} className="facebook-widget-card">
-            <div className="fb-header">
-               <span style={{ width: 24, height: 24, borderRadius: '50%', background: '#1877f2', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 800, fontSize: '0.85rem', flexShrink: 0 }}>f</span>
-               <div className="fb-header-text">
-                  <p className="fb-page-name">{hospitalName || tc("hospitalName")}</p>
-                  <p className="fb-follow-count">
-                    {locale === "ne" ? toNepaliNum(4.4) : "4.4"}K {tf("followers")}
-                  </p>
-               </div>
-               <a href="https://facebook.com/dhaulagirihospital" target="_blank" rel="noopener noreferrer" className="fb-follow-btn">
-                 {tf("followPage")}
-               </a>
-            </div>
-            <div className="fb-body">
-               <div className="fb-placeholder-img" style={{ background: '#f0f2f5', padding: '20px', textAlign: 'center', color: '#1877f2', fontWeight: 600, minHeight: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                 <span>{tf("facebookFeed")}</span>
-               </div>
-            </div>
+          <ScrollReveal delay={400}>
+            <FacebookWidget pageName={hospitalName} locale={locale} />
           </ScrollReveal>
 
           {/* Nepali Calendar */}
-          <ScrollReveal delay={500} className="sidebar-calendar-wrap">
+          <ScrollReveal delay={500}>
              <NepaliCalendar />
+          </ScrollReveal>
+
+          {/* Visitor Counter */}
+          <ScrollReveal delay={600}>
+             <VisitorCounter locale={locale} />
           </ScrollReveal>
         </aside>
       </div>
@@ -163,8 +155,18 @@ export default async function HomePage() {
 
       {/* ── Quick Access Links ────────────────────────────── */}
       <ScrollReveal>
-        <QuickAccessLinks links={quickLinks as any} />
+        <QuickAccessLinks links={[
+          ...quickLinks as any,
+          {
+            id: 'online-appointment',
+            label: locale === 'ne' ? 'अनलाइन टिकट' : 'Online Appointment',
+            icon: '📅',
+            url: '/appointments'
+          }
+        ]} />
       </ScrollReveal>
+
+      <EmergencyFloatingButton />
     </>
   );
 }

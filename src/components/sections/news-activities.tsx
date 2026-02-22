@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/utils/format";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { FileText } from "lucide-react";
 
 type NewsItem = {
@@ -33,6 +33,7 @@ export async function NewsActivities({
 }) {
   const t = await getTranslations("home");
   const tc = await getTranslations("common");
+  const locale = await getLocale();
 
   if (!featured && recent.length === 0) return null;
 
@@ -49,40 +50,38 @@ export async function NewsActivities({
         </Link>
       </div>
 
-      <div className="news-grid-v2">
+      <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
         {/* Left: Featured News */}
-        <div className="news-left-v2">
+        <div className="lg:w-7/12">
           {featured && (
             <ScrollReveal animation="animate-in fade-in slide-in-from-left-10" duration={600}>
-              <Link href={`/news/${featured.slug || featured.id}`} className="news-main-card">
-                <div className="news-main-img-wrap">
+              <Link href={`/news/${featured.slug || featured.id}`} className="group block relative overflow-hidden rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 h-full">
+                <div className="aspect-[16/11] relative overflow-hidden h-full">
                   {featuredImg ? (
                     <Image
                       src={featuredImg}
                       alt={featured.title}
                       fill
-                      className="news-main-img"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   ) : (
-                    <div className="news-main-img-placeholder">
-                      <FileText size={40} className="opacity-20" />
+                    <div className="absolute inset-0 bg-gray-50 flex items-center justify-center">
+                      <FileText size={48} className="text-gray-200" />
                     </div>
                   )}
-                </div>
-                <div className="news-main-info">
-                  {featured.type && (
-                    <span className="news-main-badge">{featured.type}</span>
-                  )}
-                  <h3 className="news-main-title">{featured.title}</h3>
-                  {featured.excerpt && (
-                    <p className="news-main-excerpt">{featured.excerpt}</p>
-                  )}
-                  {featured.publishedDate && (
-                    <time className="news-main-date">
-                      🕒 {formatDate(featured.publishedDate, "short")}
-                    </time>
-                  )}
+                  {/* Thick dark gradient to ensure text readability */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                  
+                  {/* Content overlayed on image */}
+                  <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10">
+                    <div className="flex items-center gap-3 text-gray-300 text-xs font-bold mb-3">
+                      <span className="uppercase tracking-widest">{formatDate(featured.publishedDate || "", "long")}</span>
+                    </div>
+                    <h3 className="text-2xl md:text-3xl font-extrabold text-white group-hover:text-gray-200 transition-colors leading-tight mb-3 text-balance drop-shadow-md">
+                      {featured.title}
+                    </h3>
+                  </div>
                 </div>
               </Link>
             </ScrollReveal>
@@ -90,7 +89,7 @@ export async function NewsActivities({
         </div>
 
         {/* Right: List of Recent News */}
-        <div className="news-right-v2">
+        <div className="lg:w-5/12 flex flex-col gap-4">
           {recent.slice(0, 4).map((item, i) => {
             const thumbUrl = resolveNewsImg(item);
             return (
@@ -100,31 +99,31 @@ export async function NewsActivities({
                 animation="animate-in fade-in slide-in-from-right-10"
                 duration={500}
               >
-                <Link href={`/news/${item.slug || item.id}`} className="news-item-v2">
-                  <div className="news-item-thumb">
+                <Link href={`/news/${item.slug || item.id}`} className="group flex gap-4 p-3 rounded-lg bg-white border border-gray-200 hover:shadow-md transition-all duration-200">
+                  <div className="w-[120px] h-[80px] shrink-0 relative rounded overflow-hidden bg-gray-50 border border-gray-100">
                     {thumbUrl ? (
                       <Image
                         src={thumbUrl}
                         alt={item.title}
-                        width={100}
-                        height={80}
-                        className="news-item-thumb-img"
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                     ) : (
-                      <div className="pdf-thumb">
-                        <FileText size={20} className="opacity-30" />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500">
+                        {/* Fake PDF Icon Look */}
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M9 15h6"></path><path d="M9 11h6"></path></svg>
+                        <span className="text-[10px] font-bold mt-1">PDF</span>
                       </div>
                     )}
                   </div>
-                  <div className="news-item-content">
-                    <div className="news-item-meta">
-                      {item.publishedDate && (
-                        <time className="news-item-date">
-                          🕒 {formatDate(item.publishedDate, "short")}
-                        </time>
-                      )}
+                  <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
+                    <h4 className="text-[0.95rem] font-medium text-gray-900 group-hover:text-blue-700 transition-colors leading-[1.4] line-clamp-2">{item.title}</h4>
+                    <div className="flex items-center gap-1.5 text-[0.75rem] font-semibold text-gray-600">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                      <time className="uppercase tracking-wide">
+                        {formatDate(item.publishedDate || "", "short")}
+                      </time>
                     </div>
-                    <h4 className="news-item-title">{item.title}</h4>
                   </div>
                 </Link>
               </ScrollReveal>

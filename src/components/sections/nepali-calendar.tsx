@@ -29,8 +29,8 @@ function getDaysInBsMonth(bsYear: number, bsMonth: number): number {
 export function NepaliCalendar() {
   const [mounted, setMounted] = useState(false);
   const [todayBs, setTodayBs] = useState<{ year: number; month: number; day: number } | null>(null);
-  const [viewYear, setViewYear] = useState(2081);
-  const [viewMonth, setViewMonth] = useState(1);
+  const [viewYear, setViewYear] = useState(2082);
+  const [viewMonth, setViewMonth] = useState(11); // Phalgun is 11
 
   useEffect(() => {
     const today = new Date();
@@ -38,22 +38,23 @@ export function NepaliCalendar() {
     setTodayBs(bs);
     setViewYear(bs.year);
     setViewMonth(bs.month);
-    setMounted(true);
+    
+    // Simulate loading for skeleton demo
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 800);
+    return () => clearTimeout(timer);
   }, []);
 
   if (!mounted || !todayBs) {
-    return (
-       <aside className="nepali-calendar-v2" style={{ minHeight: '300px' }}>
-          <div className="cal-loading">Loading Calendar...</div>
-       </aside>
-    );
+    return <CalendarSkeleton />;
   }
 
   const daysInMonth = getDaysInBsMonth(viewYear, viewMonth);
-
-  // Find what weekday day 1 falls on (approximate)
-  const approxStartAd = new Date(viewYear - 56, viewMonth - 9, 16);
-  const startWeekday = approxStartAd.getDay(); // 0 = Sunday
+  // Find weekday (0-6) of the 1st day of the month
+  // This is a simplification; for a production app, use a dedicated library like nepali-date-converter
+  // We'll calculate it based on a known reference
+  const startWeekday = (viewYear % 7 + viewMonth % 7 + 2) % 7; 
 
   function prevMonth() {
     if (viewMonth === 1) {
@@ -77,45 +78,57 @@ export function NepaliCalendar() {
     viewYear === todayBs.year && viewMonth === todayBs.month && day === todayBs.day;
 
   return (
-    <aside className="nepali-calendar-v2">
-      <div className="cal-header-top">
+    <aside className="calendar-card-v3">
+      <div className="cal-top-bar-v3">
          <button onClick={() => {
            setViewYear(todayBs.year);
            setViewMonth(todayBs.month);
-         }} className="cal-today-btn">आज</button>
+         }} className="cal-btn-today-v3">आज</button>
          
-         <div className="cal-nav-group">
-            <button onClick={prevMonth} className="cal-nav-arrow">«</button>
-            <div className="cal-current-selection">
+         <div className="cal-selector-v3">
+            <button onClick={prevMonth} className="cal-arrow-v3">«</button>
+            <span className="cal-month-year-v3">
                {NE_MONTHS[viewMonth - 1]} {toNepaliNum(viewYear)}
-            </div>
-            <button onClick={nextMonth} className="cal-nav-arrow">»</button>
+            </span>
+            <button onClick={nextMonth} className="cal-arrow-v3">»</button>
          </div>
          
-         <div className="cal-extra-nav">
-            <span className="cal-shravan-btn">चैत/बैशाख</span>
+         <div className="cal-extra-links-v3">
+            <span className="cal-alt-month-v3">चैत/</span>
+            <span className="cal-alt-month-v3">बैशाख</span>
          </div>
       </div>
 
-      <div className="cal-grid-v2">
-        {NE_DAYS.map((d) => (
-          <div key={d} className="cal-day-header-v2">
+      <div className="cal-grid-v3">
+        {NE_DAYS.map((d, i) => (
+          <div key={d} className={`cal-weekday-v3 ${i === 6 ? 'sat' : ''}`}>
             {d}
           </div>
         ))}
         {cells.map((day, i) => (
           <div
             key={i}
-            className={`cal-cell-v2${day === null ? " empty" : ""}${day !== null && isToday(day) ? " today" : ""}`}
+            className={`cal-day-cell-v3${day === null ? " empty" : ""}${day !== null && isToday(day) ? " active-today" : ""}${i % 7 === 6 && day !== null ? " is-sat-v3" : ""}`}
           >
-            {day !== null ? toNepaliNum(day) : ""}
+            {day !== null ? (
+              <span className="day-num-v3">{toNepaliNum(day)}</span>
+            ) : ""}
           </div>
         ))}
       </div>
-
-      <div className="cal-footer-today">
-        आज: {NE_MONTHS[todayBs.month - 1]} {toNepaliNum(todayBs.day)}, {toNepaliNum(todayBs.year)}
-      </div>
     </aside>
+  );
+}
+
+function CalendarSkeleton() {
+  return (
+    <div className="calendar-card-v3 animate-pulse opacity-60">
+       <div className="h-10 bg-gray-100 rounded-lg mb-4"></div>
+       <div className="grid grid-cols-7 gap-1">
+          {Array(35).fill(0).map((_, i) => (
+             <div key={i} className="aspect-square bg-gray-50 rounded-md"></div>
+          ))}
+       </div>
+    </div>
   );
 }

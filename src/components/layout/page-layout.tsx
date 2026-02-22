@@ -24,25 +24,25 @@ export async function PageLayout({
 
   return (
     <>
-      <div className="w-full bg-[#f4f6f9] border-b border-[#e5e7eb]">
-        <div className="container px-page py-4">
-          <nav className="flex items-center text-[#2563eb] text-[15px] font-medium" aria-label="Breadcrumb">
-            <Link href="/" className="hover:underline flex-shrink-0">
+      <div className="breadcrumb-wrap-v3">
+        <div className="container px-page">
+          <nav className="breadcrumb-nav-v3" aria-label="Breadcrumb">
+            <Link href="/" className="breadcrumb-link-v3">
               {th("home")}
             </Link>
             {breadcrumbs.map((item, i) => (
-              <React.Fragment key={i}>
-                <span className="mx-2 text-gray-400 flex-shrink-0">/</span>
+              <div key={i} className="breadcrumb-item-v3">
+                <span className="breadcrumb-sep-v3">/</span>
                 {item.href ? (
-                  <Link href={item.href} className="hover:underline flex-shrink-0">
+                  <Link href={item.href} className="breadcrumb-link-v3">
                     {item.label}
                   </Link>
                 ) : (
-                  <span className="text-gray-600 line-clamp-1 truncate min-w-0" title={item.label}>
+                  <span className="breadcrumb-current-v3 line-clamp-1 truncate" title={item.label}>
                     {item.label}
                   </span>
                 )}
-              </React.Fragment>
+              </div>
             ))}
           </nav>
         </div>

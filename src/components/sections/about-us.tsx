@@ -15,35 +15,30 @@ export async function AboutUs({
 
   return (
     <section className="about-section-common">
-      <div className="container-refined">
-        <div className="about-grid">
-           <ScrollReveal animation="animate-in fade-in slide-in-from-left-10" duration={600} className="w-full">
-             <div className="about-branding">
-                <h2 className="about-title-refined">{t("title")}</h2>
-                <h3 className="about-subtitle-refined">ABOUT US</h3>
-                <div className="about-accent-line"></div>
-             </div>
-           </ScrollReveal>
-           <ScrollReveal animation="animate-in fade-in slide-in-from-right-10" duration={600} delay={200} className="w-full">
-             <div className="about-content-refined">
-                {content ? (
-                  <div className="about-text-refined prose-editorial line-clamp-6">
-                    <RichText data={content} />
-                  </div>
-                ) : (
-                  <p className="about-text-refined line-clamp-6">
-                    {aboutText || t("introContent")}
-                  </p>
-                )}
-                <div className="about-action">
-                  <Link href="/about" className="btn-v2-primary">
-                    {tc("readMore")}
-                  </Link>
-                </div>
-             </div>
-           </ScrollReveal>
+      <ScrollReveal animation="animate-in fade-in" duration={600}>
+        <div className="section-header-v2">
+          <h2 className="section-heading-v2">{t("title")}</h2>
         </div>
-      </div>
+      </ScrollReveal>
+
+      <ScrollReveal animation="animate-in fade-in" duration={600} delay={200}>
+        <div className="about-content-refined">
+          {content ? (
+            <div className="about-text-refined prose-editorial line-clamp-6">
+              <RichText data={content} />
+            </div>
+          ) : (
+            <p className="about-text-refined line-clamp-6">
+              {aboutText || t("introContent")}
+            </p>
+          )}
+          <div className="about-action">
+            <Link href="/about" className="btn-read-more-red">
+              {tc("readMore")} <span>›</span>
+            </Link>
+          </div>
+        </div>
+      </ScrollReveal>
     </section>
   );
 }

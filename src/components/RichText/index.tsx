@@ -1,4 +1,4 @@
-import { RichText as RichTextConverter } from "@payloadcms/richtext-lexical/react";
+import { RichText as PayloadRichText } from "@payloadcms/richtext-lexical/react";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { jsxConverters } from "./converters";
 
@@ -8,9 +8,14 @@ type RichTextProps = {
 };
 
 export function RichText({ data, className }: RichTextProps) {
-  if (!data) {
-    return null;
-  }
+  if (!data) return null;
 
-  return <RichTextConverter data={data} className={className} converters={jsxConverters} />;
+  return (
+    <div className={className}>
+      <PayloadRichText 
+        data={data} 
+        converters={jsxConverters} 
+      />
+    </div>
+  );
 }

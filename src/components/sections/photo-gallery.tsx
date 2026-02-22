@@ -79,6 +79,13 @@ export function PhotoGallery({ albums }: { albums: Album[] }) {
     };
   }, [lightbox, prev, next]);
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <PhotoGallerySkeleton />;
   if (allImages.length === 0) return null;
 
   const previewImages = allImages.slice(0, 8);
@@ -169,5 +176,18 @@ export function PhotoGallery({ albums }: { albums: Album[] }) {
         </div>
       )}
     </section>
+  );
+}
+
+function PhotoGallerySkeleton() {
+  return (
+    <div className="gallery-section-v2 animate-pulse opacity-60">
+       <div className="h-12 bg-gray-100 rounded-2xl mb-8"></div>
+       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {Array(8).fill(0).map((_, i) => (
+             <div key={i} className="aspect-[4/3] bg-gray-50 rounded-2xl"></div>
+          ))}
+       </div>
+    </div>
   );
 }

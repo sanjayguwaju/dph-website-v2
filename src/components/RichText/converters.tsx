@@ -46,7 +46,7 @@ const headingConverter: JSXConverters<SerializedHeadingNode> = {
       .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
 
-    const Tag = node.tag;
+    const Tag = node.tag || 'h1';
     return <Tag id={id}>{children}</Tag>;
   },
 };
