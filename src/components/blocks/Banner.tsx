@@ -1,15 +1,14 @@
-import { RichText } from "@/components/RichText";
 import { cn } from "@/lib/utils";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 
 const styleClasses = {
-  info: "bg-blue-500/10 border-blue-500/30 text-blue-200",
-  warning: "bg-amber-500/10 border-amber-500/30 text-amber-200",
-  success: "bg-emerald-500/10 border-emerald-500/30 text-emerald-200",
-  error: "bg-red-500/10 border-red-500/30 text-red-200",
+  info: "bg-blue-50 border-blue-300 text-blue-800",
+  warning: "bg-amber-50 border-amber-300 text-amber-800",
+  success: "bg-emerald-50 border-emerald-300 text-emerald-800",
+  error: "bg-red-50 border-red-300 text-red-800",
 } as const;
 
-const icons = {
+const icons: Record<string, React.ReactNode> = {
   info: (
     <svg className="h-5 w-5 shrink-0" fill="currentColor" viewBox="0 0 20 20">
       <path
@@ -55,15 +54,42 @@ interface BannerProps {
   content?: SerializedEditorState | null;
 }
 
+/**
+ * BannerBlock renders inside RichText converters.
+ * We intentionally do NOT import RichText/PayloadRichText here to avoid
+ * circular import issues. Instead, we extract plain text from the editor state.
+ */
 export function BannerBlock({ style, content }: BannerProps) {
-  const variant = style || "info";
+  if (!content) return null;
+  const variant = (style || "info") as BannerStyle;
+
+  // Extract plain text from lexical editor state to avoid circular imports
+  const plainText = extractText(content);
 
   return (
     <div className={cn("my-6 flex items-start gap-3 rounded-lg border p-4", styleClasses[variant])}>
       {icons[variant]}
-      <div className="flex-1 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-        <RichText data={content} />
+      <div className="flex-1">
+        <p className="text-sm leading-relaxed">{plainText}</p>
       </div>
     </div>
   );
+}
+
+function extractText(state: SerializedEditorState): string {
+  const lines: string[] = [];
+  function walk(nodes: any[]) {
+    for (const node of nodes || []) {
+      if (node.type === "text") {
+        lines.push(node.text || "");
+      } else if (node.children) {
+        walk(node.children);
+        if (node.type === "paragraph" || node.type === "heading") {
+          lines.push("\n");
+        }
+      }
+    }
+  }
+  walk((state as any).root?.children || []);
+  return lines.join("").trim();
 }

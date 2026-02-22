@@ -26,7 +26,12 @@ export default async function DownloadsPage() {
       where: {
         and: [
           { status: { equals: "published" } },
-          { file: { exists: true } }
+          {
+            or: [
+              { file: { exists: true } },
+              { externalFile: { exists: true } }
+            ]
+          }
         ]
       },
       sort: "-publishedDate",
@@ -38,7 +43,12 @@ export default async function DownloadsPage() {
       where: {
         and: [
           { status: { equals: "published" } },
-          { file: { exists: true } }
+          {
+            or: [
+              { file: { exists: true } },
+              { externalFile: { exists: true } }
+            ]
+          }
         ]
       },
       sort: "-publishedDate",
@@ -51,7 +61,7 @@ export default async function DownloadsPage() {
   const downloads = [
     ...newsRes.docs.map(d => ({ ...d, resourceType: "News/Pub" })),
     ...noticesRes.docs.map(d => ({ ...d, resourceType: "Notice" }))
-  ].sort((a: any, b: any) => 
+  ].sort((a: any, b: any) =>
     new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
   );
 
@@ -62,12 +72,12 @@ export default async function DownloadsPage() {
     >
       <div className="mb-12 border-b border-gray-100 pb-8">
         <h1 className="text-3xl font-bold text-[#003580] mb-3 flex items-center gap-3">
-          <Download className="text-[#2563eb]" /> 
+          <Download className="text-[#2563eb]" />
           {locale === "ne" ? "डाउनलोड तथा प्रकाशनहरू" : "Downloads & Publications"}
         </h1>
         <p className="text-gray-500 text-lg">
-          {locale === "ne" 
-            ? "हाम्रा वार्षिक प्रतिवेदनहरू, निर्देशिकाहरू र महत्त्वपूर्ण सूचनाहरू यहाँबाट डाउनलोड गर्न सक्नुहुन्छ।" 
+          {locale === "ne"
+            ? "हाम्रा वार्षिक प्रतिवेदनहरू, निर्देशिकाहरू र महत्त्वपूर्ण सूचनाहरू यहाँबाट डाउनलोड गर्न सक्नुहुन्छ।"
             : "Access and download annual reports, guidelines, and important notices."}
         </p>
       </div>
@@ -80,13 +90,16 @@ export default async function DownloadsPage() {
           </div>
         ) : (
           downloads.map((item: any) => {
-            const fileName = (item.file as any)?.filename || "document.pdf";
-            const fileSize = (item.file as any)?.filesize 
-              ? `${(item.file.filesize / 1024 / 1024).toFixed(2)} MB` 
+            const fileUrl = (item.file as any)?.url || item.externalFile;
+            if (!fileUrl) return null;
+
+            const fileName = (item.file as any)?.filename || item.externalFile?.split('/').pop() || "document.pdf";
+            const fileSize = (item.file as any)?.filesize
+              ? `${(item.file.filesize / 1024 / 1024).toFixed(2)} MB`
               : "";
 
             return (
-              <div 
+              <div
                 key={`${item.resourceType}-${item.id}`}
                 className="group flex flex-col md:flex-row md:items-center justify-between p-6 bg-white border border-gray-100 rounded-2xl hover:shadow-lg hover:border-[#2563eb]/20 transition-all gap-6"
               >
@@ -114,8 +127,8 @@ export default async function DownloadsPage() {
 
                 <div className="flex items-center gap-4 shrink-0">
                   {fileSize && <span className="text-xs font-semibold text-gray-400">{fileSize}</span>}
-                  <a 
-                    href={(item.file as any).url}
+                  <a
+                    href={fileUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-6 py-2.5 bg-gray-50 text-[#2563eb] border border-blue-100 rounded-full text-sm font-bold hover:bg-[#2563eb] hover:text-white transition-all shadow-sm"
@@ -137,8 +150,8 @@ export default async function DownloadsPage() {
               {locale === "ne" ? "नयाँ अपडेटहरूका लागि" : "Stay Updated"}
             </h2>
             <p className="text-blue-100">
-              {locale === "ne" 
-                ? "हाम्रो सूचना तथा समाचार सेक्सन नियमित रूपमा चेक गर्नुहोस्।" 
+              {locale === "ne"
+                ? "हाम्रो सूचना तथा समाचार सेक्सन नियमित रूपमा चेक गर्नुहोस्।"
                 : "Check our News and Notices section regularly for the latest updates."}
             </p>
           </div>

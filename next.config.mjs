@@ -20,6 +20,7 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "date-fns"],
   },
+  transpilePackages: ["@payloadcms/richtext-lexical"],
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

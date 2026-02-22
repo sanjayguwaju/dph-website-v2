@@ -91,8 +91,8 @@ export default async function SearchPage({ searchParams }: PageProps) {
         {query && (
           <p className="text-gray-500 text-sm">
             {locale === "ne"
-              ? `"${query}" ${tc("searchResultsFor")}: ${displayCount} ${tc("results")}`
-              : `${tc("searchResultsFor")} "${query}": ${displayCount} ${tc("results")}`}
+              ? `&quot;${query}&quot; ${tc("searchResultsFor")}: ${displayCount} ${tc("results")}`
+              : `${tc("searchResultsFor")} &quot;${query}&quot;: ${displayCount} ${tc("results")}`}
           </p>
         )}
       </div>
@@ -125,7 +125,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
           <div className="search-no-results">
             <Search size={48} className="opacity-20 mb-4" />
             <p className="text-gray-500 text-lg font-medium">
-              "{query}" {tc("noResultsFound")}
+              &quot;{query}&quot; {tc("noResultsFound")}
             </p>
             <p className="text-gray-400 text-sm mt-2">{tc("searchPrompt")}</p>
           </div>

@@ -34,9 +34,9 @@ async function seed() {
       {
         title: "हाम्रो बारेमा (About Us)",
         slug: "about",
-        content: { 
-          root: { 
-            type: "root", 
+        content: {
+          root: {
+            type: "root",
             children: [
               { type: "heading", tag: "h2", children: [{ type: "text", text: "परिचय (Introduction)" }] },
               { type: "paragraph", children: [{ type: "text", text: "धौलागिरी प्रादेशिक अस्पताल गण्डकी प्रदेशको एक प्रमुख र विस्वासिलो स्वास्थ्य संस्था हो। यो अस्पताल बागलुङ जिल्लाको मुकाम बागलुङ बजारमा अवस्थित छ। विगत लामो समयदेखि यस क्षेत्रका नागरिकहरूलाई गुणस्तरीय स्वास्थ्य सेवा प्रदान गर्दै आएको यस अस्पतालले हाल आधुनिक प्रविधि र दक्ष जनशक्तिको माध्यमबाट सेवा विस्तार गरिरहेको छ।" }] },
@@ -44,29 +44,31 @@ async function seed() {
               { type: "paragraph", children: [{ type: "text", text: "यस अस्पतालको स्थापना वि.सं. २०१७ सालमा १५ शैयाको जिल्ला अस्पतालको रुपमा भएको थियो। समयको अन्तरालसँगै यस क्षेत्रको जनसंख्या र स्वास्थ्य आवश्यकतालाई मध्यनजर गर्दै वि.सं. २०७५ साल फागुन महिनादेखि यसलाई प्रादेशिक अस्पतालको रुपमा स्तरोन्नति गरिएको हो। हाल यो २०० शैयाको आधुनिक अस्पतालको रुपमा विकास भइरहेको छ।" }] },
               { type: "heading", tag: "h2", children: [{ type: "text", text: "लक्षय र उद्देश्य (Vision & Mission)" }] },
               { type: "paragraph", children: [{ type: "text", text: "हाम्रो लक्ष्य भनेको गण्डकी प्रदेशकै एक नमूना र भरपर्दो स्वास्थ्य सेवा केन्द्रको रुपमा स्थापित हुनु हो। हामी बिरामीको सेवालाई सर्बोपरी ठान्दै सुरक्षित, सुलभ र गुणस्तरीय स्वास्थ्य सेवा प्रदान गर्न प्रतिबद्ध छौं।" }] },
-            ] 
-          } 
+            ]
+          }
         },
         status: "published"
       },
       {
         title: "अस्पताल व्यवस्थापन समिति (Management Committee)",
         slug: "committee",
-        content: { 
-          root: { 
-            type: "root", 
+        content: {
+          root: {
+            type: "root",
             children: [
               { type: "heading", tag: "h2", children: [{ type: "text", text: "व्यवस्थापन समितिको संरचना" }] },
               { type: "paragraph", children: [{ type: "text", text: "अस्पतालको समग्र नीति निर्माण, योजना तर्जुमा र व्यवस्थापकीय कार्यहरूको रेखदेखका लागि बागलुङ अस्पताल विकास समिति सक्रिय रूपमा कार्यिरहेको छ। यस समितिमा स्थानीय सरोकारवाला, चिकित्सक र विज्ञहरूको प्रतिनिधित्व रहेको छ।" }] },
               { type: "heading", tag: "h3", children: [{ type: "text", text: "समितिका मुख्य जिम्मेवारीहरू:" }] },
-              { type: "list", listType: "bullet", children: [
-                { type: "listitem", children: [{ type: "text", text: "अस्पतालको दीर्घकालीन योजना र बजेट स्वीकृत गर्ने।" }] },
-                { type: "listitem", children: [{ type: "text", text: "सेवा प्रवाहको गुणस्तर र प्रभावकारिताको अनुगमन गर्ने।" }] },
-                { type: "listitem", children: [{ type: "text", text: "कर्मचारी व्यवस्थापन र भौतिक पूर्वाधार विकासका लागि नीति बनाउने।" }] },
-                { type: "listitem", children: [{ type: "text", text: "सरकार र जनस्तरसँग समन्वय गरी अस्पतालको विकासमा सहजीकरण गर्ने।" }] },
-              ] },
-            ] 
-          } 
+              {
+                type: "list", listType: "bullet", children: [
+                  { type: "listitem", children: [{ type: "text", text: "अस्पतालको दीर्घकालीन योजना र बजेट स्वीकृत गर्ने।" }] },
+                  { type: "listitem", children: [{ type: "text", text: "सेवा प्रवाहको गुणस्तर र प्रभावकारिताको अनुगमन गर्ने।" }] },
+                  { type: "listitem", children: [{ type: "text", text: "कर्मचारी व्यवस्थापन र भौतिक पूर्वाधार विकासका लागि नीति बनाउने।" }] },
+                  { type: "listitem", children: [{ type: "text", text: "सरकार र जनस्तरसँग समन्वय गरी अस्पतालको विकासमा सहजीकरण गर्ने।" }] },
+                ]
+              },
+            ]
+          }
         },
         status: "published"
       },
@@ -85,36 +87,44 @@ async function seed() {
             children: [
               { type: "heading", tag: "h2", children: [{ type: "text", text: "नागरिक वडापत्र" }] },
               { type: "paragraph", children: [{ type: "text", text: "यस अस्पतालबाट प्रदान गरिने मुख्य सेवाहरू, लाग्ने दस्तुर र सेवा प्राप्त गर्ने प्रक्रियाको विवरण निम्न बमोजिम छ:" }] },
-              
+
               { type: "heading", tag: "h3", children: [{ type: "text", text: "१. बहिरङ्ग (OPD) सेवा" }] },
-              { type: "list", listType: "bullet", children: [
-                { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: परिचय पत्र वा अघिल्लो जाँचको पुर्जी" }] },
-                { type: "listitem", children: [{ type: "text", text: "दस्तुर: रु. ५० (टिकट शुल्क)" }] },
-                { type: "listitem", children: [{ type: "text", text: "समय: ३० मिनेट देखि १ घण्टा (बिरामीको चाप अनुसार)" }] },
-                { type: "listitem", children: [{ type: "text", text: "जिम्मेवार अधिकारी: ओपिडि इन्चार्ज" }] },
-              ] },
+              {
+                type: "list", listType: "bullet", children: [
+                  { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: परिचय पत्र वा अघिल्लो जाँचको पुर्जी" }] },
+                  { type: "listitem", children: [{ type: "text", text: "दस्तुर: रु. ५० (टिकट शुल्क)" }] },
+                  { type: "listitem", children: [{ type: "text", text: "समय: ३० मिनेट देखि १ घण्टा (बिरामीको चाप अनुसार)" }] },
+                  { type: "listitem", children: [{ type: "text", text: "जिम्मेवार अधिकारी: ओपिडि इन्चार्ज" }] },
+                ]
+              },
 
               { type: "heading", tag: "h3", children: [{ type: "text", text: "२. आकस्मिक (Emergency) सेवा" }] },
-              { type: "list", listType: "bullet", children: [
-                { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: तुरुन्तै उपलब्ध हुने कुनै पनि विवरण" }] },
-                { type: "listitem", children: [{ type: "text", text: "दस्तुर: रु. १०० (टिकट)" }] },
-                { type: "listitem", children: [{ type: "text", text: "समय: तत्काल" }] },
-                { type: "listitem", children: [{ type: "text", text: "जिम्मेवार अधिकारी: आकस्मिक विभाग प्रमुख" }] },
-              ] },
+              {
+                type: "list", listType: "bullet", children: [
+                  { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: तुरुन्तै उपलब्ध हुने कुनै पनि विवरण" }] },
+                  { type: "listitem", children: [{ type: "text", text: "दस्तुर: रु. १०० (टिकट)" }] },
+                  { type: "listitem", children: [{ type: "text", text: "समय: तत्काल" }] },
+                  { type: "listitem", children: [{ type: "text", text: "जिम्मेवार अधिकारी: आकस्मिक विभाग प्रमुख" }] },
+                ]
+              },
 
               { type: "heading", tag: "h3", children: [{ type: "text", text: "३. प्रसुती सेवा" }] },
-              { type: "list", listType: "bullet", children: [
-                { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: जाँच गराएको कार्ड वा लालपुर्जा" }] },
-                { type: "listitem", children: [{ type: "text", text: "दस्तुर: सरकारी नियम अनुसार निशुल्क (आमा सुरक्षा कार्यक्रम)" }] },
-                { type: "listitem", children: [{ type: "text", text: "समय: आवश्यकता अनुसार" }] },
-              ] },
+              {
+                type: "list", listType: "bullet", children: [
+                  { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: जाँच गराएको कार्ड वा लालपुर्जा" }] },
+                  { type: "listitem", children: [{ type: "text", text: "दस्तुर: सरकारी नियम अनुसार निशुल्क (आमा सुरक्षा कार्यक्रम)" }] },
+                  { type: "listitem", children: [{ type: "text", text: "समय: आवश्यकता अनुसार" }] },
+                ]
+              },
 
               { type: "heading", tag: "h3", children: [{ type: "text", text: "४. ल्याब तथा एक्सरे सेवा" }] },
-              { type: "list", listType: "bullet", children: [
-                { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: चिकित्सकको सिफारिस पुर्जी" }] },
-                { type: "listitem", children: [{ type: "text", text: "दस्तुर: स्वीकृत दररेट अनुसार" }] },
-                { type: "listitem", children: [{ type: "text", text: "समय: रिपोर्टको प्रकृति अनुसार (१ घण्टा देखि २४ घण्टा)" }] },
-              ] },
+              {
+                type: "list", listType: "bullet", children: [
+                  { type: "listitem", children: [{ type: "text", text: "आवश्यक कागजात: चिकित्सकको सिफारिस पुर्जी" }] },
+                  { type: "listitem", children: [{ type: "text", text: "दस्तुर: स्वीकृत दररेट अनुसार" }] },
+                  { type: "listitem", children: [{ type: "text", text: "समय: रिपोर्टको प्रकृति अनुसार (१ घण्टा देखि २४ घण्टा)" }] },
+                ]
+              },
 
               { type: "paragraph", children: [{ type: "text", text: "थप जानकारीको लागि अस्पतालको सूचना अधिकृत वा सहायता कक्षमा सम्पर्क गर्नुहोला।" }] },
             ]
@@ -260,11 +270,13 @@ async function seed() {
             children: [
               { type: "heading", tag: "h2", children: [{ type: "text", text: "हाम्रा ओपिडि सेवाहरू" }] },
               { type: "paragraph", children: [{ type: "text", text: "धौलागिरी प्रादेशिक अस्पतालले विभिन्न विभागहरू मार्फत विशेषज्ञ बहिरङ्ग सेवा प्रदान गर्दै आएको छ। बिरामीहरूले बिहान ८ बजेदेखि स्वास्थ्य परीक्षणको लागि टिकट लिन सक्नेछन्।" }] },
-              { type: "list", listType: "bullet", children: [
-                { type: "listitem", children: [{ type: "text", text: "जनरल मेडिसिन र सर्जरी" }] },
-                { type: "listitem", children: [{ type: "text", text: "स्त्री तथा प्रसुती रोग र बाल रोग " }] },
-                { type: "listitem", children: [{ type: "text", text: "हाडजोर्नी तथा मुटु रोग" }] },
-              ] },
+              {
+                type: "list", listType: "bullet", children: [
+                  { type: "listitem", children: [{ type: "text", text: "जनरल मेडिसिन र सर्जरी" }] },
+                  { type: "listitem", children: [{ type: "text", text: "स्त्री तथा प्रसुती रोग र बाल रोग " }] },
+                  { type: "listitem", children: [{ type: "text", text: "हाडजोर्नी तथा मुटु रोग" }] },
+                ]
+              },
             ]
           }
         }
@@ -328,12 +340,12 @@ async function seed() {
     ];
 
     for (const s of servicesData) {
-      await payload.create({ 
-        collection: "services", 
-        data: { 
-          ...s, 
-          isActive: true 
-        } as any 
+      await payload.create({
+        collection: "services",
+        data: {
+          ...s,
+          isActive: true
+        } as any
       });
     }
     console.log(`✅ Seeded ${servicesData.length} Services`);
@@ -347,7 +359,7 @@ async function seed() {
         status: "published",
         isFeatured: true,
         publishedDate: new Date().toISOString(),
-        externalFeaturedImage: "https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800",
+        externalFeaturedImage: "https://images.unsplash.com/photo-1505751172107-57322a3e53dd?auto=format&fit=crop&q=80&w=800",
         excerpt: "बागलुङ अस्पतालमा सेवा प्रभावकारिता बढाउन थप ३ जना कन्सल्टेन्ट चिकित्सकहरू थपिएका छन्।",
       },
       {
@@ -385,6 +397,7 @@ async function seed() {
         publishedDate: new Date(Date.now() - 3 * 86400000).toISOString(),
         externalFeaturedImage: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=800",
         excerpt: "आर्थिक वर्ष २०८०/०८१ को स्वास्थ्य सेवाको वार्षिक प्रतिवेदन प्रकाशित भएको छ।",
+        externalFile: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
       },
       {
         title: "ठेक्का आह्वान सम्बन्धि सूचना",
@@ -393,6 +406,7 @@ async function seed() {
         status: "published",
         publishedDate: new Date().toISOString(),
         excerpt: "अस्पताल भवन मर्मत एवं सुधार कार्यका लागि इच्छुक ठेकेदारहरूबाट बोलपत्र आह्वान गरिन्छ।",
+        externalFile: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
       },
     ];
 
@@ -402,34 +416,40 @@ async function seed() {
     console.log(`✅ Seeded ${newsItems.length} News articles`);
 
 
-    // List of notices for popup
+    // List of notices for popup — matches screenshot design
     const popupNotices = [
       {
-        title: "प्रदेश स्वास्थ्य नीति २०८१ स्वीकृत भएको सूचना",
+        // Notice 1: Scanned government letter style — portrait document image
+        title: "बोर्ड बैठकको निर्णय कार्यान्वयन सम्बन्धमा",
+        status: "published",
+        publishedDate: new Date().toISOString(),
+        showInPopup: true,
+        popupStartDate: new Date().toISOString(),
+        popupEndDate: new Date(Date.now() + 30 * 86400000).toISOString(),
+        externalImage: "https://images.unsplash.com/photo-1568667256549-094345857637?auto=format&fit=crop&q=80&w=820&h=1160",
+        externalFile: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      },
+      {
+        // Notice 2: Health insurance notice with portrait image
+        title: "स्वास्थ्य बीमा सम्बन्धी महत्त्वपूर्ण सूचना",
+        status: "published",
+        publishedDate: new Date().toISOString(),
+        showInPopup: true,
+        popupStartDate: new Date().toISOString(),
+        popupEndDate: new Date(Date.now() + 14 * 86400000).toISOString(),
+        externalImage: "https://images.unsplash.com/photo-1586773860418-d3196ed0df51?auto=format&fit=crop&q=80&w=820&h=1160",
+        externalFile: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf",
+      },
+      {
+        // Notice 3: Text-only notice (dengue alert)
+        title: "डेंगु संक्रमणबाट बच्ने उपायहरु — जरुरी सूचना",
+        description: "अस्पतालमा डेंगुका बिरामीहरु बढेकाले सबैलाई सतर्क रहन अनुरोध गरिन्छ।\n\n• लामखुट्टेको टोकाइबाट बच्न झुलको प्रयोग गर्नुहोस्\n• घर वरिपरि पानी जम्न नदिनुहोस्\n• ज्वरो आएमा तुरुन्त डाक्टरलाई देखाउनुहोस्\n\nआकस्मिक सम्पर्क: ०६८-५२४१०४",
         status: "published",
         publishedDate: new Date().toISOString(),
         showInPopup: true,
         popupStartDate: new Date().toISOString(),
         popupEndDate: new Date(Date.now() + 7 * 86400000).toISOString(),
       },
-      {
-        title: "स्क्यान गरिएको आधिकारिक सूचना (परीक्षण)",
-        status: "published",
-        publishedDate: new Date().toISOString(),
-        showInPopup: true,
-        externalImage: "https://images.unsplash.com/photo-1586769852836-bc069f19e1b6?auto=format&fit=crop&q=80&w=1200",
-        popupStartDate: new Date().toISOString(),
-        popupEndDate: new Date(Date.now() + 7 * 86400000).toISOString(),
-      },
-      {
-        title: "डेंगु संक्रमणबाट बच्ने उपायहरु",
-        description: "अस्पतालमा डेंगुका बिरामीहरु बढेकाले सबैलाई सतर्क रहन अनुरोध गरिन्छ। लामखुट्टेको टोकाइबाट बच्न झुलको प्रयोग गरौं र घर वरिपरि पानी जम्न नदिऔं।",
-        status: "published",
-        publishedDate: new Date().toISOString(),
-        showInPopup: true,
-        popupStartDate: new Date().toISOString(),
-        popupEndDate: new Date(Date.now() + 7 * 86400000).toISOString(),
-      }
     ];
 
     for (const notice of popupNotices) {
@@ -440,25 +460,25 @@ async function seed() {
 
     // 6.5 Seed Hero Slides
     const slides = [
-      { 
-        title: "अस्पतालको अनुगमन", 
-        caption: "स्वास्थ्य मन्त्री माननीय कृष्ण प्रसाद पाठकज्यूबाट अस्पतालको अनुगमन", 
-        order: 1, 
+      {
+        title: "अस्पतालको अनुगमन",
+        caption: "स्वास्थ्य मन्त्री माननीय कृष्ण प्रसाद पाठकज्यूबाट अस्पतालको अनुगमन",
+        order: 1,
         externalImage: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1400",
         isActive: true
       },
-      { 
-        title: "नयाँ भवन उद्घाटन्", 
-        caption: "अस्पतालको नयाँ अक्सिजन प्लान्ट संचालनमा", 
-        order: 2, 
+      {
+        title: "नयाँ भवन उद्घाटन्",
+        caption: "अस्पतालको नयाँ अक्सिजन प्लान्ट संचालनमा",
+        order: 2,
         externalImage: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1400",
         isActive: true
       },
-      { 
-        title: "बिरामी सेवा", 
-        caption: "हामी सधैं गुणस्तरीय सेवा प्रदान गर्न प्रतिबद्ध छौं", 
-        order: 3, 
-        externalImage: "https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1400",
+      {
+        title: "बिरामी सेवा",
+        caption: "हामी सधैं गुणस्तरीय सेवा प्रदान गर्न प्रतिबद्ध छौं",
+        order: 3,
+        externalImage: "https://images.unsplash.com/photo-1586773860418-d3196ed0df51?auto=format&fit=crop&q=80&w=1400",
         isActive: true
       }
     ];
@@ -536,17 +556,17 @@ async function seed() {
         images: [
           { externalImage: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200", caption: "मुख्य प्रवेशद्वार" },
           { externalImage: "https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=1200", caption: "ओपिडि कक्ष" },
-          { externalImage: "https://images.unsplash.com/photo-1538108176447-28058c49a163?auto=format&fit=crop&q=80&w=1200", caption: "अपरेशन थिएटर" },
+          { externalImage: "https://images.unsplash.com/photo-1586773860418-d3196ed0df51?auto=format&fit=crop&q=80&w=1200", caption: "अपरेशन थिएटर" },
           { externalImage: "https://images.unsplash.com/photo-1551190822-a9333d879b1f?auto=format&fit=crop&q=80&w=1200", caption: "आईसियु कक्ष" },
         ],
       },
       {
         title: "स्वास्थ्य शिविर २०८१",
         description: "दुर्गम क्षेत्रमा संचालन गरिएको स्वास्थ्य शिविरका झलकहरू।",
-        externalCoverImage: "https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=800",
+        externalCoverImage: "https://images.unsplash.com/photo-1505751172107-57322a3e53dd?auto=format&fit=crop&q=80&w=800",
         isActive: true,
         images: [
-          { externalImage: "https://images.unsplash.com/photo-1576091160550-217359f42f8c?auto=format&fit=crop&q=80&w=1200", caption: "बिरामी परीक्षण" },
+          { externalImage: "https://images.unsplash.com/photo-1505751172107-57322a3e53dd?auto=format&fit=crop&q=80&w=1200", caption: "बिरामी परीक्षण" },
           { externalImage: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?auto=format&fit=crop&q=80&w=1200", caption: "औषधि वितरण" },
           { externalImage: "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&q=80&w=1200", caption: "स्वास्थ्य सचेतना" },
         ],
@@ -605,21 +625,21 @@ async function seed() {
 
     // 12. Seed Footer
     await payload.updateGlobal({
-       slug: "footer",
-       data: {
-         copyright: `© ${new Date().getFullYear()} धौलागिरी प्रादेशिक अस्पताल. सर्वाधिकार सुरक्षित।`,
-         footerText: "बागलुङ, नेपाल - स्वास्थ्य सेवा, सबैका लागि",
-         columns: [
-           {
-             title: "महत्त्वपूर्ण लिङ्कहरू",
-             links: [
-               { label: "गृहपृष्ठ", type: "custom", customUrl: "/" },
-               { label: "सेवाहरू", type: "custom", customUrl: "/services" },
-               { label: "सम्पर्क", type: "custom", customUrl: "/contact" },
-             ],
-           },
-         ],
-       }
+      slug: "footer",
+      data: {
+        copyright: `© ${new Date().getFullYear()} धौलागिरी प्रादेशिक अस्पताल. सर्वाधिकार सुरक्षित।`,
+        footerText: "बागलुङ, नेपाल - स्वास्थ्य सेवा, सबैका लागि",
+        columns: [
+          {
+            title: "महत्त्वपूर्ण लिङ्कहरू",
+            links: [
+              { label: "गृहपृष्ठ", type: "custom", customUrl: "/" },
+              { label: "सेवाहरू", type: "custom", customUrl: "/services" },
+              { label: "सम्पर्क", type: "custom", customUrl: "/contact" },
+            ],
+          },
+        ],
+      }
     });
     console.log("✅ Seeded Footer");
 

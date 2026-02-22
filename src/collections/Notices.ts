@@ -48,6 +48,14 @@ export const Notices: CollectionConfig = {
       label: "Downloadable File (PDF)",
     },
     {
+      name: "externalFile",
+      type: "text",
+      label: "External File URL",
+      admin: {
+        description: "Direct URL to a PDF/Document for demo purposes.",
+      },
+    },
+    {
       name: "publishedDate",
       type: "date",
       required: true,

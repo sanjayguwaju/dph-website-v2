@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { X, ChevronLeft, ChevronRight, ExternalLink, Download } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from "lucide-react";
 import type { Notice } from "@/payload-types";
 import { useTranslations } from "next-intl";
 
@@ -30,12 +30,12 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
     setCurrent((prev) => (prev - 1 + notices.length) % notices.length);
   }, [notices.length]);
 
+  // Open on mount if notices exist
   useEffect(() => {
     if (notices.length > 0) {
       setOpen(true);
     }
   }, [notices.length]);
-
 
   // Lock body scroll when open
   useEffect(() => {
@@ -49,6 +49,7 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
     };
   }, [open]);
 
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") closePopup();
@@ -63,110 +64,127 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
 
   const notice = notices[current];
   const image = notice.image && typeof notice.image === "object" ? notice.image : null;
-  const externalImage = (notice as any).externalImage;
+  const externalImage = (notice as any).externalImage as string | undefined;
   const file = notice.file && typeof notice.file === "object" ? notice.file : null;
+  const externalFile = (notice as any).externalFile as string | undefined;
+  const fileUrl = file?.url || externalFile;
+  const imgSrc = image?.url || externalImage;
   const total = notices.length;
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      className="notice-popup-overlay"
+      aria-label={tn("importantNotice")}
+      className="np-overlay"
       onClick={(e) => {
-        if ((e.target as HTMLElement).classList.contains("notice-popup-overlay")) closePopup();
+        if ((e.target as HTMLElement).classList.contains("np-overlay")) closePopup();
       }}
     >
-      <div className="notice-popup-frame">
-        <div className="notice-popup-header">
-          <div className="notice-popup-title-group">
-            <span className="notice-popup-tag">{tn("importantNotice")}</span>
+      <div className="np-card">
+
+        {/* ── Top header bar: title + close button ── */}
+        <div className="np-header">
+          <div className="np-header-left">
+            <span className="np-tag">{tn("importantNotice")}</span>
             {total > 1 && (
-              <p className="notice-popup-counter">
-                {current + 1} / {total}
-              </p>
+              <span className="np-counter">{current + 1} / {total}</span>
             )}
           </div>
           <button
-            className="notice-popup-close-btn"
+            className="np-close-btn"
             onClick={closePopup}
             aria-label={tc("closeMenu") || "Close"}
           >
-            <X size={20} />
+            <X size={16} strokeWidth={2.5} />
           </button>
         </div>
 
-        <div className="notice-popup-scrollarea">
-          {(image?.url || externalImage) ? (
-            <div className="notice-popup-image-container">
+        {/* ── Notice title strip ── */}
+        <div className="np-title-bar">
+          <h2 className="np-title-text">{notice.title}</h2>
+        </div>
+
+        {/* ── Document Image / Text Body ── */}
+        <div className="np-body">
+          {imgSrc ? (
+            <div className="np-image-wrap">
               <Image
-                src={image?.url || externalImage}
+                src={imgSrc}
                 alt={image?.alt || notice.title}
-                width={1200}
-                height={1600}
-                className="notice-popup-main-image"
+                width={820}
+                height={1160}
+                className="np-document-img"
                 priority
+                unoptimized={!!externalImage}
               />
             </div>
           ) : (
-
-            <div className="notice-popup-text-container">
-              <h2 className="notice-popup-main-title">{notice.title}</h2>
-              {notice.description && <div className="notice-popup-main-desc">{notice.description}</div>}
+            <div className="np-text-body">
+              {notice.description && (
+                <p className="np-text-desc">{notice.description}</p>
+              )}
             </div>
           )}
         </div>
 
-        <div className="notice-popup-actions">
-          <div className="notice-popup-nav-group">
-            {total > 1 && (
-              <>
-                <button 
-                  className="notice-popup-nav-btn" 
-                  onClick={prevNotice}
-                  aria-label={tc("prev")}
-                >
-                  <ChevronLeft size={18} />
-                </button>
-                <div className="notice-popup-dots-v3">
-                  {notices.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setCurrent(i)}
-                      className={`notice-popup-dot-v3${i === current ? " active" : ""}`}
-                      aria-label={`Go to slide ${i + 1}`}
-                    />
-                  ))}
-                </div>
-                <button 
-                  className="notice-popup-nav-btn" 
-                  onClick={nextNotice}
-                  aria-label={tc("next")}
-                >
-                  <ChevronRight size={18} />
-                </button>
-              </>
-            )}
-          </div>
-          
-          <div className="notice-popup-cta-row">
-            <Link 
-              href={`/notices/${notice.id}`} 
-              className="notice-popup-link-btn"
+        {/* ── Footer: nav dots + CTA buttons ── */}
+        <div className="np-footer">
+
+          {/* Prev / Dots / Next */}
+          {total > 1 ? (
+            <div className="np-nav-row">
+              <button
+                className="np-nav-arrow"
+                onClick={prevNotice}
+                aria-label={tc("prev") || "Previous"}
+              >
+                <ChevronLeft size={14} />
+              </button>
+
+              <div className="np-dots">
+                {notices.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrent(i)}
+                    className={`np-dot${i === current ? " active" : ""}`}
+                    aria-label={`Notice ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                className="np-nav-arrow"
+                onClick={nextNotice}
+                aria-label={tc("next") || "Next"}
+              >
+                <ChevronRight size={14} />
+              </button>
+            </div>
+          ) : (
+            <div />
+          )}
+
+          {/* CTA row */}
+          <div className="np-cta-row">
+            <Link
+              href={`/notices/${notice.id}`}
+              className="np-btn np-btn-primary"
               onClick={closePopup}
             >
-              <ExternalLink size={16} />
-              <span>{tc("readMore")?.replace(" →", "") || "Details"}</span>
+              <ExternalLink size={14} />
+              <span>{tc("readMore")?.replace(" →", "") || "विस्तृत"}</span>
             </Link>
-            
-            {file?.url && (
+
+            {fileUrl && (
               <a
-                href={file.url}
+                href={fileUrl}
                 download
-                className="notice-popup-link-btn secondary"
                 target="_blank"
                 rel="noopener noreferrer"
+                className="np-btn np-btn-secondary"
               >
-                <Download size={16} />
+                <Download size={14} />
                 <span>{tc("download") || "PDF"}</span>
               </a>
             )}
@@ -176,4 +194,3 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
     </div>
   );
 }
-

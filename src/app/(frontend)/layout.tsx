@@ -6,6 +6,7 @@ import { TopBar } from "@/components/layout/top-bar";
 import { Marquee } from "@/components/layout/marquee";
 import { NoticesPopup } from "@/components/notices";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
+import { ProgressBar } from "@/components/layout/progress-bar";
 import { getPopupNotices } from "@/lib/queries/notices";
 import { getSiteSettings } from "@/lib/queries/globals";
 import "./globals.css";
@@ -76,6 +77,9 @@ export default async function FrontendLayout({ children }: { children: React.Rea
 
           {/* Notices Popup Dialog */}
           <NoticesPopup notices={popupNotices} />
+
+          {/* Progress Bar for navigation feedback */}
+          <ProgressBar />
 
           {/* Scroll to Top Arrow */}
           <ScrollToTop />

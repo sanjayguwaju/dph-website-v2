@@ -456,6 +456,10 @@ export interface Notice {
    */
   externalImage?: string | null;
   file?: (string | null) | Media;
+  /**
+   * Direct URL to a PDF/Document for demo purposes.
+   */
+  externalFile?: string | null;
   publishedDate: string;
   showInPopup?: boolean | null;
   popupStartDate?: string | null;
@@ -583,6 +587,10 @@ export interface News {
     [k: string]: unknown;
   } | null;
   file?: (string | null) | Media;
+  /**
+   * Direct URL to a PDF/Document for demo purposes.
+   */
+  externalFile?: string | null;
   isFeatured?: boolean | null;
   meta?: {
     title?: string | null;
@@ -1058,6 +1066,7 @@ export interface NoticesSelect<T extends boolean = true> {
   image?: T;
   externalImage?: T;
   file?: T;
+  externalFile?: T;
   publishedDate?: T;
   showInPopup?: T;
   popupStartDate?: T;
@@ -1137,6 +1146,7 @@ export interface NewsSelect<T extends boolean = true> {
   excerpt?: T;
   content?: T;
   file?: T;
+  externalFile?: T;
   isFeatured?: T;
   meta?:
     | T
