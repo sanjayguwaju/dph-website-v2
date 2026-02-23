@@ -2,6 +2,8 @@ import { getPayloadClient } from "@/lib/payload";
 import { NextRequest, NextResponse } from "next/server";
 import type { Where } from "payload";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
