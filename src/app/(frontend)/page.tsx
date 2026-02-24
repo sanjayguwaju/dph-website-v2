@@ -22,7 +22,7 @@ import { VisitorCounter } from "@/components/sections/visitor-counter";
 import { OpdStatsBanner } from "@/components/sections/opd-stats-banner";
 import { ServicesGrid } from "@/components/sections/services-grid";
 import { NoticesTabs } from "@/components/sections/notices-tabs";
-import { PhotoGallery } from "@/components/sections/photo-gallery";
+import { OptimizedPhotoGallery } from "@/components/sections/optimized-photo-gallery";
 import { VideoGallery } from "@/components/sections/video-gallery";
 import { QuickAccessLinks } from "@/components/sections/quick-access-links";
 import { toNepaliNum } from "@/utils/nepali-date";
@@ -137,7 +137,7 @@ export default async function HomePage() {
 
       {/* ── Photo Gallery ─────────────────────────────────── */}
       <ScrollReveal>
-        <PhotoGallery albums={photoAlbums as any} />
+        <OptimizedPhotoGallery albums={photoAlbums as any} />
       </ScrollReveal>
 
       {/* ── Video Gallery ─────────────────────────────────── */}

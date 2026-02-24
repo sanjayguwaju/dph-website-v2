@@ -49,6 +49,7 @@ export default async function DynamicPage({ params }: PageProps) {
   }
 
   let contactSettings: any = null;
+
   if (slug === "contact") {
     const payload = await getPayloadClient();
     contactSettings = await payload.findGlobal({
