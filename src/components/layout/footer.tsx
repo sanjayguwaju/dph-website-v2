@@ -35,22 +35,24 @@ export async function Footer() {
           <h3 className="hospital-footer-heading">
             {t("location")}
           </h3>
-          {s.mapEmbedUrl ? (
-            <iframe
-              src={s.mapEmbedUrl}
-              width="100%"
-              height="285"
-              style={{ border: '1px solid #ddd', borderRadius: "2px" }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              title="Hospital Location Map"
-            />
-          ) : (
-            <div className="hospital-footer-map-placeholder">
-              📍 Google Maps embed will appear here
-            </div>
-          )}
+          <div className="footer-map-v3">
+            {s.mapEmbedUrl ? (
+              <iframe
+                src={s.mapEmbedUrl}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Hospital Location Map"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-full bg-slate-800 text-slate-500 font-bold text-sm">
+                📍 Map Placeholder
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Column 3: Contact Details */}
@@ -59,59 +61,64 @@ export async function Footer() {
             {t("contactInfo")}
           </h3>
           <div className="hospital-footer-contact">
-             <p className="footer-contact-org" style={{ color: 'var(--brand-red)', fontWeight: 700 }}>{govText}</p>
-             <p className="footer-contact-org" style={{ color: 'var(--brand-red)', fontWeight: 700 }}>{ministryText}</p>
-             <p className="hospital-footer-org" style={{ color: 'var(--brand-red)', fontWeight: 800, fontSize: '1.1rem' }}>
-               {hospitalName}
-             </p>
+             <div className="footer-org-badge">
+                <p className="footer-contact-org-sm">{govText} / {ministryText}</p>
+                <h2 className="footer-contact-org-lg">
+                  {hospitalName}
+                </h2>
+             </div>
             
-            {address && (
-              <p style={{ fontWeight: 600 }}>
-                {address}
-              </p>
-            )}
+             <div className="footer-contact-details-v3">
+                {address && (
+                  <div className="footer-detail-item">
+                    <span>📍</span>
+                    <strong>{address}</strong>
+                  </div>
+                )}
+                
+                {s.contactPhone && (
+                  <div className="footer-detail-item">
+                    <span>📞</span>
+                    <div>
+                      <p><strong>{ta("administration")}:</strong> <a href={`tel:${s.contactPhone}`}>{s.contactPhone}</a></p>
+                      {s.emergencyNumber && (
+                        <p><strong>{ta("emergency")}:</strong> <a href={`tel:${s.emergencyNumber}`} className="text-red-400">{s.emergencyNumber}</a></p>
+                      )}
+                    </div>
+                  </div>
+                )}
 
-            <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {s.contactPhone && (
-                <p>
-                  <span className="footer-label">📞 {ta("administration")}</span> <a href={`tel:${s.contactPhone}`}>{s.contactPhone}</a>
-                  {s.emergencyNumber && (
-                    <>
-                      <span className="footer-label ml-2">{ta("emergency")}</span> <a href={`tel:${s.emergencyNumber}`}>{s.emergencyNumber}</a>
-                    </>
-                  )}
-                </p>
-              )}
-              {s.contactEmail && (
-                <p>
-                  <span className="footer-label">✉️</span> <a href={`mailto:${s.contactEmail}`}>{s.contactEmail}</a>
-                </p>
-              )}
-              {s.siteUrl && (
-                <p>
-                  <span className="footer-label">🔗</span> <a href={s.siteUrl} target="_blank" rel="noopener noreferrer">
-                    {s.siteUrl.replace(/^https?:\/\//, "")}
-                  </a>
-                </p>
-              )}
-            </div>
+                {s.contactEmail && (
+                  <div className="footer-detail-item">
+                    <span>✉️</span>
+                    <a href={`mailto:${s.contactEmail}`}>{s.contactEmail}</a>
+                  </div>
+                )}
+
+                {s.siteUrl && (
+                  <div className="footer-detail-item">
+                    <span>🔗</span>
+                    <a href={s.siteUrl} target="_blank" rel="noopener noreferrer">
+                      {s.siteUrl.replace(/^https?:\/\//, "")}
+                    </a>
+                  </div>
+                )}
+             </div>
           </div>
         </div>
       </div>
 
       {/* Bottom bar */}
       <div className="hospital-footer-bottom">
-        <div className="footer-bottom-left">
-          <p>
-            {f.copyright || (
-              locale === "en" 
-              ? `© ${new Date().getFullYear()} ${hospitalName}. All Rights Reserved.`
-              : `© ${toNepaliNum(new Date().getFullYear())} ${hospitalName}। सर्वाधिकार सुरक्षित।`
-            )}
-          </p>
-        </div>
+        <p className="footer-bottom-text">
+          {f.copyright || (
+            locale === "en" 
+            ? `© ${new Date().getFullYear()} ${hospitalName}. All Rights Reserved.`
+            : `© ${toNepaliNum(new Date().getFullYear())} ${hospitalName}। सर्वाधिकार सुरक्षित।`
+          )}
+        </p>
         
-        <div className="footer-bottom-right">
+        <div className="footer-developed-by">
            <span>{t("developedBy")}</span>
         </div>
       </div>

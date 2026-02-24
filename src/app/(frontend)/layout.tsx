@@ -3,7 +3,6 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Header, Footer } from "@/components/layout";
 import { TopBar } from "@/components/layout/top-bar";
-import { Marquee } from "@/components/layout/marquee";
 import { NoticesPopup } from "@/components/notices";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { ProgressBar } from "@/components/layout/progress-bar";
@@ -66,8 +65,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           {/* Hospital Logo + Navigation */}
           <Header />
 
-          {/* Scrolling notices marquee */}
-          <Marquee />
+
 
           {/* Page Content */}
           <main className="min-h-screen">{children}</main>

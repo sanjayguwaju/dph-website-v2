@@ -81,111 +81,87 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
         if ((e.target as HTMLElement).classList.contains("np-overlay")) closePopup();
       }}
     >
-      <div className="np-card">
-
-        {/* ── Top header bar: title + close button ── */}
-        <div className="np-header">
-          <div className="np-header-left">
-            <span className="np-tag">{tn("importantNotice")}</span>
-            {total > 1 && (
-              <span className="np-counter">{current + 1} / {total}</span>
-            )}
+      <div className="notice-popup-frame group">
+        <div className="notice-popup-header-v2">
+          <div className="flex items-center gap-3">
+            <div className="w-2 h-8 bg-[#dc2626] rounded-full"></div>
+            <div>
+              <span className="text-[10px] font-black text-[#dc2626] uppercase tracking-[0.2em] block mb-0.5">{tn("importantNotice")}</span>
+              <h3 className="text-sm font-bold text-gray-900 truncate max-w-[200px] md:max-w-md">{notice.title}</h3>
+            </div>
           </div>
           <button
-            className="np-close-btn"
+            className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#dc2626] hover:text-white transition-all shadow-sm"
             onClick={closePopup}
             aria-label={tc("closeMenu") || "Close"}
           >
-            <X size={16} strokeWidth={2.5} />
+            <X size={18} />
           </button>
         </div>
 
-        {/* ── Notice title strip ── */}
-        <div className="np-title-bar">
-          <h2 className="np-title-text">{notice.title}</h2>
-        </div>
-
-        {/* ── Document Image / Text Body ── */}
-        <div className="np-body">
-          {imgSrc ? (
-            <div className="np-image-wrap">
-              <Image
-                src={imgSrc}
+        <div className="notice-popup-scrollarea-v2 shadow-inner bg-gray-50/50">
+          {(image?.url || externalImage) ? (
+            <div className="relative w-full">
+              <img
+                src={image?.url || externalImage}
                 alt={image?.alt || notice.title}
-                width={820}
-                height={1160}
-                className="np-document-img"
-                priority
-                unoptimized={!!externalImage}
+                className="w-full h-auto block object-contain max-h-[70vh]"
               />
             </div>
           ) : (
-            <div className="np-text-body">
+            <div className="p-10 md:p-16 text-center">
+              <div className="w-20 h-20 bg-red-50 text-[#dc2626] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🪧</div>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{notice.title}</h2>
               {notice.description && (
-                <p className="np-text-desc">{notice.description}</p>
+                <div className="text-gray-600 leading-relaxed text-lg max-w-2xl mx-auto prose prose-red">
+                  {notice.description}
+                </div>
               )}
             </div>
           )}
         </div>
 
-        {/* ── Footer: nav dots + CTA buttons ── */}
-        <div className="np-footer">
-
-          {/* Prev / Dots / Next */}
-          {total > 1 ? (
-            <div className="np-nav-row">
-              <button
-                className="np-nav-arrow"
-                onClick={prevNotice}
-                aria-label={tc("prev") || "Previous"}
-              >
-                <ChevronLeft size={14} />
-              </button>
-
-              <div className="np-dots">
-                {notices.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setCurrent(i)}
-                    className={`np-dot${i === current ? " active" : ""}`}
-                    aria-label={`Notice ${i + 1}`}
-                  />
-                ))}
+        <div className="bg-white p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-6 border-t border-gray-100">
+          <div className="flex items-center gap-4">
+            {total > 1 && (
+              <div className="flex items-center gap-3 bg-gray-50 p-1.5 rounded-full border border-gray-100">
+                <button
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white text-gray-600 shadow-sm hover:text-[#dc2626] transition-colors"
+                  onClick={prevNotice}
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <span className="text-xs font-bold text-gray-400 w-10 text-center">{current + 1} / {total}</span>
+                <button
+                  className="w-8 h-8 rounded-full flex items-center justify-center bg-white text-gray-600 shadow-sm hover:text-[#dc2626] transition-colors"
+                  onClick={nextNotice}
+                >
+                  <ChevronRight size={16} />
+                </button>
               </div>
+            )}
+          </div>
 
-              <button
-                className="np-nav-arrow"
-                onClick={nextNotice}
-                aria-label={tc("next") || "Next"}
-              >
-                <ChevronRight size={14} />
-              </button>
-            </div>
-          ) : (
-            <div />
-          )}
-
-          {/* CTA row */}
-          <div className="np-cta-row">
+          <div className="flex items-center gap-3 w-full md:w-auto">
             <Link
               href={`/notices/${notice.id}`}
-              className="np-btn np-btn-primary"
+              className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-lg shadow-gray-200"
               onClick={closePopup}
             >
               <ExternalLink size={14} />
-              <span>{tc("readMore")?.replace(" →", "") || "विस्तृत"}</span>
+              {tc("readMore")?.replace(" →", "") || "Details"}
             </Link>
 
             {fileUrl && (
               <a
                 href={fileUrl}
                 download
+                className="flex-1 md:flex-none inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#dc2626] text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="np-btn np-btn-secondary"
               >
                 <Download size={14} />
-                <span>{tc("download") || "PDF"}</span>
+                {tc("download") || "PDF"}
               </a>
             )}
           </div>

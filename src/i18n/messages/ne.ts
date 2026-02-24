@@ -43,6 +43,7 @@ const ne = {
     searchPrompt: "माथिको बक्समा खोज्ने शब्द लेख्नुस्।",
     closeMenu: "बन्द गर्नुस्",
     photoGallery: "फोटो ग्यालरी",
+    highlights: "हाइलाइट्स",
   },
   home: {
     opdStats: "दैनिक तथ्याङ्क",

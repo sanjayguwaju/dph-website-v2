@@ -1,3 +1,4 @@
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { cn } from "@/lib/utils";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 
@@ -49,7 +50,7 @@ const icons: Record<string, React.ReactNode> = {
 
 type BannerStyle = "info" | "warning" | "success" | "error";
 
-interface BannerProps {
+export interface BannerProps {
   style?: BannerStyle | null;
   content?: SerializedEditorState | null;
 }
@@ -69,8 +70,8 @@ export function BannerBlock({ style, content }: BannerProps) {
   return (
     <div className={cn("my-6 flex items-start gap-3 rounded-lg border p-4", styleClasses[variant])}>
       {icons[variant]}
-      <div className="flex-1">
-        <p className="text-sm leading-relaxed">{plainText}</p>
+      <div className="flex-1 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+        {content && <RichText data={content} />}
       </div>
     </div>
   );

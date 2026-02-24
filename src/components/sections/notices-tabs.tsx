@@ -122,6 +122,7 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
   const tn = useTranslations("notices");
   const tc = useTranslations("common");
   const [active, setActive] = useState<TabId>("notices");
+  const [loading, setLoading] = useState(false);
 
   const tabs: { id: TabId; label: string }[] = [
     { id: "notices", label: tn("title") },
@@ -147,6 +148,13 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
     bids: (item) => `/news/${"slug" in item && item.slug ? item.slug : item.id}`,
   };
 
+  const handleTabChange = (id: TabId) => {
+    if (id === active) return;
+    setLoading(true);
+    setActive(id);
+    setTimeout(() => setLoading(false), 400);
+  };
+
   const items = dataMap[active];
 
   return (
@@ -155,7 +163,7 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
         {tabs.map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActive(tab.id)}
+            onClick={() => handleTabChange(tab.id)}
             className={`notices-tab${active === tab.id ? " active" : ""}`}
             aria-selected={active === tab.id}
             role="tab"
@@ -168,8 +176,20 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
         ))}
       </div>
       <div className="notices-tab-body" role="tabpanel">
-        {items.length === 0 ? (
-          <p className="notices-empty">{tc("noData")}</p>
+        {loading ? (
+          <div className="p-8 space-y-4 animate-pulse">
+            {Array(3).fill(0).map((_, i) => (
+              <div key={i} className="flex gap-4 items-center">
+                 <div className="w-12 h-12 bg-gray-100 rounded-xl"></div>
+                 <div className="flex-1 space-y-2">
+                    <div className="h-4 bg-gray-100 rounded w-3/4"></div>
+                    <div className="h-3 bg-gray-50 rounded w-1/4"></div>
+                 </div>
+              </div>
+            ))}
+          </div>
+        ) : items.length === 0 ? (
+          <p className="notices-empty text-center py-12 text-gray-400 font-bold">{tc("noData")}</p>
         ) : (
           items.map((item) => <NoticeRow key={item.id} item={item} href={hrefMap[active](item)} />)
         )}

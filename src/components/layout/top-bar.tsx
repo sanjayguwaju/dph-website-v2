@@ -36,9 +36,24 @@ export function TopBar({
     setFontSize(savedSize);
     applyFontSize(savedSize);
 
+    // Scroll listener for sticky header
+    const handleScroll = () => {
+      const header = document.querySelector(".hospital-header");
+      if (window.scrollY > 20) {
+        header?.classList.add("scrolled");
+      } else {
+        header?.classList.remove("scrolled");
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+
     // Format for Nepali Date (BS)
     const now = new Date();
     setNepaliDate(formatNepaliDate(now));
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
   function applyFontSize(size: "sm" | "md" | "lg") {

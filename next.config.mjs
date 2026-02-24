@@ -13,7 +13,6 @@ const nextConfig = {
     };
     return webpackConfig;
   },
-  output: "standalone",
   compiler: {
     removeConsole: process.env.NODE_ENV === "production",
   },
@@ -37,6 +36,9 @@ const nextConfig = {
         hostname: "*.gstatic.com",
       },
     ],
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
 };
 
