@@ -1,13 +1,18 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
+import { getSiteSettings } from "@/lib/queries/globals";
 import Link from "next/link";
 import { formatDate } from "@/utils/format";
 import { FileText, Download, Calendar, ChevronRight, Bell } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+
   return {
-    title: "Notices | Dhaulagiri Hospital",
-    description: "Official notices, circulars and announcements from Dhaulagiri Hospital.",
+    title: `Notices | ${hospitalName}`,
+    description: `Official notices, circulars and announcements from ${hospitalName}.`,
   };
 }
 

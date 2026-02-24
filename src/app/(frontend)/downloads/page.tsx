@@ -1,13 +1,18 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
+import { getSiteSettings } from "@/lib/queries/globals";
 import { Download, FileText, Calendar, Search, Tag } from "lucide-react";
 import { formatDate } from "@/utils/format";
 import { PageLayout } from "@/components/layout/page-layout";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+
   return {
-    title: "Downloads | Dhaulagiri Hospital",
+    title: `Downloads | ${hospitalName}`,
     description: "Download important documents, annual reports, and publications.",
   };
 }

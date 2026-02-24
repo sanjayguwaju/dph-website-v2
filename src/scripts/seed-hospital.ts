@@ -39,7 +39,7 @@ async function seed() {
             type: "root",
             children: [
               { type: "heading", tag: "h2", children: [{ type: "text", text: "परिचय (Introduction)" }] },
-              { type: "paragraph", children: [{ type: "text", text: "धौलागिरी प्रादेशिक अस्पताल गण्डकी प्रदेशको एक प्रमुख र विस्वासिलो स्वास्थ्य संस्था हो। यो अस्पताल बागलुङ जिल्लाको मुकाम बागलुङ बजारमा अवस्थित छ। विगत लामो समयदेखि यस क्षेत्रका नागरिकहरूलाई गुणस्तरीय स्वास्थ्य सेवा प्रदान गर्दै आएको यस अस्पतालले हाल आधुनिक प्रविधि र दक्ष जनशक्तिको माध्यमबाट सेवा विस्तार गरिरहेको छ।" }] },
+              { type: "paragraph", children: [{ type: "text", text: "अम्पिपाल अस्पताल पालुङटार नगरपालिकाको एक प्रमुख र सुविधानिक स्वास्थ्य संस्था हो। यो अस्पताल पालुङटार नगरपालिकामा अवस्थित छ। विस्तृत समयदेखि यस क्षेत्रका नागरिकहरूलाई गुणस्तरीय स्वास्थ्य सेवा प्रदान गर्दै आएको यस अस्पतालले हाल आधुनिक प्रविधि र दक्ष जनशक्तिको माध्यमबाट सेवा विस्तार गरिरहेको छ।" }] },
               { type: "heading", tag: "h2", children: [{ type: "text", text: "हाम्रो इतिहास (Our History)" }] },
               { type: "paragraph", children: [{ type: "text", text: "यस अस्पतालको स्थापना वि.सं. २०१७ सालमा १५ शैयाको जिल्ला अस्पतालको रुपमा भएको थियो। समयको अन्तरालसँगै यस क्षेत्रको जनसंख्या र स्वास्थ्य आवश्यकतालाई मध्यनजर गर्दै वि.सं. २०७५ साल फागुन महिनादेखि यसलाई प्रादेशिक अस्पतालको रुपमा स्तरोन्नति गरिएको हो। हाल यो २०० शैयाको आधुनिक अस्पतालको रुपमा विकास भइरहेको छ।" }] },
               { type: "heading", tag: "h2", children: [{ type: "text", text: "लक्षय र उद्देश्य (Vision & Mission)" }] },
@@ -142,19 +142,20 @@ async function seed() {
     await payload.updateGlobal({
       slug: "site-settings",
       data: {
-        hospitalNameNe: "धौलागिरी प्रादेशिक अस्पताल",
-        hospitalNameEn: "Dhaulagiri Provincial Hospital",
-        taglineNe: "स्वच्छ, सुलभ र गुणस्तरीय स्वास्थ्य सेवा",
-        taglineEn: "Clean, Accessible and Quality Health Service",
-        siteUrl: "https://dph.gov.np",
-        address: "बागलुङ, नेपाल",
-        contactEmail: "dhaulagiri.hospital@gmail.com",
-        contactPhone: "०६८-५२०२८८",
-        emergencyNumber: "०६८-५२४१०४",
-        aboutUs: "धौलागिरी प्रादेशिक अस्पताल गण्डकी प्रदेशको एक प्रमुख स्वास्थ्य संस्था हो। यो अस्पताल विगत लामो समयदेखि बागलुङ र आसपासका जिल्लाका नागरिकहरूलाई गुणस्तरीय स्वास्थ्य सेवा प्रदान गर्दै आइरहेको छ। हाम्रो लक्ष्य सुरक्षित, भरपर्दो र अत्याधुनिक स्वास्थ्य सेवा सुनिश्चित गर्नु हो।",
-        facebook: "https://facebook.com/dhaulagirihospital",
-        twitter: "https://twitter.com/dph",
-        youtube: "https://youtube.com/dph",
+        hospitalNameNe: "अम्पिपाल अस्पताल",
+        hospitalNameEn: "Amppipal Hospital",
+        taglineNe: "स्वास्थ्य सेवा, सबैका लागि",
+        taglineEn: "Healthcare for All",
+        siteUrl: "https://amppipalhospital.gov.np",
+        address: "पालुङटार नगरपालिका – ३, गोरखा, नेपाल",
+        addressEn: "Palungtar Municipality - 3, Gorkha, Nepal",
+        contactEmail: "Amppipalhospital25@gmail.com",
+        contactPhone: "00977-9846-208709",
+        emergencyNumber: "00977-9846-208709",
+        aboutUs: "अम्पिपाल अस्पताल पालुङटार नगरपालिकाको एक प्रमुख स्वास्थ्य संस्था हो। यो अस्पताल गोरखा जिल्लाका नागरिकहरूलाई गुणस्तरीय स्वास्थ्य सेवा प्रदान गर्दै आइरहेको छ। हाम्रो लक्ष्य सुरक्षित, भरपर्दो र आधुनिक स्वास्थ्य सेवा सुनिश्चित गर्नु हो।",
+        facebook: "https://facebook.com/AmppipalHospital",
+        twitter: "https://twitter.com/AmppipalHospital",
+        youtube: "https://youtube.com/AmppipalHospital",
         mapEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3515.65751963249!2d83.5857853!3d28.2175965!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3995f54366666667%3A0xc3b092770222a7f!2zRGhhdWxhZ2lyaSBa b25hbCBIb3NwaXRhbA!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp",
       },
     });
@@ -269,7 +270,7 @@ async function seed() {
             type: "root",
             children: [
               { type: "heading", tag: "h2", children: [{ type: "text", text: "हाम्रा ओपिडि सेवाहरू" }] },
-              { type: "paragraph", children: [{ type: "text", text: "धौलागिरी प्रादेशिक अस्पतालले विभिन्न विभागहरू मार्फत विशेषज्ञ बहिरङ्ग सेवा प्रदान गर्दै आएको छ। बिरामीहरूले बिहान ८ बजेदेखि स्वास्थ्य परीक्षणको लागि टिकट लिन सक्नेछन्।" }] },
+              { type: "paragraph", children: [{ type: "text", text: "अम्पिपाल अस्पतालले विभिन्न विभागहरू मार्फत विशेषज्ञ बहिरङ्ग सेवा प्रदान गर्दै आएको छ। बिरामीहरूले बिहान ७ बजेदेखि स्वास्थ्य परीक्षणको लागि टिकट लिन सक्नेछन्।" }] },
               {
                 type: "list", listType: "bullet", children: [
                   { type: "listitem", children: [{ type: "text", text: "जनरल मेडिसिन र सर्जरी" }] },

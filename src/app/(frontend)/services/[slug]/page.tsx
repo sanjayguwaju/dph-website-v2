@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!service) return { title: "Not Found" };
 
   return {
-    title: `${service.name} | Dhaulagiri Hospital`,
+    title: `${service.name} | Amppipal Hospital`,
     description: (service.shortDescription as string) || undefined,
   };
 }

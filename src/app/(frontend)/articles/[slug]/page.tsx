@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const featuredImage = typeof article.featuredImage === "object" ? article.featuredImage : null;
 
   return {
-    title: `${article.title} | Dhaulagiri Hospital`,
+    title: `${article.title} | Amppipal Hospital`,
     description: article.excerpt,
     openGraph: {
       title: article.title,

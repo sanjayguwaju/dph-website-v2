@@ -3,8 +3,12 @@ import { getSiteSettings } from "@/lib/queries/globals";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+
   return {
-    title: "About Us | Dhaulagiri Hospital",
+    title: `About Us | ${hospitalName}`,
   };
 }
 
@@ -36,7 +40,7 @@ export default async function AboutPage() {
           🏛️ About Us
         </h1>
         <p className="text-xl text-gray-500 font-medium">
-          {hospitalName || "Dhaulagiri Hospital"} — {tagline || ""}
+          {hospitalName || "Amppipal Hospital"} — {tagline || ""}
         </p>
       </div>
 

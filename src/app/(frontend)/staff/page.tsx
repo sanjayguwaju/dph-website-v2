@@ -1,11 +1,16 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
+import { getSiteSettings } from "@/lib/queries/globals";
 import Image from "next/image";
 import { getLocalizedValue } from "@/lib/utils/localized";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+
   return {
-    title: "Staff | Dhaulagiri Hospital",
+    title: `Staff | ${hospitalName}`,
   };
 }
 

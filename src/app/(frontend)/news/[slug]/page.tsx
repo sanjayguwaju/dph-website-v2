@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
 
   return {
-    title: `${item.title as string} | Dhaulagiri Hospital`,
+    title: `${item.title as string} | Amppipal Hospital`,
     description: (item.excerpt as string) || undefined,
     openGraph: {
       title: item.title as string,

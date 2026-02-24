@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getPayloadClient } from "@/lib/payload";
+import { getSiteSettings } from "@/lib/queries/globals";
 import { formatDate } from "@/utils/format";
 import { PageLayout } from "@/components/layout/page-layout";
 import { FileText, Search, Newspaper, Bell, Stethoscope, Users } from "lucide-react";
@@ -10,19 +11,22 @@ interface PageProps {
   searchParams: Promise<{ q?: string }>;
 }
 
-export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
   const { q } = await searchParams;
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
 
   if (q) {
     return {
-      title: `"${q}" Search Results | Dhaulagiri Hospital`,
-      description: `Search results for "${q}" on Dhaulagiri Hospital`,
+      title: `"${q}" Search Results | ${hospitalName}`,
+      description: `Search results for "${q}" on ${hospitalName}`,
     };
   }
 
   return {
-    title: "Search | Dhaulagiri Hospital",
-    description: "Search news, notices, services and staff of Dhaulagiri Hospital",
+    title: `Search | ${hospitalName}`,
+    description: `Search news, notices, services and staff of ${hospitalName}`,
   };
 }
 

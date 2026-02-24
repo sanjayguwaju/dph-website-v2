@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props) {
   if (!notice) return { title: "Not Found" };
 
   return {
-    title: `${notice.title} | Dhaulagiri Hospital`,
+    title: `${notice.title} | Amppipal Hospital`,
     description: notice.description?.slice(0, 160) || "Notice detail",
     openGraph: {
       title: notice.title,

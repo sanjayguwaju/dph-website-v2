@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPageBySlug } from "@/lib/queries/pages";
+import { getSiteSettings } from "@/lib/queries/globals";
 import { RichText } from "@/components/RichText";
 import { FeedbackForm } from "@/components/forms/feedback-form";
 
@@ -13,16 +14,22 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const page = await getPageBySlug(slug);
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const payload = await getPayloadClient();
 
-  if (!page) {
-    return { title: "Not Found" };
-  }
+  const page = await payload.find({
+    collection: "pages",
+    where: { slug: { equals: slug } },
+  });
+
+  if (!page.docs[0]) return { title: "Not Found" };
 
   return {
-    title: `${page.title} | Dhaulagiri Hospital`,
+    title: `${page.docs[0].title} | ${hospitalName}`,
   };
 }
 
