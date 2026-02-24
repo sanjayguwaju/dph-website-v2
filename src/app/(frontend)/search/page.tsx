@@ -3,8 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { getPayloadClient } from "@/lib/payload";
 import { formatDate } from "@/utils/format";
-import { getLocale, getTranslations } from "next-intl/server";
-import { toNepaliNum } from "@/utils/nepali-date";
 import { PageLayout } from "@/components/layout/page-layout";
 import { FileText, Search, Newspaper, Bell, Stethoscope, Users } from "lucide-react";
 
@@ -14,30 +12,23 @@ interface PageProps {
 
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const { q } = await searchParams;
-  const tc = await getTranslations("common");
 
   if (q) {
     return {
-      title: `"${q}" ${tc("searchResultsFor")} | ${tc("hospitalName")}`,
-      description: `Search results for "${q}" on ${tc("hospitalName")}`,
+      title: `"${q}" Search Results | Dhaulagiri Hospital`,
+      description: `Search results for "${q}" on Dhaulagiri Hospital`,
     };
   }
 
   return {
-    title: `${tc("search")} | ${tc("hospitalName")}`,
-    description: `Search news, notices, services and staff of ${tc("hospitalName")}`,
+    title: "Search | Dhaulagiri Hospital",
+    description: "Search news, notices, services and staff of Dhaulagiri Hospital",
   };
 }
 
 export default async function SearchPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const query = q?.trim() || "";
-  const locale = await getLocale();
-  const tc = await getTranslations("common");
-  const tn = await getTranslations("news");
-  const tnav = await getTranslations("nav");
-  const ts = await getTranslations("services");
-  const tstaff = await getTranslations("staff");
 
   type ResultSet = { news: any[]; notices: any[]; services: any[]; staff: any[] };
   let results: ResultSet = { news: [], notices: [], services: [], staff: [] };
@@ -49,22 +40,22 @@ export default async function SearchPage({ searchParams }: PageProps) {
       payload.find({
         collection: "news",
         where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
-        limit: 8, depth: 1, sort: "-publishedDate", locale: locale as any,
+        limit: 8, depth: 1, sort: "-publishedDate",
       }),
       payload.find({
         collection: "notices",
         where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
-        limit: 8, depth: 0, sort: "-publishedDate", locale: locale as any,
+        limit: 8, depth: 0, sort: "-publishedDate",
       }),
       payload.find({
         collection: "services",
         where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
-        limit: 8, depth: 0, locale: locale as any,
+        limit: 8, depth: 0,
       }),
       payload.find({
         collection: "staff",
         where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
-        limit: 8, depth: 1, locale: locale as any,
+        limit: 8, depth: 1,
       }),
     ]);
 
@@ -78,21 +69,18 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
   const totalResults =
     results.news.length + results.notices.length + results.services.length + results.staff.length;
-  const displayCount = locale === "ne" ? toNepaliNum(totalResults) : totalResults;
 
   return (
-    <PageLayout breadcrumbs={[{ label: tc("search") }]} maxWidth="max-w-5xl">
+    <PageLayout breadcrumbs={[{ label: "Search" }]} maxWidth="max-w-5xl">
       {/* Header */}
       <div className="mb-8 border-b border-gray-100 pb-6">
         <h1 className="text-3xl font-bold text-[var(--brand-blue)] mb-2 flex items-center gap-2">
           <Search size={28} className="opacity-80" />
-          {tc("search")}
+          Search
         </h1>
         {query && (
           <p className="text-gray-500 text-sm">
-            {locale === "ne"
-              ? `&quot;${query}&quot; ${tc("searchResultsFor")}: ${displayCount} ${tc("results")}`
-              : `${tc("searchResultsFor")} &quot;${query}&quot;: ${displayCount} ${tc("results")}`}
+            Search results for &quot;{query}&quot;: {totalResults} results
           </p>
         )}
       </div>
@@ -107,14 +95,14 @@ export default async function SearchPage({ searchParams }: PageProps) {
               type="search"
               name="q"
               defaultValue={query}
-              placeholder={tc("searchPlaceholder")}
+              placeholder="Search for news, notices, services..."
               className="search-page-input"
               autoFocus={!query}
-              aria-label={tc("search")}
+              aria-label="Search"
             />
           </div>
           <button type="submit" className="search-page-btn">
-            {tc("search")}
+            Search
           </button>
         </div>
       </form>
@@ -125,9 +113,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
           <div className="search-no-results">
             <Search size={48} className="opacity-20 mb-4" />
             <p className="text-gray-500 text-lg font-medium">
-              &quot;{query}&quot; {tc("noResultsFound")}
+              &quot;{query}&quot; No results found
             </p>
-            <p className="text-gray-400 text-sm mt-2">{tc("searchPrompt")}</p>
+            <p className="text-gray-400 text-sm mt-2">Try different keywords</p>
           </div>
         ) : (
           <div className="space-y-10">
@@ -137,7 +125,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <section className="search-result-section">
                 <h2 className="search-result-heading blue">
                   <Newspaper size={17} />
-                  {tn("newsAndActivities")}
+                  News & Activities
                   <span className="search-result-count">{results.news.length}</span>
                 </h2>
                 <div className="search-result-list">
@@ -179,7 +167,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <section className="search-result-section">
                 <h2 className="search-result-heading red">
                   <Bell size={17} />
-                  {tnav("notices")}
+                  Notices
                   <span className="search-result-count">{results.notices.length}</span>
                 </h2>
                 <div className="search-result-list">
@@ -214,7 +202,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <section className="search-result-section">
                 <h2 className="search-result-heading green">
                   <Stethoscope size={17} />
-                  {ts("title")}
+                  Services
                   <span className="search-result-count">{results.services.length}</span>
                 </h2>
                 <div className="search-result-list">
@@ -246,7 +234,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
               <section className="search-result-section">
                 <h2 className="search-result-heading purple">
                   <Users size={17} />
-                  {tstaff("title")}
+                  Staff
                   <span className="search-result-count">{results.staff.length}</span>
                 </h2>
                 <div className="search-result-list">
@@ -287,19 +275,19 @@ export default async function SearchPage({ searchParams }: PageProps) {
         /* Empty state */
         <div className="search-empty-state">
           <Search size={52} className="opacity-15 mb-6" />
-          <p className="text-gray-500 mb-6 font-medium text-lg">{tc("searchPrompt")}</p>
+          <p className="text-gray-500 mb-6 font-medium text-lg">Enter keywords to search</p>
           <div className="search-quick-links">
             <Link href="/news" className="search-quick-link blue">
-              <Newspaper size={15} /> {tnav("news")}
+              <Newspaper size={15} /> News
             </Link>
             <Link href="/notices" className="search-quick-link red">
-              <Bell size={15} /> {tnav("notices")}
+              <Bell size={15} /> Notices
             </Link>
             <Link href="/services" className="search-quick-link green">
-              <Stethoscope size={15} /> {tnav("services")}
+              <Stethoscope size={15} /> Services
             </Link>
             <Link href="/staff" className="search-quick-link purple">
-              <Users size={15} /> {tnav("staff")}
+              <Users size={15} /> Staff
             </Link>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 type QuickLink = {
   id: string;
@@ -23,7 +24,7 @@ export function QuickAccessLinks({ links }: { links: QuickLink[] }) {
             className="quick-link-card"
           >
             <span className="quick-link-icon">{link.icon || "🔗"}</span>
-            <span className="quick-link-label">{link.label}</span>
+            <span className="quick-link-label">{getLocalizedValue(link.label)}</span>
           </Link>
         ))}
       </div>

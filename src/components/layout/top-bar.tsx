@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Network, RefreshCw, Accessibility, Moon, Sun, PhoneCall, Calendar, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Network, RefreshCw, Accessibility, Moon, Sun, PhoneCall, Calendar } from "lucide-react";
 import { formatNepaliDate } from "@/utils/nepali-date";
-import { setLocale } from "@/i18n/actions";
-import { useLocale, useTranslations } from "next-intl";
 
 export function TopBar({
   contactPhone,
@@ -15,9 +12,6 @@ export function TopBar({
   contactPhone?: string | null;
   emergencyNumber?: string | null;
 }) {
-  const router = useRouter();
-  const t = useTranslations("accessibility");
-  const currentLocale = useLocale();
   const [fontSize, setFontSize] = useState<"sm" | "md" | "lg">("md");
   const [isDark, setIsDark] = useState(false);
   const [nepaliDate, setNepaliDate] = useState("");
@@ -27,7 +21,7 @@ export function TopBar({
     const savedTheme = localStorage.getItem("theme");
     const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const shouldBeDark = savedTheme === "dark" || (!savedTheme && systemDark);
-    
+
     setIsDark(shouldBeDark);
     if (shouldBeDark) document.documentElement.classList.add("dark");
 
@@ -79,37 +73,31 @@ export function TopBar({
     }
   }
 
-  const handleLanguageSwitch = async () => {
-    const nextLocale = currentLocale === "ne" ? "en" : "ne";
-    await setLocale(nextLocale);
-    router.refresh(); // Refresh the page to apply new locale
-  };
-
   return (
     <div className="top-bar">
       <div className="top-bar-left">
         <div className="top-bar-icons">
           <Link href="/sitemap" className="top-bar-btn">
-            <Network size={14} className="icon-blue" /> {t("sitemap")}
+            <Network size={14} className="icon-blue" /> Site Map
           </Link>
           <button className="top-bar-btn">
-             <RefreshCw size={14} className="icon-blue" /> {t("lowBandwidth")}
+            <RefreshCw size={14} className="icon-blue" /> Low Bandwidth
           </button>
           <button className="top-bar-btn">
-            <Accessibility size={14} className="icon-blue" /> {t("screenReader")}
+            <Accessibility size={14} className="icon-blue" /> Screen Reader
           </button>
         </div>
         <div className="top-bar-emergency-wrap">
-           {contactPhone && (
-             <span className="top-bar-info">
-               <PhoneCall size={13} className="icon-blue mr-1" /> {t("administration")} {contactPhone}
-             </span>
-           )}
-           {emergencyNumber && (
-             <span className="top-bar-info">
-               {t("emergency")} {emergencyNumber}
-             </span>
-           )}
+          {contactPhone && (
+            <span className="top-bar-info">
+              <PhoneCall size={13} className="icon-blue mr-1" /> Admin: {contactPhone}
+            </span>
+          )}
+          {emergencyNumber && (
+            <span className="top-bar-info">
+              Emergency: {emergencyNumber}
+            </span>
+          )}
         </div>
       </div>
 
@@ -119,19 +107,15 @@ export function TopBar({
 
       <div className="top-bar-right">
         <button onClick={toggleTheme} className="top-bar-btn dark-toggle-btn">
-          {isDark ? <Sun size={14} /> : <Moon size={14} />} 
-          <span className="ml-1">{isDark ? t("light") : t("dark")}</span>
+          {isDark ? <Sun size={14} /> : <Moon size={14} />}
+          <span className="ml-1">{isDark ? "Light" : "Dark"}</span>
         </button>
 
         <div className="top-bar-a11y">
-          <button onClick={() => changeSize("lg")} className={`a11y-btn ${fontSize === "lg" ? "active" : ""}`}>{t("textLarge")}</button>
-          <button onClick={() => changeSize("md")} className={`a11y-btn ${fontSize === "md" ? "active" : ""}`}>{t("textNormal")}</button>
-          <button onClick={() => changeSize("sm")} className={`a11y-btn ${fontSize === "sm" ? "active" : ""}`}>{t("textSmall")}</button>
+          <button onClick={() => changeSize("lg")} className={`a11y-btn ${fontSize === "lg" ? "active" : ""}`}>A+</button>
+          <button onClick={() => changeSize("md")} className={`a11y-btn ${fontSize === "md" ? "active" : ""}`}>A</button>
+          <button onClick={() => changeSize("sm")} className={`a11y-btn ${fontSize === "sm" ? "active" : ""}`}>A-</button>
         </div>
-
-        <button onClick={handleLanguageSwitch} className="lang-toggle-btn">
-           <span className="lang-icon">🌐</span> {currentLocale === "ne" ? "English" : "नेपाली"}
-        </button>
       </div>
     </div>
   );

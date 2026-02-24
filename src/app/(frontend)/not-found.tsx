@@ -3,12 +3,8 @@
 import Link from "next/link";
 import { Home, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTranslations } from "next-intl";
 
 export default function NotFound() {
-  const t = useTranslations("errors");
-  const tc = useTranslations("common");
-
   return (
     <div className="flex min-h-[70vh] items-center justify-center p-6">
       <div className="max-w-xl text-center">
@@ -18,10 +14,10 @@ export default function NotFound() {
           </span>
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <h1 className="text-4xl font-extrabold text-[var(--brand-blue)] mb-2">
-              {t("notFound")}
+              Page Not Found
             </h1>
             <p className="text-lg text-[var(--muted-foreground)] max-w-md mx-auto">
-              {t("notFoundDesc")}
+              The page you are looking for does not exist.
             </p>
           </div>
         </div>
@@ -30,13 +26,13 @@ export default function NotFound() {
           <Link href="/">
             <Button className="gap-2 bg-[var(--brand-blue)] hover:bg-[var(--brand-blue)]/90 h-11 px-6">
               <Home size={18} />
-              {t("backToHome")}
+              Back to Home
             </Button>
           </Link>
           <Link href="/search">
             <Button variant="outline" className="gap-2 border-[var(--brand-blue)] text-[var(--brand-blue)] hover:bg-[var(--brand-blue)] hover:text-white h-11 px-6">
               <Search size={18} />
-              {tc("search")}
+              Search
             </Button>
           </Link>
         </div>

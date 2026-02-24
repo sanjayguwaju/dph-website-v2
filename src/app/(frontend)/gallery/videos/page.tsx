@@ -1,13 +1,10 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
-import { getLocale, getTranslations } from "next-intl/server";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("gallery");
-  const tc = await getTranslations("common");
   return {
-    title: `${t("videos")} | ${tc("hospitalName")}`,
+    title: "Videos | Dhaulagiri Hospital",
   };
 }
 
@@ -36,9 +33,6 @@ export default async function VideoGalleryPage({
   const { page } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
-  const locale = await getLocale();
-  const t = await getTranslations("gallery");
-  const tc = await getTranslations("common");
 
   const payload = await getPayloadClient();
   const result = await payload.find({
@@ -48,7 +42,6 @@ export default async function VideoGalleryPage({
     limit,
     page: currentPage,
     depth: 0,
-    locale: locale as any,
   });
 
   const { docs, totalPages } = result;
@@ -56,16 +49,16 @@ export default async function VideoGalleryPage({
   return (
     <PageLayout
       breadcrumbs={[
-        { label: t("videos") },
+        { label: "Videos" },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-10 border-b border-gray-100 pb-6">
-        <h1 className="text-3xl font-bold text-[#003580]">🎥 {t("videos")}</h1>
+        <h1 className="text-3xl font-bold text-[#003580]">🎥 Videos</h1>
       </div>
 
       {docs.length === 0 ? (
-        <p className="page-empty text-center py-20 text-gray-400">{tc("noData")}</p>
+        <p className="page-empty text-center py-20 text-gray-400">No data available</p>
       ) : (
         <div className="video-grid video-grid-page">
           {docs.map((video: any) => {
@@ -95,7 +88,7 @@ export default async function VideoGalleryPage({
         <div className="page-pagination mt-12">
           {currentPage > 1 && (
             <Link href={`/gallery/videos?page=${currentPage - 1}`} className="page-nav-btn">
-              ‹ {tc("prev")}
+              ‹ Prev
             </Link>
           )}
           <span className="page-num">
@@ -103,7 +96,7 @@ export default async function VideoGalleryPage({
           </span>
           {currentPage < totalPages && (
             <Link href={`/gallery/videos?page=${currentPage + 1}`} className="page-nav-btn">
-              {tc("next")} ›
+              Next ›
             </Link>
           )}
         </div>

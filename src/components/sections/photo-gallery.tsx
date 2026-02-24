@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { useTranslations } from "next-intl";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 type GalleryImage = {
   image?: any;
@@ -39,19 +39,17 @@ function resolveCover(album: Album): string | null {
 }
 
 export function PhotoGallery({ albums }: { albums: Album[] }) {
-  const t = useTranslations("home");
-  const tc = useTranslations("common");
-
   const [lightbox, setLightbox] = useState<{ images: FlatImage[]; idx: number } | null>(null);
 
   // Flatten all images from all albums for lightbox navigation
   const allImages: FlatImage[] = [];
   for (const album of albums) {
     const cover = resolveCover(album);
-    if (cover) allImages.push({ url: cover, alt: album.title });
+    const albumTitle = getLocalizedValue(album.title);
+    if (cover) allImages.push({ url: cover, alt: albumTitle });
     for (const img of album.images ?? []) {
       const url = resolveImg(img);
-      if (url) allImages.push({ url, alt: img.caption || album.title });
+      if (url) allImages.push({ url, alt: getLocalizedValue(img.caption) || albumTitle });
     }
   }
 
@@ -94,13 +92,13 @@ export function PhotoGallery({ albums }: { albums: Album[] }) {
     <section className="gallery-section-v2">
       <div className="gallery-header-v2 flex items-center justify-between gap-4">
         <div className="gallery-header-line flex-1"></div>
-        <h2 className="flex-shrink-0">{t("photoGallery")}</h2>
+        <h2 className="flex-shrink-0">Photo Gallery</h2>
         <div className="gallery-header-line flex-1"></div>
         <Link
           href="/gallery/photos"
           className="gallery-view-all text-sm font-bold text-white uppercase tracking-wider hover:text-white/80 transition-colors"
         >
-          {tc("viewAll")}
+          View All
         </Link>
       </div>
 
@@ -182,12 +180,12 @@ export function PhotoGallery({ albums }: { albums: Album[] }) {
 function PhotoGallerySkeleton() {
   return (
     <div className="gallery-section-v2 animate-pulse opacity-60">
-       <div className="h-12 bg-gray-100 rounded-2xl mb-8"></div>
-       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {Array(8).fill(0).map((_, i) => (
-             <div key={i} className="aspect-[4/3] bg-gray-50 rounded-2xl"></div>
-          ))}
-       </div>
+      <div className="h-12 bg-gray-100 rounded-2xl mb-8"></div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {Array(8).fill(0).map((_, i) => (
+          <div key={i} className="aspect-[4/3] bg-gray-50 rounded-2xl"></div>
+        ))}
+      </div>
     </div>
   );
 }

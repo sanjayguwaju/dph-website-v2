@@ -1,22 +1,18 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
-import { getLocale, getTranslations } from "next-intl/server";
 import { Download, FileText, Calendar, Search, Tag } from "lucide-react";
 import { formatDate } from "@/utils/format";
 import { PageLayout } from "@/components/layout/page-layout";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const tc = await getTranslations("common");
   return {
-    title: `Downloads | ${tc("hospitalName")}`,
+    title: "Downloads | Dhaulagiri Hospital",
     description: "Download important documents, annual reports, and publications.",
   };
 }
 
 export default async function DownloadsPage() {
-  const locale = await getLocale();
-  const tc = await getTranslations("common");
   const payload = await getPayloadClient();
 
   // Fetch both news (publications) and notices that have files
@@ -36,7 +32,6 @@ export default async function DownloadsPage() {
       },
       sort: "-publishedDate",
       limit: 50,
-      locale: locale as any,
     }),
     payload.find({
       collection: "notices",
@@ -53,7 +48,6 @@ export default async function DownloadsPage() {
       },
       sort: "-publishedDate",
       limit: 50,
-      locale: locale as any,
     })
   ]);
 
@@ -67,18 +61,16 @@ export default async function DownloadsPage() {
 
   return (
     <PageLayout
-      breadcrumbs={[{ label: locale === "ne" ? "डाउनलोड" : "Downloads" }]}
+      breadcrumbs={[{ label: "Downloads" }]}
       maxWidth="max-w-6xl"
     >
       <div className="mb-12 border-b border-gray-100 pb-8">
         <h1 className="text-3xl font-bold text-[#003580] mb-3 flex items-center gap-3">
           <Download className="text-[#2563eb]" />
-          {locale === "ne" ? "डाउनलोड तथा प्रकाशनहरू" : "Downloads & Publications"}
+          Downloads & Publications
         </h1>
         <p className="text-gray-500 text-lg">
-          {locale === "ne"
-            ? "हाम्रा वार्षिक प्रतिवेदनहरू, निर्देशिकाहरू र महत्त्वपूर्ण सूचनाहरू यहाँबाट डाउनलोड गर्न सक्नुहुन्छ।"
-            : "Access and download annual reports, guidelines, and important notices."}
+          Access and download annual reports, guidelines, and important notices.
         </p>
       </div>
 
@@ -86,7 +78,7 @@ export default async function DownloadsPage() {
         {downloads.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
             <Search size={40} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 font-medium">{tc("noData")}</p>
+            <p className="text-gray-500 font-medium">No data available</p>
           </div>
         ) : (
           downloads.map((item: any) => {
@@ -119,7 +111,7 @@ export default async function DownloadsPage() {
                       )}
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 leading-snug group-hover:text-[#2563eb] transition-colors">
-                      {item.title}
+                      {typeof item.title === "object" ? item.title.ne || item.title.en || JSON.stringify(item.title) : item.title}
                     </h3>
                     <p className="text-sm text-gray-500 mt-1 line-clamp-1">{fileName}</p>
                   </div>
@@ -134,7 +126,7 @@ export default async function DownloadsPage() {
                     className="flex items-center gap-2 px-6 py-2.5 bg-gray-50 text-[#2563eb] border border-blue-100 rounded-full text-sm font-bold hover:bg-[#2563eb] hover:text-white transition-all shadow-sm"
                   >
                     <Download size={16} />
-                    {tc("download")}
+                    Download
                   </a>
                 </div>
               </div>
@@ -147,20 +139,18 @@ export default async function DownloadsPage() {
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <h2 className="text-2xl font-bold mb-2">
-              {locale === "ne" ? "नयाँ अपडेटहरूका लागि" : "Stay Updated"}
+              Stay Updated
             </h2>
             <p className="text-blue-100">
-              {locale === "ne"
-                ? "हाम्रो सूचना तथा समाचार सेक्सन नियमित रूपमा चेक गर्नुहोस्।"
-                : "Check our News and Notices section regularly for the latest updates."}
+              Check our News and Notices section regularly for the latest updates.
             </p>
           </div>
           <div className="flex gap-4">
             <Link href="/news" className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold transition-colors">
-              {locale === "ne" ? "समाचारहरू" : "News"}
+              News
             </Link>
             <Link href="/notices" className="px-6 py-3 bg-white text-blue-900 rounded-xl font-bold hover:bg-blue-50 transition-colors">
-              {locale === "ne" ? "सूचनाहरू" : "Notices"}
+              Notices
             </Link>
           </div>
         </div>

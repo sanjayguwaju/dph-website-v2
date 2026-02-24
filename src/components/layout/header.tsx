@@ -1,10 +1,9 @@
-import { Home, Network, Monitor, Eye, Phone, Moon, Sun, Languages } from "lucide-react";
+import { Home } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { getSiteSettings, getNavigation } from "@/lib/queries/globals";
 import { MobileMenu } from "./mobile-menu";
 import type { Navigation, Category, Page } from "@/payload-types";
-import { getLocale, getTranslations } from "next-intl/server";
 import { HeaderScrollWrapper } from "./header-scroll";
 import { Marquee } from "./marquee";
 import { formatNepaliDate } from "@/utils/nepali-date";
@@ -27,16 +26,11 @@ function resolveHref(
 }
 
 export async function Header() {
-  const locale = await getLocale();
-  const t = await getTranslations("nav");
-  const ta = await getTranslations("accessibility");
   const [settings, navGlobal] = await Promise.all([getSiteSettings(), getNavigation()]);
   const navigation = (navGlobal as Navigation)?.mainNav || [];
   const s = settings as any;
-  const tc = await getTranslations("common");
-  const hospitalName = locale === "en" ? s.hospitalNameEn : s.hospitalNameNe;
-
-  const address = locale === "en" ? s.addressEn : s.address;
+  const hospitalName = s.hospitalNameNe || s.hospitalNameEn;
+  const address = s.address || s.addressEn;
   const nepaliDate = formatNepaliDate(new Date());
 
   return (
@@ -69,14 +63,14 @@ export async function Header() {
                 )}
               </Link>
             </div>
-            
+
             {/* Center: Title Block */}
             <div className="header-title-block flex-1 text-center">
-              <p className="header-gov-text">{t("govText")}</p>
-              <p className="header-ministry-text">{t("ministryText")}</p>
+              <p className="header-gov-text">Government of Nepal</p>
+              <p className="header-ministry-text">Ministry of Health and Population</p>
               <h1 className="header-hospital-title">{hospitalName}</h1>
               <p className="header-location-text">
-                 {address || (locale === "en" ? "Baglung, Nepal" : "बागलुङ, नेपाल")}
+                {address || "Baglung, Nepal"}
               </p>
             </div>
 
@@ -143,7 +137,7 @@ export async function Header() {
             </nav>
 
             <Link href="/appointments" className="nav-cta-v3 ml-auto">
-               {locale === 'ne' ? 'अनलाइन सेवा ▾' : 'Online Services ▾'}
+              Online Services ▾
             </Link>
           </div>
         </div>

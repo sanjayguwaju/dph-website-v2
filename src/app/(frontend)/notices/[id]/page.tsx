@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
-import { getLocale, getTranslations } from "next-intl/server";
 import { PageLayout } from "@/components/layout/page-layout";
 import { NoticeDetailView } from "@/components/notices/NoticeDetailView";
 
@@ -12,22 +11,19 @@ interface Props {
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
   const payload = await getPayloadClient();
-  const locale = await getLocale();
-  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "notices",
     where: { id: { equals: id } },
     limit: 1,
     depth: 0,
-    locale: locale as any,
   });
 
   const notice = result.docs[0] as any;
-  if (!notice) return { title: tc("notFound") };
+  if (!notice) return { title: "Not Found" };
 
   return {
-    title: `${notice.title} | ${tc("hospitalName")}`,
+    title: `${notice.title} | Dhaulagiri Hospital`,
     description: notice.description?.slice(0, 160) || "Notice detail",
     openGraph: {
       title: notice.title,
@@ -39,16 +35,12 @@ export async function generateMetadata({ params }: Props) {
 export default async function NoticeDetailPage({ params }: Props) {
   const { id } = await params;
   const payload = await getPayloadClient();
-  const locale = await getLocale();
-  const th = await getTranslations("nav");
-  const tnot = await getTranslations("notices");
 
   const result = await payload.find({
     collection: "notices",
     where: { id: { equals: id } },
     limit: 1,
     depth: 1,
-    locale: locale as any,
   });
 
   const notice = result.docs[0] as any;
@@ -58,27 +50,26 @@ export default async function NoticeDetailPage({ params }: Props) {
   const file =
     notice.file && typeof notice.file === "object"
       ? {
-          url: notice.file.url as string,
-          filename: notice.file.filename as string,
-          mimeType: notice.file.mimeType as string,
-        }
+        url: notice.file.url as string,
+        filename: notice.file.filename as string,
+        mimeType: notice.file.mimeType as string,
+      }
       : null;
 
   const image =
     notice.image && typeof notice.image === "object"
       ? {
-          url: notice.image.url as string,
-          alt: notice.image.alt as string,
-        }
+        url: notice.image.url as string,
+        alt: notice.image.alt as string,
+      }
       : (notice.externalImage ? { url: notice.externalImage as string, alt: notice.title as string } : null);
 
-
-  // Format date in Nepali style
+  // Format date
   const dateStr = notice.publishedDate
     ? new Date(notice.publishedDate).toLocaleDateString(
-        locale === "ne" ? "ne-NP" : "en-NP",
-        { year: "numeric", month: "long", day: "numeric", weekday: "long" }
-      )
+      "en-US",
+      { year: "numeric", month: "long", day: "numeric", weekday: "long" }
+    )
     : undefined;
 
   const siteUrl = "https://dph.gandaki.gov.np";
@@ -87,7 +78,7 @@ export default async function NoticeDetailPage({ params }: Props) {
   return (
     <PageLayout
       breadcrumbs={[
-        { label: th("notices"), href: "/notices" },
+        { label: "Notices", href: "/notices" },
         { label: notice.title as string },
       ]}
       maxWidth="max-w-7xl"
@@ -112,7 +103,7 @@ export default async function NoticeDetailPage({ params }: Props) {
           href="/notices"
           className="inline-flex items-center gap-2 text-[#2563eb] hover:underline font-medium"
         >
-          ‹ {tnot("backToNotices")}
+          ‹ Back to Notices
         </Link>
       </div>
     </PageLayout>

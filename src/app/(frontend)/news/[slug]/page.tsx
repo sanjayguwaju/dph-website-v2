@@ -5,7 +5,6 @@ import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
 import { formatDate } from "@/utils/format";
 import { RichText } from "@/components/RichText";
-import { getLocale, getTranslations } from "next-intl/server";
 import { PageLayout } from "@/components/layout/page-layout";
 
 interface Props {
@@ -15,8 +14,6 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const payload = await getPayloadClient();
-  const locale = await getLocale();
-  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "news",
@@ -25,17 +22,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     limit: 1,
     depth: 1,
-    locale: locale as any,
   });
 
   const item = result.docs[0];
-  if (!item) return { title: tc("notFound") };
+  if (!item) return { title: "Not Found" };
 
   const img =
     item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
 
   return {
-    title: `${item.title as string} | ${tc("hospitalName")}`,
+    title: `${item.title as string} | Dhaulagiri Hospital`,
     description: (item.excerpt as string) || undefined,
     openGraph: {
       title: item.title as string,
@@ -48,10 +44,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
   const payload = await getPayloadClient();
-  const locale = await getLocale();
-  const tn = await getTranslations("news");
-  const th = await getTranslations("nav");
-  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "news",
@@ -60,7 +52,6 @@ export default async function NewsDetailPage({ params }: Props) {
     },
     limit: 1,
     depth: 1,
-    locale: locale as any,
   });
 
   const item = result.docs[0];
@@ -74,7 +65,7 @@ export default async function NewsDetailPage({ params }: Props) {
   return (
     <PageLayout
       breadcrumbs={[
-        { label: tn("newsAndActivities"), href: "/news" },
+        { label: "News & Activities", href: "/news" },
         { label: item.title as string },
       ]}
       maxWidth="max-w-4xl"
@@ -120,14 +111,14 @@ export default async function NewsDetailPage({ params }: Props) {
 
         {file?.url && (
           <div className="mt-12 bg-[#f8fbff] border border-[#d1e3ff] p-6 rounded-lg text-center">
-            <p className="mb-4 text-[#2563eb] font-medium">{tc("download")}</p>
+            <p className="mb-4 text-[#2563eb] font-medium">Download</p>
             <a
               href={file.url as string}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-[#dc2626] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-red-700 rounded shadow-sm"
             >
-              📄 {tc("download")} (PDF)
+              📄 Download (PDF)
             </a>
           </div>
         )}
@@ -138,7 +129,7 @@ export default async function NewsDetailPage({ params }: Props) {
           href="/news"
           className="inline-flex items-center gap-2 text-[#2563eb] hover:underline font-medium"
         >
-          ‹ {tn("backToNews")}
+          ‹ Back to News
         </Link>
       </div>
     </PageLayout>

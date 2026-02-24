@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 type Video = {
   id: string;
@@ -23,14 +23,13 @@ function getYouTubeEmbedUrl(url: string): string | null {
 }
 
 export async function VideoGallery({ videos }: { videos: Video[] }) {
-  const t = await getTranslations("home");
   if (videos.length === 0) return null;
 
   return (
     <section className="gallery-section-v2" style={{ borderTop: '1px solid #eee' }}>
       <div className="gallery-header-v2">
         <div className="gallery-header-line"></div>
-        <h2>{t("videoGallery")}</h2>
+        <h2>Video Gallery</h2>
         <div className="gallery-header-line"></div>
       </div>
       <div className="video-grid">
@@ -42,14 +41,14 @@ export async function VideoGallery({ videos }: { videos: Video[] }) {
               <div className="video-embed-wrap">
                 <iframe
                   src={embedUrl}
-                  title={video.title}
+                  title={getLocalizedValue(video.title)}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                   className="video-embed"
                   loading="lazy"
                 />
               </div>
-              <p className="video-title">{video.title}</p>
+              <p className="video-title">{getLocalizedValue(video.title)}</p>
             </div>
           );
         })}

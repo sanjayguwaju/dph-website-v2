@@ -1,31 +1,25 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
 import Image from "next/image";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("staff");
-  const tc = await getTranslations("common");
   return {
-    title: `${t("title")} | ${tc("hospitalName")}`,
+    title: "Staff | Dhaulagiri Hospital",
   };
 }
 
 import { PageLayout } from "@/components/layout/page-layout";
 
 export default async function StaffPage() {
-  const locale = await getLocale();
-  const t = await getTranslations("staff");
-  const tc = await getTranslations("common");
-
   const ROLE_LABELS: Record<string, string> = {
-    chair: t("chair"),
-    cms: t("cms"),
-    "info-officer": t("infoOfficer"),
-    doctor: t("doctor"),
-    nurse: t("nurse"),
-    administrative: t("administrative"),
-    other: tc("other") || "Other",
+    chair: "Chairperson",
+    cms: "Chief Medical Superintendent",
+    "info-officer": "Information Officer",
+    doctor: "Doctor",
+    nurse: "Nurse",
+    administrative: "Administrative",
+    other: "Other",
   };
 
   const ROLE_ORDER = ["chair", "cms", "info-officer", "doctor", "nurse", "administrative", "other"];
@@ -37,7 +31,6 @@ export default async function StaffPage() {
     sort: "order",
     limit: 100,
     depth: 1,
-    locale: locale as any,
   });
 
   const staff = result.docs;
@@ -55,13 +48,13 @@ export default async function StaffPage() {
   return (
     <PageLayout
       breadcrumbs={[
-        { label: t("title") },
+        { label: "Staff" },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-12 border-b border-gray-100 pb-8">
-        <h1 className="text-3xl font-bold text-[#003580] mb-2">👨‍⚕️ {t("title")}</h1>
-        <p className="text-gray-500 text-lg">{t("subtitle")}</p>
+        <h1 className="text-3xl font-bold text-[#003580] mb-2">👨‍⚕️ Staff</h1>
+        <p className="text-gray-500 text-lg">Our dedicated healthcare professionals</p>
       </div>
 
       <div className="space-y-20">
@@ -95,12 +88,12 @@ export default async function StaffPage() {
                           <div className="relative w-28 h-28 rounded-full bg-gray-50 flex items-center justify-center text-4xl shadow-inner border-4 border-white">👤</div>
                         )}
                       </div>
-                      
+
                       <div className="mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-[#2563eb] transition-colors">{member.name}</h3>
-                        {locale !== "en" && member.nameEn && <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{member.nameEn}</p>}
-                        <p className="mt-3 inline-block px-3 py-1 bg-blue-50 text-[#2563eb] text-[11px] font-bold rounded-full uppercase tracking-wider">{member.designation}</p>
-                        {member.department && <p className="text-gray-500 text-sm mt-2 font-medium italic">“ {member.department} ”</p>}
+                        <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-[#2563eb] transition-colors">{getLocalizedValue(member.name)}</h3>
+                        {member.nameEn && <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{getLocalizedValue(member.nameEn)}</p>}
+                        <p className="mt-3 inline-block px-3 py-1 bg-blue-50 text-[#2563eb] text-[11px] font-bold rounded-full uppercase tracking-wider">{getLocalizedValue(member.designation)}</p>
+                        {member.department && <p className="text-gray-500 text-sm mt-2 font-medium italic">" {getLocalizedValue(member.department)} "</p>}
                       </div>
 
                       <div className="w-full pt-6 border-t border-gray-50 flex flex-col gap-3">
@@ -124,7 +117,7 @@ export default async function StaffPage() {
         ))}
       </div>
 
-      {staff.length === 0 && <p className="page-empty text-center py-20 text-gray-400">{tc("noData")}</p>}
+      {staff.length === 0 && <p className="page-empty text-center py-20 text-gray-400">No data available</p>}
     </PageLayout>
   );
 }

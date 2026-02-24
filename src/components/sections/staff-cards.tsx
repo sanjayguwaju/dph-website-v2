@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 type StaffMember = {
   id: string;
@@ -16,9 +16,6 @@ type StaffMember = {
 };
 
 export async function StaffCards({ staff }: { staff: StaffMember[] }) {
-  const locale = await getLocale();
-  const t = await getTranslations("staff");
-  
   if (staff.length === 0) return null;
 
   const roleOrder = ["chair", "cms", "info-officer"];
@@ -34,12 +31,12 @@ export async function StaffCards({ staff }: { staff: StaffMember[] }) {
         const isChair = member.role === "chair";
         const isCMS = member.role === "cms";
         const isInfo = member.role === "info-officer";
-        const name = locale === "en" && member.nameEn ? member.nameEn : member.name;
+        const name = getLocalizedValue(member.nameEn || member.name);
 
         return (
-          <ScrollReveal 
-            key={member.id} 
-            animation="animate-in fade-in slide-in-from-right-10" 
+          <ScrollReveal
+            key={member.id}
+            animation="animate-in fade-in slide-in-from-right-10"
             duration={500}
           >
             <div className="staff-card">
@@ -58,19 +55,19 @@ export async function StaffCards({ staff }: { staff: StaffMember[] }) {
               </div>
 
               <div className="staff-card-info">
-                <p className="staff-card-designation">{member.designation}</p>
+                <p className="staff-card-designation">{getLocalizedValue(member.designation)}</p>
                 <p className="staff-card-name">{name}</p>
 
                 {isInfo && (
                   <div className="staff-card-contacts">
                     {member.phone && (
                       <p className="staff-contact-item">
-                        {member.phone}
+                        {getLocalizedValue(member.phone)}
                       </p>
                     )}
                     {member.email && (
                       <p className="staff-contact-item">
-                        {member.email}
+                        {getLocalizedValue(member.email)}
                       </p>
                     )}
                   </div>
@@ -78,11 +75,11 @@ export async function StaffCards({ staff }: { staff: StaffMember[] }) {
 
                 {isChair ? (
                   <Link href="/committee" className="staff-details-btn">
-                    {t("managementCommittee")}
+                    Management Committee
                   </Link>
                 ) : (
                   <Link href={`/staff/${member.id}`} className="staff-details-btn">
-                    {t("fullDetails")}
+                    Full Details
                   </Link>
                 )}
               </div>

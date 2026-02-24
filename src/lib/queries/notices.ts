@@ -1,6 +1,5 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
-import { getLocale } from "next-intl/server";
 import type { Notice } from "@/payload-types";
 
 // Re-export the generated type for use in components
@@ -11,7 +10,6 @@ export type { Notice as PopupNotice };
  */
 export const getPopupNotices = cache(async (): Promise<Notice[]> => {
   const payload = await getPayloadClient();
-  const locale = (await getLocale()) as any;
   const now = new Date().toISOString();
 
   const notices = await payload.find({
@@ -31,7 +29,6 @@ export const getPopupNotices = cache(async (): Promise<Notice[]> => {
     sort: "-publishedDate",
     limit: 10,
     depth: 1,
-    locale,
   });
 
   return notices.docs;

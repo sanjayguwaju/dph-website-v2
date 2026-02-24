@@ -2,15 +2,12 @@ import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
 import Link from "next/link";
 import { formatDate } from "@/utils/format";
-import { getLocale, getTranslations } from "next-intl/server";
 import { FileText, Download, Calendar, ChevronRight, Bell } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("nav");
-  const tc = await getTranslations("common");
   return {
-    title: `${t("notices")} | ${tc("hospitalName")}`,
-    description: `Official notices, circulars and announcements from ${tc("hospitalName")}.`,
+    title: "Notices | Dhaulagiri Hospital",
+    description: "Official notices, circulars and announcements from Dhaulagiri Hospital.",
   };
 }
 
@@ -24,9 +21,6 @@ export default async function NoticesPage({
   const { page } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 20;
-  const locale = await getLocale();
-  const t = await getTranslations("nav");
-  const tc = await getTranslations("common");
 
   const payload = await getPayloadClient();
   const result = await payload.find({
@@ -36,7 +30,6 @@ export default async function NoticesPage({
     limit,
     page: currentPage,
     depth: 1,
-    locale: locale as any,
   });
 
   const { docs, totalPages, totalDocs } = result;
@@ -44,26 +37,24 @@ export default async function NoticesPage({
   return (
     <PageLayout
       breadcrumbs={[
-        { label: t("notices") },
+        { label: "Notices" },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-8 border-b border-gray-100 pb-6">
         <h1 className="text-3xl font-bold text-[#003580] mb-2 flex items-center gap-2">
           <Bell size={28} className="text-[#dc2626]" />
-          {t("notices")}
+          Notices
         </h1>
         <p className="text-gray-500">
-          {locale === "ne"
-            ? `कुल ${totalDocs} सूचनाहरू`
-            : `${totalDocs} official notices and announcements`}
+          {`${totalDocs} official notices and announcements`}
         </p>
       </div>
 
       {/* Notices list */}
       <div className="space-y-4">
         {docs.length === 0 ? (
-          <p className="page-empty text-center py-20 text-gray-400">{tc("noData")}</p>
+          <p className="page-empty text-center py-20 text-gray-400">No data available</p>
         ) : (
           docs.map((notice: any) => {
             const file =
@@ -74,8 +65,8 @@ export default async function NoticesPage({
               <div key={notice.id} className="bg-white border border-gray-100 shadow-sm rounded-lg overflow-hidden hover:border-[#2563eb] transition-colors p-5 flex flex-col md:flex-row items-start md:items-center gap-6">
                 {/* PDF icon badge */}
                 <div className="hidden md:flex flex-col items-center justify-center bg-[#fff8f8] border border-[#ffe4e4] rounded px-3 py-2 shrink-0">
-                   <FileText size={20} className="text-[#dc2626]" />
-                   <span className="text-[10px] font-bold text-[#dc2626] mt-0.5">PDF</span>
+                  <FileText size={20} className="text-[#dc2626]" />
+                  <span className="text-[10px] font-bold text-[#dc2626] mt-0.5">PDF</span>
                 </div>
 
                 {/* Content */}
@@ -105,7 +96,7 @@ export default async function NoticesPage({
                     href={`/notices/${notice.id}`}
                     className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-6 py-2 bg-[#2563eb] text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors"
                   >
-                    {locale === "ne" ? "हेर्नुहोस्" : "View"}
+                    View
                     <ChevronRight size={14} />
                   </Link>
                   {hasPdf && (
@@ -115,7 +106,7 @@ export default async function NoticesPage({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 bg-gray-50 text-gray-600 rounded border border-gray-100 hover:bg-gray-100 transition-colors"
-                      title={tc("download")}
+                      title="Download"
                     >
                       <Download size={18} />
                     </a>
@@ -132,7 +123,7 @@ export default async function NoticesPage({
         <div className="page-pagination mt-12">
           {currentPage > 1 && (
             <Link href={`/notices?page=${currentPage - 1}`} className="page-nav-btn">
-              ‹ {tc("prev")}
+              ‹ Prev
             </Link>
           )}
           <span className="page-num">
@@ -140,7 +131,7 @@ export default async function NoticesPage({
           </span>
           {currentPage < totalPages && (
             <Link href={`/notices?page=${currentPage + 1}`} className="page-nav-btn">
-              {tc("next")} ›
+              Next ›
             </Link>
           )}
         </div>

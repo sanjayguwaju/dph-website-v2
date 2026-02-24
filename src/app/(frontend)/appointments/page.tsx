@@ -1,29 +1,25 @@
 import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import { PageLayout } from "@/components/layout/page-layout";
 import { AppointmentForm } from "@/components/forms/appointment-form";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("home");
   return {
-    title: t("onlineAppointment") || "Online Appointment",
+    title: "Online Appointment",
   };
 }
 
 export default async function AppointmentsPage() {
-  const t = await getTranslations("home");
-
   return (
     <PageLayout
       breadcrumbs={[
-        { label: t("onlineAppointment") || "Online Appointment" },
+        { label: "Online Appointment" },
       ]}
       maxWidth="max-w-4xl"
     >
       <ScrollReveal animation="animate-in fade-in slide-in-from-bottom-10">
         <div className="py-12">
-            <AppointmentForm />
+          <AppointmentForm />
         </div>
       </ScrollReveal>
 

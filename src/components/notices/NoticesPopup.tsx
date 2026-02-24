@@ -5,7 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from "lucide-react";
 import type { Notice } from "@/payload-types";
-import { useTranslations } from "next-intl";
+
+// Helper to extract string from potentially localized CMS fields
+function getLocalizedValue(value: any): string {
+  if (typeof value === "string") return value;
+  if (value && typeof value === "object") {
+    return value.ne || value.en || String(value);
+  }
+  return String(value);
+}
 
 interface NoticesPopupProps {
   notices: Notice[];
@@ -14,8 +22,6 @@ interface NoticesPopupProps {
 export function NoticesPopup({ notices }: NoticesPopupProps) {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
-  const tc = useTranslations("common");
-  const tn = useTranslations("news");
 
   const closePopup = useCallback(() => {
     setOpen(false);
@@ -75,7 +81,7 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
     <div
       role="dialog"
       aria-modal="true"
-      aria-label={tn("importantNotice")}
+      aria-label="Important Notice"
       className="np-overlay"
       onClick={(e) => {
         if ((e.target as HTMLElement).classList.contains("np-overlay")) closePopup();
@@ -86,14 +92,14 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
           <div className="flex items-center gap-3">
             <div className="w-2 h-8 bg-[#dc2626] rounded-full"></div>
             <div>
-              <span className="text-[10px] font-black text-[#dc2626] uppercase tracking-[0.2em] block mb-0.5">{tn("importantNotice")}</span>
-              <h3 className="text-sm font-bold text-gray-900 truncate max-w-[200px] md:max-w-md">{notice.title}</h3>
+              <span className="text-[10px] font-black text-[#dc2626] uppercase tracking-[0.2em] block mb-0.5">Important Notice</span>
+              <h3 className="text-sm font-bold text-gray-900 truncate max-w-[200px] md:max-w-md">{getLocalizedValue(notice.title)}</h3>
             </div>
           </div>
           <button
             className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-[#dc2626] hover:text-white transition-all shadow-sm"
             onClick={closePopup}
-            aria-label={tc("closeMenu") || "Close"}
+            aria-label="Close"
           >
             <X size={18} />
           </button>
@@ -104,17 +110,17 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
             <div className="relative w-full">
               <img
                 src={image?.url || externalImage}
-                alt={image?.alt || notice.title}
+                alt={image?.alt || getLocalizedValue(notice.title)}
                 className="w-full h-auto block object-contain max-h-[70vh]"
               />
             </div>
           ) : (
             <div className="p-10 md:p-16 text-center">
               <div className="w-20 h-20 bg-red-50 text-[#dc2626] rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🪧</div>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{notice.title}</h2>
+              <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 mb-6 leading-tight">{getLocalizedValue(notice.title)}</h2>
               {notice.description && (
                 <div className="text-gray-600 leading-relaxed text-lg max-w-2xl mx-auto prose prose-red">
-                  {notice.description}
+                  {getLocalizedValue(notice.description)}
                 </div>
               )}
             </div>
@@ -149,7 +155,7 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
               onClick={closePopup}
             >
               <ExternalLink size={14} />
-              {tc("readMore")?.replace(" →", "") || "Details"}
+              Details
             </Link>
 
             {fileUrl && (
@@ -161,7 +167,7 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
                 rel="noopener noreferrer"
               >
                 <Download size={14} />
-                {tc("download") || "PDF"}
+                PDF
               </a>
             )}
           </div>

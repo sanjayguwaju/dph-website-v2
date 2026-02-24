@@ -1,23 +1,19 @@
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { getTranslations } from "next-intl/server";
 import { RichText } from "@/components/RichText";
 
-export async function AboutUs({ 
-  aboutText, 
-  content 
-}: { 
+export async function AboutUs({
+  aboutText,
+  content
+}: {
   aboutText?: string | null;
   content?: any;
 }) {
-  const t = await getTranslations("about");
-  const tc = await getTranslations("common");
-
   return (
     <section className="about-section-common">
       <ScrollReveal animation="animate-in fade-in" duration={600}>
         <div className="section-header-v2">
-          <h2 className="section-heading-v2">{t("title")}</h2>
+          <h2 className="section-heading-v2">About Us</h2>
         </div>
       </ScrollReveal>
 
@@ -29,12 +25,12 @@ export async function AboutUs({
             </div>
           ) : (
             <p className="about-text-refined line-clamp-6">
-              {aboutText || t("introContent")}
+              {aboutText || "Dhaulagiri Hospital is a government hospital providing quality healthcare services to the people of Baglung and surrounding areas."}
             </p>
           )}
           <div className="about-action">
             <Link href="/about" className="btn-read-more-red">
-              {tc("readMore")} <span>›</span>
+              Read More <span>›</span>
             </Link>
           </div>
         </div>

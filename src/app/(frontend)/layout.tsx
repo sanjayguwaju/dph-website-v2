@@ -1,6 +1,4 @@
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
 import { Header, Footer } from "@/components/layout";
 import { TopBar } from "@/components/layout/top-bar";
 import { NoticesPopup } from "@/components/notices";
@@ -11,15 +9,13 @@ import { getSiteSettings } from "@/lib/queries/globals";
 import "./globals.css";
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [popupNotices, settings, messagesData] = await Promise.all([
+  const [popupNotices, settings] = await Promise.all([
     getPopupNotices(),
     getSiteSettings(),
-    getMessages(),
   ]);
 
   const s = settings as any;
-  const messages = messagesData as any;
-  const locale = messages?.locale || "ne";
+  const locale = "ne";
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -55,36 +51,34 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         />
       </head>
       <body suppressHydrationWarning>
-        <NextIntlClientProvider messages={messages}>
-          {/* Accessibility + Date + Emergency + Social + Lang Switcher */}
-          <TopBar
-            contactPhone={s.contactPhone}
-            emergencyNumber={s.emergencyNumber}
-          />
+        {/* Accessibility + Date + Emergency + Social */}
+        <TopBar
+          contactPhone={s.contactPhone}
+          emergencyNumber={s.emergencyNumber}
+        />
 
-          {/* Hospital Logo + Navigation */}
-          <Header />
-
+        {/* Hospital Logo + Navigation */}
+        <Header />
 
 
-          {/* Page Content */}
-          <main className="min-h-screen">{children}</main>
 
-          {/* Footer */}
-          <Footer />
+        {/* Page Content */}
+        <main className="min-h-screen">{children}</main>
 
-          {/* Notices Popup Dialog */}
-          <NoticesPopup notices={popupNotices} />
+        {/* Footer */}
+        <Footer />
 
-          {/* Progress Bar for navigation feedback */}
-          <ProgressBar />
+        {/* Notices Popup Dialog */}
+        <NoticesPopup notices={popupNotices} />
 
-          {/* Scroll to Top Arrow */}
-          <ScrollToTop />
+        {/* Progress Bar for navigation feedback */}
+        <ProgressBar />
 
-          {/* Vercel Speed Insights */}
-          <SpeedInsights />
-        </NextIntlClientProvider>
+        {/* Scroll to Top Arrow */}
+        <ScrollToTop />
+
+        {/* Vercel Speed Insights */}
+        <SpeedInsights />
       </body>
     </html>
   );

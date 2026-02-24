@@ -1,6 +1,5 @@
 import React from "react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
 
 interface BreadcrumbItem {
   label: string;
@@ -18,17 +17,15 @@ export async function PageLayout({
   children,
   breadcrumbs,
   className = "",
-  maxWidth = "max-w-7xl", // Default to 7xl but can be overridden (e.g. max-w-4xl for reading)
+  maxWidth = "max-w-7xl",
 }: PageLayoutProps) {
-  const th = await getTranslations("nav");
-
   return (
     <>
       <div className="breadcrumb-wrap-v3">
         <div className="container px-page">
           <nav className="breadcrumb-nav-v3" aria-label="Breadcrumb">
             <Link href="/" className="breadcrumb-link-v3">
-              {th("home")}
+              Home
             </Link>
             {breadcrumbs.map((item, i) => (
               <div key={i} className="breadcrumb-item-v3">

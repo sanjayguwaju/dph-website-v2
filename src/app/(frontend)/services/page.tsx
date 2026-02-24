@@ -1,32 +1,25 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
 import Link from "next/link";
-import { getLocale, getTranslations } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("services");
-  const tc = await getTranslations("common");
   return {
-    title: `${t("title")} | ${tc("hospitalName")}`,
+    title: "Services | Dhaulagiri Hospital",
   };
 }
 
 import { PageLayout } from "@/components/layout/page-layout";
 
 export default async function ServicesPage() {
-  const locale = await getLocale();
-  const t = await getTranslations("services");
-  const tc = await getTranslations("common");
-
   const CATEGORY_LABELS: Record<string, string> = {
-    opd: t("opd"),
-    ipd: t("ipd"),
-    emergency: t("emergency"),
-    diagnostic: t("diagnostic"),
-    "maternal-child": t("maternalChild"),
-    specialized: t("specialized"),
-    support: t("support"),
-    other: t("other"),
+    opd: "OPD",
+    ipd: "IPD",
+    emergency: "Emergency",
+    diagnostic: "Diagnostic",
+    "maternal-child": "Maternal & Child",
+    specialized: "Specialized",
+    support: "Support",
+    other: "Other",
   };
 
   const payload = await getPayloadClient();
@@ -36,7 +29,6 @@ export default async function ServicesPage() {
     sort: "order",
     limit: 100,
     depth: 0,
-    locale: locale as any,
   });
 
   const services = result.docs;
@@ -52,13 +44,13 @@ export default async function ServicesPage() {
   return (
     <PageLayout
       breadcrumbs={[
-        { label: t("title") },
+        { label: "Services" },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-12 border-b border-gray-100 pb-8">
-        <h1 className="text-3xl font-bold text-[#003580] mb-2">🩺 {t("title")}</h1>
-        <p className="text-gray-500 text-lg">{t("subtitle")}</p>
+        <h1 className="text-3xl font-bold text-[#003580] mb-2">🩺 Services</h1>
+        <p className="text-gray-500 text-lg">Our hospital services and departments</p>
       </div>
 
       <div className="space-y-16">
@@ -74,9 +66,9 @@ export default async function ServicesPage() {
                 >
                   <span className="service-icon">{service.icon || "🏥"}</span>
                   <div className="service-page-info">
-                    <p className="service-page-name">{service.name}</p>
+                    <p className="service-page-name">{typeof service.name === "object" ? service.name.ne || service.name.en || JSON.stringify(service.name) : service.name}</p>
                     {service.shortDescription && (
-                      <p className="service-page-desc line-clamp-2">{service.shortDescription}</p>
+                      <p className="service-page-desc line-clamp-2">{typeof service.shortDescription === "object" ? service.shortDescription.ne || service.shortDescription.en || "" : service.shortDescription}</p>
                     )}
                   </div>
                 </Link>
@@ -86,7 +78,7 @@ export default async function ServicesPage() {
         ))}
       </div>
 
-      {services.length === 0 && <p className="page-empty text-center py-20 text-gray-400">{tc("noData")}</p>}
+      {services.length === 0 && <p className="page-empty text-center py-20 text-gray-400">No data available</p>}
     </PageLayout>
   );
 }

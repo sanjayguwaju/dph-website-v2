@@ -4,10 +4,8 @@ import { useState, useTransition } from "react";
 import { Mail, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useTranslations } from "next-intl";
 
 export function NewsletterSection() {
-  const t = useTranslations("newsletter");
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
@@ -30,15 +28,15 @@ export function NewsletterSection() {
 
         if (data.success) {
           setStatus("success");
-          setMessage(t("success"));
+          setMessage("Thank you for subscribing!");
           setEmail("");
         } else {
           setStatus("error");
-          setMessage(data.error || t("error"));
+          setMessage(data.error || "Something went wrong. Please try again.");
         }
       } catch {
         setStatus("error");
-        setMessage(t("failed"));
+        setMessage("Failed to subscribe. Please try again later.");
       }
 
       // Reset status after 5 seconds
@@ -63,10 +61,10 @@ export function NewsletterSection() {
             </div>
 
             <h2 className="text-2xl font-[var(--font-display)] font-bold text-[var(--color-ink-50)] lg:text-3xl">
-              {t("title")}
+              Subscribe to Our Newsletter
             </h2>
             <p className="mx-auto mt-3 max-w-md text-[var(--color-ink-300)]">
-              {t("subtitle")}
+              Get the latest news and updates delivered to your inbox.
             </p>
 
             <form
@@ -77,23 +75,22 @@ export function NewsletterSection() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("placeholder")}
+                placeholder="Enter your email"
                 required
                 disabled={isPending}
                 className="w-full sm:flex-1"
               />
               <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
-                {isPending ? t("subscribing") : t("subscribe")}
+                {isPending ? "Subscribing..." : "Subscribe"}
               </Button>
             </form>
 
             {status !== "idle" && (
               <div
-                className={`mt-4 flex items-center justify-center gap-2 text-sm ${
-                  status === "success"
+                className={`mt-4 flex items-center justify-center gap-2 text-sm ${status === "success"
                     ? "text-[var(--color-emerald)]"
                     : "text-[var(--color-crimson)]"
-                }`}
+                  }`}
               >
                 {status === "success" ? (
                   <Check className="h-4 w-4" />

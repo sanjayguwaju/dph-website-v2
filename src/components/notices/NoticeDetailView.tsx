@@ -18,7 +18,6 @@ import {
   Printer,
   Menu,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 
 interface NoticeFile {
@@ -48,8 +47,6 @@ export function NoticeDetailView({
   shareUrl,
   tweetUrl,
 }: NoticeDetailViewProps) {
-  const tc = useTranslations("common");
-  const tn = useTranslations("notices");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(14);
   const [zoom, setZoom] = useState(100);
@@ -118,7 +115,7 @@ export function NoticeDetailView({
               <button
                 className="pdf-tool-icon-btn"
                 onClick={() => setShowSidebar((s) => !s)}
-                title={tn("toggleSidebar")}
+                title="Toggle sidebar"
               >
                 <Menu size={15} />
               </button>
@@ -164,12 +161,12 @@ export function NoticeDetailView({
               <div className="pdf-toolbar-divider" />
 
               {/* Zoom out */}
-              <button className="pdf-tool-icon-btn" onClick={handleZoomOut} title={tn("zoomOut")}>
+              <button className="pdf-tool-icon-btn" onClick={handleZoomOut} title="Zoom out">
                 <ZoomOut size={15} />
               </button>
               <span className="pdf-zoom-text">{zoom}%</span>
               {/* Zoom in */}
-              <button className="pdf-tool-icon-btn" onClick={handleZoomIn} title={tn("zoomIn")}>
+              <button className="pdf-tool-icon-btn" onClick={handleZoomIn} title="Zoom in">
                 <ZoomIn size={15} />
               </button>
             </div>
@@ -179,14 +176,14 @@ export function NoticeDetailView({
                 href={file?.url}
                 download={file?.filename}
                 className="pdf-tool-icon-btn"
-                title={tn("downloadPdf")}
+                title="Download PDF"
               >
                 <Download size={15} />
               </a>
               <button
                 className="pdf-tool-icon-btn"
                 onClick={() => window.print()}
-                title={tn("print")}
+                title="Print"
               >
                 <Printer size={15} />
               </button>
@@ -195,7 +192,7 @@ export function NoticeDetailView({
                 target="_blank"
                 rel="noopener noreferrer"
                 className="pdf-tool-icon-btn"
-                title={tn("openNewTab")}
+                title="Open in new tab"
               >
                 <Maximize2 size={15} />
               </a>
@@ -230,7 +227,7 @@ export function NoticeDetailView({
               {isLoading && (
                 <div className="pdf-loading-overlay">
                   <div className="pdf-spinner" />
-                  <span>{tc("loading")}</span>
+                  <span>Loading...</span>
                 </div>
               )}
               <iframe
@@ -275,7 +272,7 @@ export function NoticeDetailView({
             className="notice-download-link"
           >
             <FileText size={14} />
-            {tc("download")}: {file?.filename || "document.pdf"}
+            Download: {file?.filename || "document.pdf"}
           </a>
         </div>
       )}
@@ -287,19 +284,19 @@ export function NoticeDetailView({
             onClick={() => handleShare("facebook")}
             className="notice-share-btn facebook"
           >
-            <Facebook size={14} /> {tn("share")}
+            <Facebook size={14} /> Share
           </button>
           <button
             onClick={() => handleShare("twitter")}
             className="notice-share-btn twitter"
           >
-            <Twitter size={14} /> {tn("tweet")}
+            <Twitter size={14} /> Tweet
           </button>
           <button
             onClick={() => handleShare("native")}
             className="notice-share-btn share"
           >
-            <Share2 size={14} /> {tn("share")}
+            <Share2 size={14} /> Share
           </button>
         </div>
 

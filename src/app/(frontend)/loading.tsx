@@ -1,10 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-
 export default function Loading() {
-  const t = useTranslations("common");
-
   return (
     <div className="flex min-h-[60vh] w-full items-center justify-center p-8">
       <div className="flex flex-col items-center gap-6">
@@ -15,7 +11,7 @@ export default function Loading() {
           </div>
         </div>
         <p className="animate-pulse text-lg font-bold tracking-wide text-[var(--brand-blue)] uppercase">
-          {t("loading")}
+          Loading...
         </p>
       </div>
     </div>

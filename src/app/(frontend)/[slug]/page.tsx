@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPageBySlug } from "@/lib/queries/pages";
 import { RichText } from "@/components/RichText";
-import { getLocale, getTranslations } from "next-intl/server";
 import { FeedbackForm } from "@/components/forms/feedback-form";
 
 import { PageLayout } from "@/components/layout/page-layout";
@@ -17,23 +16,19 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const page = await getPageBySlug(slug);
-  const tc = await getTranslations("common");
 
   if (!page) {
-    return { title: tc("notFound") };
+    return { title: "Not Found" };
   }
 
   return {
-    title: `${page.title} | ${tc("hospitalName")}`,
+    title: `${page.title} | Dhaulagiri Hospital`,
   };
 }
 
 export default async function DynamicPage({ params }: PageProps) {
   const { slug } = await params;
   const page = await getPageBySlug(slug);
-  const locale = await getLocale();
-  const tc = await getTranslations("common");
-  const tstaff = await getTranslations("staff");
 
   if (!page) {
     notFound();
@@ -49,7 +44,6 @@ export default async function DynamicPage({ params }: PageProps) {
         isActive: { equals: true },
       },
       sort: "order",
-      locale: locale as any,
     });
     committeeMembers = res.docs;
   }
@@ -59,7 +53,6 @@ export default async function DynamicPage({ params }: PageProps) {
     const payload = await getPayloadClient();
     contactSettings = await payload.findGlobal({
       slug: "site-settings",
-      locale: locale as any,
     });
   }
 
@@ -76,14 +69,14 @@ export default async function DynamicPage({ params }: PageProps) {
         </h1>
         <div className="w-20 h-1.5 bg-gradient-to-r from-[#2563eb] to-[#003580] mx-auto rounded-full"></div>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-12">
         <article className="prose-editorial text-[#212529]">
           {(page as any).content ? (
             <RichText data={(page as any).content} />
           ) : (
             <p className="no-data-text">
-              {tc("noData")}
+              No content available
             </p>
           )}
         </article>
@@ -92,9 +85,9 @@ export default async function DynamicPage({ params }: PageProps) {
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               {[
-                { icon: "📞", label: locale === "ne" ? "फोन" : "Phone", value: contactSettings.contactPhone },
-                { icon: "✉️", label: locale === "ne" ? "इमेल" : "Email", value: contactSettings.contactEmail },
-                { icon: "🚨", label: locale === "ne" ? "आकस्मिक" : "Emergency", value: contactSettings.emergencyNumber },
+                { icon: "📞", label: "Phone", value: contactSettings.contactPhone },
+                { icon: "✉️", label: "Email", value: contactSettings.contactEmail },
+                { icon: "🚨", label: "Emergency", value: contactSettings.emergencyNumber },
               ].map((item, idx) => (
                 <div key={idx} className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 flex flex-col items-center text-center">
                   <span className="text-3xl mb-3">{item.icon}</span>
@@ -103,21 +96,19 @@ export default async function DynamicPage({ params }: PageProps) {
                 </div>
               ))}
             </div>
-            
+
             <section className="mt-12 bg-gray-50/50 p-10 rounded-[3rem] border border-gray-100">
-               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                  <div>
-                     <h2 className="text-3xl font-black text-[#003580] mb-4">
-                        {locale === "ne" ? "हामीलाई सम्पर्क गर्नुहोस्" : "Get In Touch"}
-                     </h2>
-                     <p className="text-slate-600 font-bold mb-6">
-                        {locale === "ne" 
-                          ? "तपाईंको जिज्ञासा वा सुझाव छ? कृपया हामीलाई सन्देश पठाउनुहोस्।"
-                          : "Have a question or suggestion? Send us a message and we'll get back to you."}
-                     </p>
-                  </div>
-                  <FeedbackForm />
-               </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl font-black text-[#003580] mb-4">
+                    Get In Touch
+                  </h2>
+                  <p className="text-slate-600 font-bold mb-6">
+                    Have a question or suggestion? Send us a message and we'll get back to you.
+                  </p>
+                </div>
+                <FeedbackForm />
+              </div>
             </section>
           </>
         )}
@@ -125,7 +116,7 @@ export default async function DynamicPage({ params }: PageProps) {
         {slug === "contact" && contactSettings?.mapEmbedUrl && (
           <section className="mt-8">
             <h2 className="text-2xl font-bold text-[#003580] mb-6 flex items-center gap-2">
-              📍 {locale === "ne" ? "हाम्रो स्थान" : "Our Location"}
+              📍 Our Location
             </h2>
             <div className="rounded-3xl overflow-hidden border-4 border-white shadow-2xl h-[500px]">
               <iframe
@@ -145,7 +136,7 @@ export default async function DynamicPage({ params }: PageProps) {
       {slug === "committee" && committeeMembers.length > 0 && (
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-black border-l-4 border-[#2563eb] pl-4 mb-8">
-            {tstaff("managementCommittee")}
+            Management Committee
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {committeeMembers.map((member) => {
@@ -171,7 +162,7 @@ export default async function DynamicPage({ params }: PageProps) {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
                   <p className="text-[#2563eb] font-semibold text-sm mb-3">{member.designation}</p>
-                  
+
                   <div className="flex flex-col gap-1 text-sm text-gray-500">
                     {member.phone && (
                       <p className="flex items-center justify-center gap-1.5">

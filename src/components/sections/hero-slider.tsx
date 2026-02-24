@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 interface HeroSliderProps {
   slides: any[];
@@ -60,7 +61,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
         {slides.map((s, i) => {
           const img = s.image && typeof s.image === "object" ? s.image : null;
           const imgUrl = img?.url || s.externalImage || `https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&q=80&w=1200`;
-          
+
           return (
             <div
               key={s.id || i}
@@ -74,11 +75,11 @@ export function HeroSlider({ slides }: HeroSliderProps) {
                 priority={i === 0}
                 sizes="(max-width: 1024px) 100vw, 70vw"
               />
-              
+
               <div className="slide-overlay-v3">
                 <div className="slide-info-v3">
-                  <h2 className="slide-title-v3">{s.title}</h2>
-                  <p className="slide-caption-v3">{s.caption}</p>
+                  <h2 className="slide-title-v3">{getLocalizedValue(s.title)}</h2>
+                  <p className="slide-caption-v3">{getLocalizedValue(s.caption)}</p>
                 </div>
               </div>
             </div>

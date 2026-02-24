@@ -2,8 +2,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/utils/format";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
-import { getTranslations, getLocale } from "next-intl/server";
 import { FileText } from "lucide-react";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 type NewsItem = {
   id: string;
@@ -31,10 +31,6 @@ export async function NewsActivities({
   featured: NewsItem | null;
   recent: NewsItem[];
 }) {
-  const t = await getTranslations("home");
-  const tc = await getTranslations("common");
-  const locale = await getLocale();
-
   if (!featured && recent.length === 0) return null;
 
   const featuredImg = featured ? resolveNewsImg(featured) : null;
@@ -43,10 +39,10 @@ export async function NewsActivities({
     <section className="news-section-v2">
       <div className="section-header-v2 no-border items-center justify-between flex">
         <h2 className="section-heading-v2 uppercase">
-          {t("news")}
+          News & Activities
         </h2>
         <Link href="/news" className="view-all-v2">
-          {tc("viewAll")}
+          View All
         </Link>
       </div>
 
@@ -72,14 +68,14 @@ export async function NewsActivities({
                   )}
                   {/* Thick dark gradient to ensure text readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                  
+
                   {/* Content overlayed on image */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10">
                     <div className="flex items-center gap-3 text-gray-300 text-xs font-bold mb-3">
                       <span className="uppercase tracking-widest">{formatDate(featured.publishedDate || "", "long")}</span>
                     </div>
                     <h3 className="text-2xl md:text-3xl font-extrabold text-white group-hover:text-gray-200 transition-colors leading-tight mb-3 text-balance drop-shadow-md">
-                      {featured.title}
+                      {getLocalizedValue(featured.title)}
                     </h3>
                   </div>
                 </div>
@@ -117,7 +113,7 @@ export async function NewsActivities({
                     )}
                   </div>
                   <div className="flex-1 min-w-0 flex flex-col justify-center gap-2">
-                    <h4 className="text-[0.95rem] font-medium text-gray-900 group-hover:text-blue-700 transition-colors leading-[1.4] line-clamp-2">{item.title}</h4>
+                    <h4 className="text-[0.95rem] font-medium text-gray-900 group-hover:text-blue-700 transition-colors leading-[1.4] line-clamp-2">{getLocalizedValue(item.title)}</h4>
                     <div className="flex items-center gap-1.5 text-[0.75rem] font-semibold text-gray-600">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                       <time className="uppercase tracking-wide">

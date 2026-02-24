@@ -2,7 +2,6 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ChevronDown, ChevronRight, X, Search } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 interface NavItem {
   label: string;
@@ -17,8 +16,6 @@ interface MobileMenuProps {
 export function MobileMenu({ items }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-  const t = useTranslations("nav");
-  const tc = useTranslations("common");
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) => ({ ...prev, [label]: !prev[label] }));
@@ -31,7 +28,7 @@ export function MobileMenu({ items }: MobileMenuProps) {
         id="mobile-menu-btn"
         onClick={() => setIsOpen(true)}
         className="mobile-menu-trigger"
-        aria-label={t("openMenu")}
+        aria-label="Open menu"
       >
         <span className="hamburger-bar" />
         <span className="hamburger-bar" />
@@ -50,11 +47,11 @@ export function MobileMenu({ items }: MobileMenuProps) {
       {/* Drawer */}
       <div className={`mobile-menu-drawer${isOpen ? " open" : ""}`}>
         <div className="mobile-menu-head">
-          <span className="mobile-menu-title">{t("menu")}</span>
+          <span className="mobile-menu-title">Menu</span>
           <button
             onClick={() => setIsOpen(false)}
             className="mobile-menu-close"
-            aria-label={t("closeMenu")}
+            aria-label="Close menu"
           >
             <X size={24} />
           </button>
@@ -62,7 +59,7 @@ export function MobileMenu({ items }: MobileMenuProps) {
 
         <nav className="mobile-nav">
           <Link href="/" onClick={() => setIsOpen(false)} className="mobile-nav-link">
-            {t("home")}
+            Home
           </Link>
           {items.map((item) => {
             const hasSub = item.submenu && item.submenu.length > 0;
@@ -110,7 +107,7 @@ export function MobileMenu({ items }: MobileMenuProps) {
 
         <div className="mobile-menu-footer">
           <Link href="/search" className="mobile-search-link" onClick={() => setIsOpen(false)}>
-            <Search size={18} /> {tc("search")}
+            <Search size={18} /> Search
           </Link>
         </div>
       </div>

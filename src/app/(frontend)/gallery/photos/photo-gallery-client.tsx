@@ -3,7 +3,6 @@
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight, Images, ZoomIn } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type GalleryImageItem = {
@@ -67,7 +66,6 @@ function Lightbox({
   onClose: () => void;
 }) {
   const [idx, setIdx] = useState(startIndex);
-  const tc = useTranslations("common");
 
   const prev = useCallback(() => setIdx((i) => (i - 1 + images.length) % images.length), [images.length]);
   const next = useCallback(() => setIdx((i) => (i + 1) % images.length), [images.length]);
@@ -171,8 +169,6 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
   const [view, setView] = useState<"albums" | "grid">("albums");
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(null);
   const [lightbox, setLightbox] = useState<{ images: FlatImage[]; startIndex: number } | null>(null);
-  const t = useTranslations("gallery");
-  const tc = useTranslations("common");
 
   // All images across ALL albums
   const allImages: FlatImage[] = albums.flatMap(getAlbumImages);
@@ -213,14 +209,14 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
           onClick={backToAlbums}
         >
           <Images size={15} />
-          {t("albums")}
+          Albums
           <span className="gallery-tab-count">{albums.length}</span>
         </button>
         <button
           className={`gallery-tab-btn${view === "grid" && !activeAlbum ? " active" : ""}`}
           onClick={showAll}
         >
-          {t("allPhotos")}
+          All Photos
           <span className="gallery-tab-count">{allImages.length}</span>
         </button>
         {activeAlbum && (
@@ -235,7 +231,7 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
       {activeAlbum && (
         <button className="gallery-back-btn" onClick={backToAlbums}>
           <ChevronLeft size={16} />
-          {tc("back")}
+          Back
         </button>
       )}
 
@@ -243,7 +239,7 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
       {view === "albums" && !activeAlbum && (
         <>
           {albums.length === 0 ? (
-            <p className="page-empty">{tc("noData")}</p>
+            <p className="page-empty">No data available</p>
           ) : (
             <div className="gallery-albums-grid">
               {albums.map((album) => (
@@ -262,7 +258,7 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
       {(view === "grid" || activeAlbum) && (
         <>
           {currentImages.length === 0 ? (
-            <p className="page-empty">{tc("noData")}</p>
+            <p className="page-empty">No data available</p>
           ) : (
             <div className="gallery-masonry-grid">
               {currentImages.map((img, i) => (

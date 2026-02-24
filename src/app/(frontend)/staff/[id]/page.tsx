@@ -1,9 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
-import { getLocale, getTranslations } from "next-intl/server";
 import { PageLayout } from "@/components/layout/page-layout";
 
 interface Props {
@@ -13,25 +11,21 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
   const payload = await getPayloadClient();
-  const tc = await getTranslations("common");
-  const ts = await getTranslations("staff");
   const staff = await payload.findByID({
     collection: "staff",
     id,
   });
 
-  if (!staff) return { title: tc("notFound") };
+  if (!staff) return { title: "Not Found" };
 
   return {
-    title: `${staff.name} | ${tc("hospitalName")}`,
+    title: `${staff.name} | Dhaulagiri Hospital`,
   };
 }
 
 export default async function StaffDetailPage({ params }: Props) {
   const { id } = await params;
   const payload = await getPayloadClient();
-  const ts = await getTranslations("staff");
-  const th = await getTranslations("nav");
 
   let staff;
   try {
@@ -51,7 +45,7 @@ export default async function StaffDetailPage({ params }: Props) {
   return (
     <PageLayout
       breadcrumbs={[
-        { label: th("staff"), href: "/staff" },
+        { label: "Staff", href: "/staff" },
         { label: staff.name as string },
       ]}
       maxWidth="max-w-4xl"
@@ -60,17 +54,15 @@ export default async function StaffDetailPage({ params }: Props) {
         <div className="shrink-0 mx-auto md:mx-0">
           <div className="w-[200px] h-[240px] relative rounded shadow-sm border border-gray-200 overflow-hidden bg-gray-50 flex items-center justify-center">
             {photoUrl ? (
-              <Image
+              <img
                 src={photoUrl}
                 alt={(staff.nameEn as string) || (staff.name as string)}
-                fill
                 style={{ objectFit: "cover", objectPosition: "top" }}
               />
             ) : (
               <div className="text-6xl">👤</div>
             )}
           </div>
-
 
           <div className="mt-6 text-center md:text-left">
             <h1 className="text-2xl font-bold text-black">{staff.name}</h1>
@@ -80,26 +72,26 @@ export default async function StaffDetailPage({ params }: Props) {
 
         <div className="flex-1 text-[#212529]">
           <h2 className="text-xl font-bold mb-6 border-b border-[#eee] pb-4">
-            {ts("personalDetails")}
+            Personal Details
           </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-              <span className="font-semibold text-gray-500">{ts("name")}</span>
+              <span className="font-semibold text-gray-500">Name</span>
               <span className="text-black font-medium">{staff.name}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-              <span className="font-semibold text-gray-500">{ts("designation")}</span>
+              <span className="font-semibold text-gray-500">Designation</span>
               <span className="text-black">{staff.designation}</span>
             </div>
             {staff.department && (
               <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-                <span className="font-semibold text-gray-500">{ts("department")}</span>
+                <span className="font-semibold text-gray-500">Department</span>
                 <span className="text-black">{staff.department}</span>
               </div>
             )}
             {staff.phone && (
               <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-                <span className="font-semibold text-gray-500">{ts("mobile")}</span>
+                <span className="font-semibold text-gray-500">Mobile</span>
                 <a href={`tel:${staff.phone}`} className="text-[#2563eb] hover:underline">
                   {staff.phone}
                 </a>
@@ -107,7 +99,7 @@ export default async function StaffDetailPage({ params }: Props) {
             )}
             {staff.email && (
               <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-                <span className="font-semibold text-gray-500">{ts("email")}</span>
+                <span className="font-semibold text-gray-500">Email</span>
                 <a href={`mailto:${staff.email}`} className="text-[#2563eb] hover:underline">
                   {staff.email}
                 </a>

@@ -1,10 +1,8 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
-import { getLocale } from "next-intl/server";
 
 export const getPageBySlug = cache(async (slug: string) => {
   const payload = await getPayloadClient();
-  const locale = (await getLocale()) as any;
 
   const pages = await payload.find({
     collection: "pages",
@@ -14,7 +12,6 @@ export const getPageBySlug = cache(async (slug: string) => {
     },
     limit: 1,
     depth: 1,
-    locale,
   });
 
   return pages.docs[0] || null;
@@ -22,7 +19,6 @@ export const getPageBySlug = cache(async (slug: string) => {
 
 export const getAllPages = cache(async () => {
   const payload = await getPayloadClient();
-  const locale = (await getLocale()) as any;
 
   const pages = await payload.find({
     collection: "pages",
@@ -31,7 +27,6 @@ export const getAllPages = cache(async () => {
     },
     limit: 100,
     depth: 0,
-    locale,
   });
 
   return pages.docs;

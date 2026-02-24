@@ -4,14 +4,12 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 export function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
-  const t = useTranslations("common");
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -48,10 +46,10 @@ export function SearchButton() {
       <button
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-2 rounded bg-[var(--card)] px-3 py-1.5 text-sm text-[var(--brand-blue)] border border-[var(--brand-blue)] transition-all hover:bg-[var(--brand-blue)] hover:text-white group"
-        aria-label={t("search")}
+        aria-label="Search"
       >
         <Search className="h-4 w-4 transition-transform group-hover:scale-110" />
-        <span className="hidden sm:inline font-bold">{t("search")}</span>
+        <span className="hidden sm:inline font-bold">Search</span>
         <kbd className="hidden items-center gap-1 rounded bg-[var(--muted)] px-1 font-mono text-[10px] text-[var(--muted-foreground)] md:inline-flex border border-[var(--border)]">
           Ctrl K
         </kbd>
@@ -82,7 +80,7 @@ export function SearchButton() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder={t("searchPlaceholder")}
+                placeholder="Search..."
                 className="h-14 flex-1 bg-transparent px-4 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none font-medium"
               />
               <button
@@ -97,11 +95,11 @@ export function SearchButton() {
 
           <div className="bg-[var(--muted)] p-3 flex justify-between items-center transition-colors duration-300">
             <p className="text-[11px] text-[var(--muted-foreground)] flex gap-2">
-              <span>{t("searchPress")} <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Enter</kbd> {t("searchToSearch")}</span>
+              <span>Press <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Enter</kbd> to search</span>
               <span className="opacity-50">|</span>
-              <span>{t("searchPress")} <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Esc</kbd> {t("searchToClose")}</span>
+              <span>Press <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Esc</kbd> to close</span>
             </p>
-            <div className="text-[var(--brand-blue)] font-bold text-xs">{t("searchEngine")}</div>
+            <div className="text-[var(--brand-blue)] font-bold text-xs">DPH Search</div>
           </div>
         </div>
       </div>

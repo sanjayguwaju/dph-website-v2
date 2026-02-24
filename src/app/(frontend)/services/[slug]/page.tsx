@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
-import { getLocale, getTranslations } from "next-intl/server";
 import { RichText } from "@/components/RichText";
 import { ServiceShareButtons } from "@/components/services/service-share-buttons";
 import { PageLayout } from "@/components/layout/page-layout";
@@ -15,8 +14,6 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const payload = await getPayloadClient();
-  const locale = await getLocale();
-  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "services",
@@ -25,14 +22,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     limit: 1,
     depth: 0,
-    locale: locale as any,
   });
 
   const service = result.docs[0];
-  if (!service) return { title: tc("notFound") };
+  if (!service) return { title: "Not Found" };
 
   return {
-    title: `${service.name} | ${tc("hospitalName")}`,
+    title: `${service.name} | Dhaulagiri Hospital`,
     description: (service.shortDescription as string) || undefined,
   };
 }
@@ -40,10 +36,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
   const payload = await getPayloadClient();
-  const locale = await getLocale();
-  const ts = await getTranslations("services");
-  const th = await getTranslations("nav");
-  const tc = await getTranslations("common");
 
   const result = await payload.find({
     collection: "services",
@@ -52,7 +44,6 @@ export default async function ServiceDetailPage({ params }: Props) {
     },
     limit: 1,
     depth: 1,
-    locale: locale as any,
   });
 
   const service = result.docs[0];
@@ -64,18 +55,18 @@ export default async function ServiceDetailPage({ params }: Props) {
   return (
     <PageLayout
       breadcrumbs={[
-        { label: th("services"), href: "/services" },
+        { label: "Services", href: "/services" },
         { label: service.name as string },
       ]}
       maxWidth="max-w-4xl"
     >
       <div className="mb-10 animate-in fade-in slide-in-from-top-4 duration-500">
-        <Link 
-          href="/services" 
+        <Link
+          href="/services"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[var(--brand-blue)] transition-colors mb-6 group"
         >
           <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
-          {ts("backToServices") || tc("back")}
+          Back to Services
         </Link>
 
         <div className="flex flex-col md:flex-row md:items-center gap-6 pb-8 border-b border-gray-100">
@@ -106,7 +97,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             <Clock size={20} />
           </div>
           <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{ts("time")}</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Time</p>
             <p className="text-gray-900 font-bold">{service.time ? (service.time as string) : "-"}</p>
           </div>
         </div>
@@ -116,8 +107,8 @@ export default async function ServiceDetailPage({ params }: Props) {
             <CircleDollarSign size={20} />
           </div>
           <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{ts("fee")}</p>
-            <p className="text-gray-900 font-bold">{service.fee ? (service.fee as string) : ts("free")}</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Fee</p>
+            <p className="text-gray-900 font-bold">{service.fee ? (service.fee as string) : "Free"}</p>
           </div>
         </div>
       </div>
@@ -125,7 +116,7 @@ export default async function ServiceDetailPage({ params }: Props) {
       <div className="flex justify-between items-center mb-10 pb-8 border-b border-gray-50 flex-wrap gap-4">
         <div className="flex items-center gap-2 text-sm text-gray-400 font-medium">
           <LayoutGrid size={16} />
-          {ts("department") || "Gandaki Province"}
+          Department
         </div>
         <ServiceShareButtons title={service.name as string} shareUrl={shareUrl} />
       </div>
@@ -139,7 +130,7 @@ export default async function ServiceDetailPage({ params }: Props) {
       {/* Related Services */}
       {service.category && (
         <section className="mt-20 pt-12 border-t border-gray-100">
-          <h2 className="text-2xl font-bold text-[#003580] mb-8">{ts("relatedServices") || "Related Services"}</h2>
+          <h2 className="text-2xl font-bold text-[#003580] mb-8">Related Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {(await payload.find({
               collection: "services",
@@ -152,7 +143,6 @@ export default async function ServiceDetailPage({ params }: Props) {
               },
               limit: 3,
               depth: 0,
-              locale: locale as any,
             })).docs.map((item: any) => (
               <Link
                 key={item.id}
@@ -172,9 +162,9 @@ export default async function ServiceDetailPage({ params }: Props) {
 
       {/* Footer hint */}
       <div className="mt-20 p-10 rounded-3xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 text-center shadow-sm">
-        <p className="text-gray-500 font-medium mb-6">{ts("footerContactHint") || "For more information, please contact our help desk."}</p>
+        <p className="text-gray-500 font-medium mb-6">For more information, please contact our help desk.</p>
         <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3 bg-[var(--brand-blue)] text-white rounded-full text-sm font-bold shadow-lg shadow-blue-900/10 hover:bg-[#002a66] transition-all">
-          {tc("contactUs")} →
+          Contact Us →
         </Link>
       </div>
     </PageLayout>

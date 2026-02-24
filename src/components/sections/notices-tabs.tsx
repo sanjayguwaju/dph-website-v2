@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toNepaliNum } from "@/utils/nepali-date";
-import { useTranslations, useLocale } from "next-intl";
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 const NP_MONTHS_AD = [
   "जनवरी",
@@ -51,7 +51,6 @@ type TabId = "notices" | "news" | "pressReleases" | "publications" | "bids";
 
 function useFormatDate(dateStr?: string | null) {
   const [formatted, setFormatted] = useState("");
-  const locale = useLocale();
 
   useEffect(() => {
     if (!dateStr) return;
@@ -62,21 +61,14 @@ function useFormatDate(dateStr?: string | null) {
         return;
       }
 
-      if (locale === 'ne') {
-        const year = toNepaliNum(date.getFullYear());
-        const month = NP_MONTHS_AD[date.getMonth()];
-        const day = toNepaliNum(date.getDate());
-        setFormatted(`${year} ${month} ${day}`);
-      } else {
-        const year = date.getFullYear();
-        const month = EN_MONTHS[date.getMonth()];
-        const day = date.getDate();
-        setFormatted(`${month} ${day}, ${year}`);
-      }
+      const year = toNepaliNum(date.getFullYear());
+      const month = NP_MONTHS_AD[date.getMonth()];
+      const day = toNepaliNum(date.getDate());
+      setFormatted(`${year} ${month} ${day}`);
     } catch {
       setFormatted(dateStr);
     }
-  }, [dateStr, locale]);
+  }, [dateStr]);
 
   return formatted;
 }
@@ -84,7 +76,6 @@ function useFormatDate(dateStr?: string | null) {
 function NoticeRow({ item, href }: { item: NoticeItem | NewsItem; href: string }) {
   const dateStr = useFormatDate(item.publishedDate);
   const file = "file" in item && item.file && typeof item.file === "object" ? item.file : null;
-  const t = useTranslations("common");
 
   return (
     <div className="notices-row">
@@ -94,10 +85,10 @@ function NoticeRow({ item, href }: { item: NoticeItem | NewsItem; href: string }
       </div>
       <div className="notices-row-content">
         <Link href={href} className="notices-row-title">
-          {item.title}
+          {getLocalizedValue(item.title)}
         </Link>
         {dateStr && (
-          <span className="notices-row-date">{t("publishedDate")}: {dateStr}</span>
+          <span className="notices-row-date">Published: {dateStr}</span>
         )}
       </div>
       {file?.url && (
@@ -118,18 +109,15 @@ function NoticeRow({ item, href }: { item: NoticeItem | NewsItem; href: string }
 }
 
 export function NoticesTabs({ notices, news, pressReleases, publications, bids }: Props) {
-  const t = useTranslations("news");
-  const tn = useTranslations("notices");
-  const tc = useTranslations("common");
   const [active, setActive] = useState<TabId>("notices");
   const [loading, setLoading] = useState(false);
 
   const tabs: { id: TabId; label: string }[] = [
-    { id: "notices", label: tn("title") },
-    { id: "news", label: t("newsType") },
-    { id: "pressReleases", label: t("pressRelease") },
-    { id: "publications", label: t("publication") },
-    { id: "bids", label: t("bid") },
+    { id: "notices", label: "Notices" },
+    { id: "news", label: "News" },
+    { id: "pressReleases", label: "Press Releases" },
+    { id: "publications", label: "Publications" },
+    { id: "bids", label: "Bids" },
   ];
 
   const dataMap: Record<TabId, (NoticeItem | NewsItem)[]> = {
@@ -180,22 +168,22 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
           <div className="p-8 space-y-4 animate-pulse">
             {Array(3).fill(0).map((_, i) => (
               <div key={i} className="flex gap-4 items-center">
-                 <div className="w-12 h-12 bg-gray-100 rounded-xl"></div>
-                 <div className="flex-1 space-y-2">
-                    <div className="h-4 bg-gray-100 rounded w-3/4"></div>
-                    <div className="h-3 bg-gray-50 rounded w-1/4"></div>
-                 </div>
+                <div className="w-12 h-12 bg-gray-100 rounded-xl"></div>
+                <div className="flex-1 space-y-2">
+                  <div className="h-4 bg-gray-100 rounded w-3/4"></div>
+                  <div className="h-3 bg-gray-50 rounded w-1/4"></div>
+                </div>
               </div>
             ))}
           </div>
         ) : items.length === 0 ? (
-          <p className="notices-empty text-center py-12 text-gray-400 font-bold">{tc("noData")}</p>
+          <p className="notices-empty text-center py-12 text-gray-400 font-bold">No data available</p>
         ) : (
           items.map((item) => <NoticeRow key={item.id} item={item} href={hrefMap[active](item)} />)
         )}
         <div className="notices-tab-footer">
           <Link href={`/${active === "notices" ? "notices" : "news"}`} className="section-view-all">
-            {tc("viewAll")}
+            View All
           </Link>
         </div>
       </div>

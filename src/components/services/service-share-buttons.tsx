@@ -1,7 +1,6 @@
 "use client";
 
 import { Facebook, Twitter, Share2 } from "lucide-react";
-import { useTranslations } from "next-intl";
 
 interface ServiceShareButtonsProps {
   title: string;
@@ -9,8 +8,6 @@ interface ServiceShareButtonsProps {
 }
 
 export function ServiceShareButtons({ title, shareUrl }: ServiceShareButtonsProps) {
-  const tn = useTranslations("notices");
-
   const handleShare = (platform: "facebook" | "twitter" | "native") => {
     if (platform === "facebook") {
       window.open(
@@ -35,20 +32,19 @@ export function ServiceShareButtons({ title, shareUrl }: ServiceShareButtonsProp
         onClick={() => handleShare("facebook")}
         className="flex items-center justify-center gap-1.5 bg-[#3b5998] px-4 py-2 text-[13px] text-white hover:bg-[#2d4373]"
       >
-        <Facebook size={14} fill="currentColor" strokeWidth={0} /> {tn("share")}
+        <Facebook size={14} fill="currentColor" strokeWidth={0} /> Share
       </button>
       <button
         onClick={() => handleShare("twitter")}
         className="flex items-center justify-center gap-1.5 bg-[#55acee] px-4 py-2 text-[13px] text-white hover:bg-[#2795e9]"
       >
-        <Twitter size={14} fill="currentColor" strokeWidth={0} /> {tn("tweet")}
+        <Twitter size={14} fill="currentColor" strokeWidth={0} /> Tweet
       </button>
       <button
         onClick={() => handleShare("native")}
         className="flex items-center justify-center gap-1.5 bg-[#dd4b39] px-4 py-2 text-[13px] text-white hover:bg-[#c23321]"
       >
-        {/* Using a pseudo-Google or Generic share icon representation */}
-        <span className="mr-0.5 text-[15px] leading-none font-bold">G</span> {tn("share")}
+        <span className="mr-0.5 text-[15px] leading-none font-bold">G</span> Share
       </button>
     </div>
   );

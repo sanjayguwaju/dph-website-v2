@@ -4,7 +4,6 @@ import Link from "next/link";
 import { getArticleBySlug, getRelatedArticles } from "@/lib/queries/articles";
 import { ArticleContent, RelatedArticles } from "@/components/article";
 import { NewsletterSection } from "@/components/sections";
-import { getLocale, getTranslations } from "next-intl/server";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -13,11 +12,10 @@ interface PageProps {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  const tc = await getTranslations("common");
 
   if (!article) {
     return {
-      title: tc("notFound"),
+      title: "Not Found",
     };
   }
 
@@ -25,7 +23,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const featuredImage = typeof article.featuredImage === "object" ? article.featuredImage : null;
 
   return {
-    title: `${article.title} | ${tc("hospitalName")}`,
+    title: `${article.title} | Dhaulagiri Hospital`,
     description: article.excerpt,
     openGraph: {
       title: article.title,
@@ -35,13 +33,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       section: category?.name,
       images: featuredImage?.url
         ? [
-            {
-              url: featuredImage.url,
-              width: 1200,
-              height: 630,
-              alt: featuredImage.alt || article.title,
-            },
-          ]
+          {
+            url: featuredImage.url,
+            width: 1200,
+            height: 630,
+            alt: featuredImage.alt || article.title,
+          },
+        ]
         : [],
     },
     twitter: {
@@ -58,7 +56,6 @@ import { PageLayout } from "@/components/layout/page-layout";
 export default async function ArticlePage({ params }: PageProps) {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
-  const th = await getTranslations("nav");
 
   if (!article) {
     notFound();

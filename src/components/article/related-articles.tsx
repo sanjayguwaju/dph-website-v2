@@ -1,5 +1,4 @@
 import { ArticleCard } from "./article-card";
-import { useTranslations } from "next-intl";
 
 interface RelatedArticlesProps {
   articles: Array<{
@@ -16,13 +15,12 @@ interface RelatedArticlesProps {
 }
 
 export function RelatedArticles({ articles }: RelatedArticlesProps) {
-  const t = useTranslations("article");
   if (articles.length === 0) return null;
 
   return (
     <section className="px-page py-section container mx-auto">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-ink-50 mb-8 text-2xl font-bold">{t("related")}</h2>
+        <h2 className="text-ink-50 mb-8 text-2xl font-bold">Related Articles</h2>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {articles.map((article) => (

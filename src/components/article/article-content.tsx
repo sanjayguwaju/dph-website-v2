@@ -8,8 +8,6 @@ import { RichText } from "@/components/RichText";
 import { formatDate, formatReadTime, formatNumber } from "@/utils/format";
 import { getImageUrl, getImageAlt } from "@/utils/image";
 import { getCategoryUrl, getAuthorUrl, absoluteUrl, getArticleUrl } from "@/utils/url";
-import { useLocale, useTranslations } from "next-intl";
-import { toNepaliNum } from "@/utils/nepali-date";
 
 interface ArticleContentProps {
   article: {
@@ -23,30 +21,28 @@ interface ArticleContentProps {
     readTime?: number | null;
     views?: number | null;
     category?:
-      | {
-          id: string;
-          name: string;
-          slug: string;
-          color?: string | null;
-        }
-      | string;
+    | {
+      id: string;
+      name: string;
+      slug: string;
+      color?: string | null;
+    }
+    | string;
     author?:
-      | {
-          id: string;
-          name: string;
-          slug: string;
-          role?: string | null;
-          bio?: string | null;
-          avatar?: any;
-        }
-      | string;
+    | {
+      id: string;
+      name: string;
+      slug: string;
+      role?: string | null;
+      bio?: string | null;
+      avatar?: any;
+    }
+    | string;
     tags?: Array<{ id: string; name: string; slug: string } | string> | null;
   };
 }
 
 export function ArticleContent({ article }: ArticleContentProps) {
-  const t = useTranslations("article");
-  const locale = useLocale();
   const category = typeof article.category === "object" ? article.category : null;
   const author = typeof article.author === "object" ? article.author : null;
   const tags = article.tags?.filter(
@@ -56,9 +52,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
   const shareUrl = absoluteUrl(getArticleUrl(article.slug));
   const shareText = encodeURIComponent(article.title);
 
-  const displayViews = article.views 
-    ? (locale === "ne" ? toNepaliNum(article.views) : formatNumber(article.views))
-    : "";
+  const displayViews = article.views ? formatNumber(article.views) : "";
 
   return (
     <div className="px-page container mx-auto">
@@ -119,7 +113,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
             {article.views && article.views > 0 && (
               <span className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
-                {displayViews} {t("views")}
+                {displayViews} views
               </span>
             )}
           </div>
@@ -157,7 +151,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
         {/* Tags */}
         {tags && tags.length > 0 && (
           <div className="border-ink-800 mt-8 flex flex-wrap items-center gap-2 border-t pt-8">
-            <span className="text-ink-400 mr-2 text-sm">{t("tags")}:</span>
+            <span className="text-ink-400 mr-2 text-sm">Tags:</span>
             {tags.map((tag) => (
               <Link
                 key={tag.id}
@@ -174,7 +168,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
         <div className="border-ink-800 mt-8 flex items-center justify-between gap-4 border-t py-6">
           <div className="text-ink-400 flex items-center gap-2 text-sm">
             <Share2 className="h-4 w-4" />
-            <span>{t("share")}</span>
+            <span>Share</span>
           </div>
           <div className="flex items-center gap-2">
             <a

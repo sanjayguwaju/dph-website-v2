@@ -3,15 +3,12 @@ import { getPayloadClient } from "@/lib/payload";
 import Link from "next/link";
 import Image from "next/image";
 import { formatDate } from "@/utils/format";
-import { getLocale, getTranslations } from "next-intl/server";
 import { FileText, Calendar, ChevronRight } from "lucide-react";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("news");
-  const tc = await getTranslations("common");
   return {
-    title: `${t("newsAndActivities")} | ${tc("hospitalName")}`,
-    description: `Latest news, press releases, publications and bid notices from ${tc("hospitalName")}.`,
+    title: "News & Activities | Dhaulagiri Hospital",
+    description: "Latest news, press releases, publications and bid notices from Dhaulagiri Hospital.",
   };
 }
 
@@ -32,15 +29,12 @@ export default async function NewsPage({
   const { type, page } = await searchParams;
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
-  const locale = await getLocale();
-  const t = await getTranslations("news");
-  const tc = await getTranslations("common");
 
   const TYPE_LABELS: Record<string, string> = {
-    news: t("newsType"),
-    "press-release": t("pressRelease"),
-    publication: t("publication"),
-    bid: t("bid"),
+    news: "News",
+    "press-release": "Press Release",
+    publication: "Publication",
+    bid: "Bid",
   };
 
   const payload = await getPayloadClient();
@@ -57,31 +51,28 @@ export default async function NewsPage({
     limit,
     page: currentPage,
     depth: 1,
-    locale: locale as any,
   });
 
   const { docs, totalPages, totalDocs } = result;
   const tabs = [
-    { id: "all", label: tc("all") },
-    { id: "news", label: t("newsType") },
-    { id: "press-release", label: t("pressRelease") },
-    { id: "publication", label: t("publication") },
-    { id: "bid", label: t("bid") },
+    { id: "all", label: "All" },
+    { id: "news", label: "News" },
+    { id: "press-release", label: "Press Release" },
+    { id: "publication", label: "Publication" },
+    { id: "bid", label: "Bid" },
   ];
 
   return (
     <PageLayout
       breadcrumbs={[
-        { label: t("newsAndActivities") },
+        { label: "News & Activities" },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-8 border-b border-gray-100 pb-6">
-        <h1 className="text-3xl font-bold text-[#003580] mb-2">📰 {t("newsAndActivities")}</h1>
+        <h1 className="text-3xl font-bold text-[#003580] mb-2">📰 News & Activities</h1>
         <p className="text-gray-500">
-          {locale === "ne"
-            ? `कुल ${totalDocs} समाचार र सूचनाहरू`
-            : `${totalDocs} articles, press releases and announcements`}
+          {`${totalDocs} articles, press releases and announcements`}
         </p>
       </div>
 
@@ -100,7 +91,7 @@ export default async function NewsPage({
 
       {/* News grid */}
       {docs.length === 0 ? (
-        <p className="page-empty">{tc("noData")}</p>
+        <p className="page-empty">No data available</p>
       ) : (
         <div className="news-list-grid">
           {docs.map((item: any) => {
@@ -154,7 +145,7 @@ export default async function NewsPage({
                       </time>
                     )}
                     <span className="news-list-read-more">
-                      {tc("readMore")}
+                      Read More
                       <ChevronRight size={12} style={{ display: "inline" }} />
                     </span>
                   </div>
@@ -173,7 +164,7 @@ export default async function NewsPage({
               href={`/news?${type ? `type=${type}&` : ""}page=${currentPage - 1}`}
               className="page-nav-btn"
             >
-              ‹ {tc("prev")}
+              ‹ Prev
             </Link>
           )}
           <span className="page-num">
@@ -184,7 +175,7 @@ export default async function NewsPage({
               href={`/news?${type ? `type=${type}&` : ""}page=${currentPage + 1}`}
               className="page-nav-btn"
             >
-              {tc("next")} ›
+              Next ›
             </Link>
           )}
         </div>

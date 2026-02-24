@@ -25,26 +25,18 @@ import { NoticesTabs } from "@/components/sections/notices-tabs";
 import { PhotoGallery } from "@/components/sections/photo-gallery";
 import { VideoGallery } from "@/components/sections/video-gallery";
 import { QuickAccessLinks } from "@/components/sections/quick-access-links";
-import { getLocale, getTranslations } from "next-intl/server";
 import { toNepaliNum } from "@/utils/nepali-date";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { EmergencyFloatingButton } from "@/components/ui/emergency-float";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const tc = await getTranslations("common");
-  const th = await getTranslations("nav");
-
   return {
-    title: tc("hospitalName"),
-    description: `${th("govText")}, ${th("ministryText")}`,
+    title: "Dhaulagiri Hospital",
+    description: "Government of Nepal, Ministry of Health and Population",
   };
 }
 
 export default async function HomePage() {
-  const locale = await getLocale();
-  const tf = await getTranslations("facebookWidget");
-  const tc = await getTranslations("common");
-
   // Parallel data fetching for optimal performance
   const [
     heroSlides,
@@ -74,7 +66,7 @@ export default async function HomePage() {
 
   const s = settings as any;
   const ap = aboutPage as any;
-  const hospitalName = locale === "en" ? s.hospitalNameEn : s.hospitalNameNe;
+  const hospitalName = s.hospitalNameNe || s.hospitalNameEn;
 
   return (
     <>
@@ -123,17 +115,17 @@ export default async function HomePage() {
         <aside className="home-sidebar-col">
           {/* Facebook Widget */}
           <ScrollReveal delay={400}>
-            <FacebookWidget pageName={hospitalName} locale={locale} />
+            <FacebookWidget pageName={hospitalName} />
           </ScrollReveal>
 
           {/* Nepali Calendar */}
           <ScrollReveal delay={500}>
-             <NepaliCalendar />
+            <NepaliCalendar />
           </ScrollReveal>
 
           {/* Visitor Counter */}
           <ScrollReveal delay={600}>
-             <VisitorCounter locale={locale} />
+            <VisitorCounter />
           </ScrollReveal>
         </aside>
       </div>
@@ -159,7 +151,7 @@ export default async function HomePage() {
           ...quickLinks as any,
           {
             id: 'online-appointment',
-            label: locale === 'ne' ? 'अनलाइन टिकट' : 'Online Appointment',
+            label: 'Online Appointment',
             icon: '📅',
             url: '/appointments'
           }
