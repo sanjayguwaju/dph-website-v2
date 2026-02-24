@@ -118,7 +118,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ne' | 'en') | ('ne' | 'en')[];
+  fallbackLocale: null;
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -131,7 +131,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     'opd-stats': OpdStatsSelect<false> | OpdStatsSelect<true>;
   };
-  locale: 'ne' | 'en';
+  locale: null;
   user: User;
   jobs: {
     tasks: unknown;
@@ -199,6 +199,7 @@ export interface Media {
    * Photo credit or source
    */
   credit?: string | null;
+  prefix?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -279,7 +280,6 @@ export interface Page {
   };
   updatedAt: string;
   createdAt: string;
-  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -858,6 +858,7 @@ export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
   credit?: T;
+  prefix?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -932,7 +933,6 @@ export interface PagesSelect<T extends boolean = true> {
       };
   updatedAt?: T;
   createdAt?: T;
-  _status?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

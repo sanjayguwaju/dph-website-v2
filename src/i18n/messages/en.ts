@@ -43,6 +43,7 @@ const en = {
     searchPrompt: "Please enter a search term in the box above.",
     closeMenu: "Close",
     photoGallery: "Photo Gallery",
+    highlights: "Highlights",
   },
 
   home: {

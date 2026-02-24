@@ -10,9 +10,6 @@ export const Pages: CollectionConfig = {
       url: ({ data }) => `${process.env.NEXT_PUBLIC_SITE_URL}/${data.slug}`,
     },
   },
-  versions: {
-    drafts: true,
-  },
   access: {
     read: () => true,
     create: ({ req: { user } }) => Boolean(user),
