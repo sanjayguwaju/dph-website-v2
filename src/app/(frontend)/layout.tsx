@@ -1,4 +1,4 @@
-import React from "react";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Header, Footer } from "@/components/layout";
@@ -81,6 +81,9 @@ export default async function FrontendLayout({ children }: { children: React.Rea
 
           {/* Scroll to Top Arrow */}
           <ScrollToTop />
+
+          {/* Vercel Speed Insights */}
+          <SpeedInsights />
         </NextIntlClientProvider>
       </body>
     </html>
