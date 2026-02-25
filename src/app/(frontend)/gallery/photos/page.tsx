@@ -1,13 +1,18 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
+import { getSiteSettings } from "@/lib/queries/globals";
 import { PhotoGalleryClient } from "./photo-gallery-client";
 import { PageLayout } from "@/components/layout/page-layout";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+
   return {
-    title: "Photo Gallery | Dhaulagiri Hospital",
-    description: "Browse the official photo gallery of Dhaulagiri Hospital",
+    title: `Photo Gallery | ${hospitalName}`,
+    description: `Browse official photo gallery of ${hospitalName}`,
   };
 }
 

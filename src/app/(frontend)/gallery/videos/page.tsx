@@ -1,10 +1,15 @@
 import { Metadata } from "next";
 import { getPayloadClient } from "@/lib/payload";
+import { getSiteSettings } from "@/lib/queries/globals";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+
   return {
-    title: "Videos | Dhaulagiri Hospital",
+    title: `Videos | ${hospitalName}`,
   };
 }
 

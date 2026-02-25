@@ -22,14 +22,14 @@ export const SiteSettings: GlobalConfig = {
               type: "text",
               label: "Hospital Name (Nepali)",
               required: true,
-              defaultValue: "अस्पताल",
+              defaultValue: "अम्पिपाल अस्पताल",
             },
             {
               name: "hospitalNameEn",
               type: "text",
               label: "Hospital Name (English)",
               required: true,
-              defaultValue: "District Hospital",
+              defaultValue: "Amppipal Hospital",
             },
             {
               name: "taglineNe",
@@ -70,12 +70,32 @@ export const SiteSettings: GlobalConfig = {
         {
           label: "Contact",
           fields: [
-            { name: "contactEmail", type: "email", label: "Email" },
-            { name: "contactPhone", type: "text", label: "Main Phone" },
+            {
+              name: "contactEmail",
+              type: "email",
+              label: "Email",
+              defaultValue: "Amppipalhospital25@gmail.com"
+            },
+            {
+              name: "contactPhone",
+              type: "text",
+              label: "Main Phone",
+              defaultValue: "00977-9846-208709"
+            },
             { name: "emergencyNumber", type: "text", label: "Emergency Number" },
             { name: "faxNumber", type: "text", label: "Fax Number" },
-            { name: "address", type: "textarea", label: "Address (Nepali)" },
-            { name: "addressEn", type: "text", label: "Address (English)" },
+            {
+              name: "address",
+              type: "textarea",
+              label: "Address (Nepali)",
+              defaultValue: "पालुङटार नगरपालिका – ३, गोरखा, नेपाल"
+            },
+            {
+              name: "addressEn",
+              type: "text",
+              label: "Address (English)",
+              defaultValue: "Palungtar Municipality - 3, Gorkha, Nepal"
+            },
             {
               name: "mapEmbedUrl",
               type: "text",
