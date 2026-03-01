@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!staff) return { title: "Not Found" };
 
   return {
-    title: `${staff.name} | Dhaulagiri Hospital`,
+    title: `${staff.name} | Amppipal Hospital`,
   };
 }
 

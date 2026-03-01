@@ -28,7 +28,7 @@ export async function AboutUs({
             </div>
           ) : (
             <p className="about-text-refined line-clamp-6">
-              {aboutText}
+              {aboutText || "Amppipal Hospital is a government hospital providing quality healthcare services to people of Palungtar Municipality and surrounding areas."}
             </p>
           )}
           <div className="about-action">
