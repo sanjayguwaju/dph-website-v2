@@ -14,62 +14,70 @@ export interface ArticleQueryOptions {
 }
 
 export const getArticles = cache(async (options?: ArticleQueryOptions) => {
-  const payload = await getPayloadClient();
+  try {
+    const payload = await getPayloadClient();
 
-  const where: Where = {
-    status: { equals: "published" },
-  };
+    const where: Where = {
+      status: { equals: "published" },
+    };
 
-  if (options?.category) {
-    where.category = { equals: options.category };
+    if (options?.category) {
+      where.category = { equals: options.category };
+    }
+
+    if (options?.tag) {
+      where.tags = { contains: options.tag };
+    }
+
+    if (options?.featured) {
+      where.featured = { equals: true };
+    }
+
+    if (options?.breaking) {
+      where.breaking = { equals: true };
+    }
+
+    if (options?.author) {
+      where.author = { equals: options.author };
+    }
+
+    if (options?.search) {
+      where.or = [{ title: { like: options.search } }, { excerpt: { like: options.search } }];
+    }
+
+    const articles = await payload.find({
+      collection: "articles",
+      where,
+      limit: options?.limit || 10,
+      page: options?.page || 1,
+      sort: "-publishedDate",
+      depth: 2,
+    });
+
+    return articles;
+  } catch (error) {
+    return { docs: [], totalDocs: 0, limit: options?.limit || 10, page: options?.page || 1, totalPages: 0, hasNextPage: false, hasPrevPage: false };
   }
-
-  if (options?.tag) {
-    where.tags = { contains: options.tag };
-  }
-
-  if (options?.featured) {
-    where.featured = { equals: true };
-  }
-
-  if (options?.breaking) {
-    where.breaking = { equals: true };
-  }
-
-  if (options?.author) {
-    where.author = { equals: options.author };
-  }
-
-  if (options?.search) {
-    where.or = [{ title: { like: options.search } }, { excerpt: { like: options.search } }];
-  }
-
-  const articles = await payload.find({
-    collection: "articles",
-    where,
-    limit: options?.limit || 10,
-    page: options?.page || 1,
-    sort: "-publishedDate",
-    depth: 2,
-  });
-
-  return articles;
 });
 
 export const getArticleBySlug = cache(async (slug: string) => {
-  const payload = await getPayloadClient();
+  try {
+    const payload = await getPayloadClient();
 
-  const articles = await payload.find({
-    collection: "articles",
-    where: {
-      slug: { equals: slug },
-      status: { equals: "published" },
-    },
-    limit: 1,
-    depth: 3,
-  });
+    const articles = await payload.find({
+      collection: "articles",
+      where: {
+        slug: { equals: slug },
+        status: { equals: "published" },
+      },
+      limit: 1,
+      depth: 3,
+    });
 
-  return articles.docs[0] || null;
+    return articles.docs[0] || null;
+  } catch (error) {
+    return null;
+  }
 });
 
 export const getRelatedArticles = cache(
@@ -115,17 +123,21 @@ export const searchArticles = cache(async (query: string, limit = 10) => {
 });
 
 export const getTrendingArticles = cache(async (limit = 5) => {
-  const payload = await getPayloadClient();
+  try {
+    const payload = await getPayloadClient();
 
-  const articles = await payload.find({
-    collection: "articles",
-    where: {
-      status: { equals: "published" },
-    },
-    limit,
-    sort: "-views",
-    depth: 1,
-  });
+    const articles = await payload.find({
+      collection: "articles",
+      where: {
+        status: { equals: "published" },
+      },
+      limit,
+      sort: "-views",
+      depth: 1,
+    });
 
-  return articles.docs;
+    return articles.docs || [];
+  } catch (error) {
+    return [];
+  }
 });
