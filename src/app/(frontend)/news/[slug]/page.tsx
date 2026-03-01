@@ -13,25 +13,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const payload = await getPayloadClient();
+  const [settings, item] = await Promise.all([
+    import("@/lib/queries/globals").then((m) => m.getSiteSettings()),
+    import("@/lib/queries/news").then((m) => m.getNewsBySlug(slug)),
+  ]);
 
-  const result = await payload.find({
-    collection: "news",
-    where: {
-      or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
-    },
-    limit: 1,
-    depth: 1,
-  });
-
-  const item = result.docs[0];
   if (!item) return { title: "Not Found" };
 
-  const img =
-    item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
+  const s = settings as any;
+  const hospitalName = s?.hospitalNameEn || "Amppipal Hospital";
+  const img = item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
 
   return {
-    title: `${item.title as string} | Amppipal Hospital`,
+    title: `${item.title as string} | ${hospitalName}`,
     description: (item.excerpt as string) || undefined,
     openGraph: {
       title: item.title as string,
@@ -43,18 +37,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const payload = await getPayloadClient();
+  const item = await import("@/lib/queries/news").then((m) => m.getNewsBySlug(slug));
 
-  const result = await payload.find({
-    collection: "news",
-    where: {
-      or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
-    },
-    limit: 1,
-    depth: 1,
-  });
-
-  const item = result.docs[0];
   if (!item) notFound();
 
   const img =

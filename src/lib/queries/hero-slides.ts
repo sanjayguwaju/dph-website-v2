@@ -6,17 +6,21 @@ import type { HeroSlide } from "@/payload-types";
  * Fetch active hero slides sorted by `order` ascending.
  */
 export const getHeroSlides = cache(async (): Promise<HeroSlide[]> => {
-  const payload = await getPayloadClient();
+  try {
+    const payload = await getPayloadClient();
 
-  const slides = await payload.find({
-    collection: "hero-slides",
-    where: {
-      isActive: { equals: true },
-    },
-    sort: "order",
-    limit: 20,
-    depth: 1,
-  });
+    const slides = await payload.find({
+      collection: "hero-slides",
+      where: {
+        isActive: { equals: true },
+      },
+      sort: "order",
+      limit: 20,
+      depth: 1,
+    });
 
-  return slides.docs;
+    return slides.docs || [];
+  } catch (error) {
+    return [];
+  }
 });

@@ -13,40 +13,66 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const payload = await getPayloadClient();
-
-  const result = await payload.find({
-    collection: "services",
-    where: {
-      or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
-    },
-    limit: 1,
-    depth: 0,
-  });
-
-  const service = result.docs[0];
-  if (!service) return { title: "Not Found" };
-
-  return {
-    title: `${service.name} | Amppipal Hospital`,
-    description: (service.shortDescription as string) || undefined,
-  };
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "services",
+      where: {
+        or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
+      },
+      limit: 1,
+      depth: 0,
+    });
+    const service = result.docs[0];
+    if (!service) return { title: "Not Found" };
+    return {
+      title: `${service.name} | Amppipal Hospital`,
+      description: (service.shortDescription as string) || undefined,
+    };
+  } catch (_) {
+    return { title: "Service | Amppipal Hospital" };
+  }
 }
 
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
-  const payload = await getPayloadClient();
 
-  const result = await payload.find({
-    collection: "services",
-    where: {
-      or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
-    },
-    limit: 1,
-    depth: 1,
-  });
+  let service: any = null;
+  let relatedServices: any[] = [];
 
-  const service = result.docs[0];
+  try {
+    const payload = await getPayloadClient();
+
+    const result = await payload.find({
+      collection: "services",
+      where: {
+        or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
+      },
+      limit: 1,
+      depth: 1,
+    });
+
+    service = result.docs[0];
+
+    if (service?.category) {
+      try {
+        const relatedResult = await payload.find({
+          collection: "services",
+          where: {
+            and: [
+              { category: { equals: service.category } },
+              { id: { not_equals: service.id } },
+              { isActive: { equals: true } }
+            ]
+          },
+          limit: 3,
+          depth: 0,
+        });
+        relatedServices = relatedResult.docs;
+      } catch (_) { }
+    }
+  } catch (_) { }
+
   if (!service) notFound();
 
   const siteUrl = "https://dph.gandaki.gov.np";
@@ -128,22 +154,11 @@ export default async function ServiceDetailPage({ params }: Props) {
       )}
 
       {/* Related Services */}
-      {service.category && (
+      {relatedServices.length > 0 && (
         <section className="mt-20 pt-12 border-t border-gray-100">
           <h2 className="text-2xl font-bold text-[#003580] mb-8">Related Services</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {(await payload.find({
-              collection: "services",
-              where: {
-                and: [
-                  { category: { equals: service.category } },
-                  { id: { not_equals: service.id } },
-                  { isActive: { equals: true } }
-                ]
-              },
-              limit: 3,
-              depth: 0,
-            })).docs.map((item: any) => (
+            {relatedServices.map((item: any) => (
               <Link
                 key={item.id}
                 href={`/services/${item.slug || item.id}`}

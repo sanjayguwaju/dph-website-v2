@@ -18,51 +18,55 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function DownloadsPage() {
-  const payload = await getPayloadClient();
+  let downloads: any[] = [];
 
-  // Fetch both news (publications) and notices that have files
-  const [newsRes, noticesRes] = await Promise.all([
-    payload.find({
-      collection: "news",
-      where: {
-        and: [
-          { status: { equals: "published" } },
-          {
-            or: [
-              { file: { exists: true } },
-              { externalFile: { exists: true } }
-            ]
-          }
-        ]
-      },
-      sort: "-publishedDate",
-      limit: 50,
-    }),
-    payload.find({
-      collection: "notices",
-      where: {
-        and: [
-          { status: { equals: "published" } },
-          {
-            or: [
-              { file: { exists: true } },
-              { externalFile: { exists: true } }
-            ]
-          }
-        ]
-      },
-      sort: "-publishedDate",
-      limit: 50,
-    })
-  ]);
+  try {
+    const payload = await getPayloadClient();
 
-  // Combine and sort by date
-  const downloads = [
-    ...newsRes.docs.map(d => ({ ...d, resourceType: "News/Pub" })),
-    ...noticesRes.docs.map(d => ({ ...d, resourceType: "Notice" }))
-  ].sort((a: any, b: any) =>
-    new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
-  );
+    // Fetch both news (publications) and notices that have files
+    const [newsRes, noticesRes] = await Promise.all([
+      payload.find({
+        collection: "news",
+        where: {
+          and: [
+            { status: { equals: "published" } },
+            {
+              or: [
+                { file: { exists: true } },
+                { externalFile: { exists: true } }
+              ]
+            }
+          ]
+        },
+        sort: "-publishedDate",
+        limit: 50,
+      }),
+      payload.find({
+        collection: "notices",
+        where: {
+          and: [
+            { status: { equals: "published" } },
+            {
+              or: [
+                { file: { exists: true } },
+                { externalFile: { exists: true } }
+              ]
+            }
+          ]
+        },
+        sort: "-publishedDate",
+        limit: 50,
+      })
+    ]);
+
+    // Combine and sort by date
+    downloads = [
+      ...newsRes.docs.map(d => ({ ...d, resourceType: "News/Pub" })),
+      ...noticesRes.docs.map(d => ({ ...d, resourceType: "Notice" }))
+    ].sort((a: any, b: any) =>
+      new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
+    );
+  } catch (_) { }
 
   return (
     <PageLayout
@@ -72,7 +76,7 @@ export default async function DownloadsPage() {
       <div className="mb-12 border-b border-gray-100 pb-8">
         <h1 className="text-3xl font-bold text-[#003580] mb-3 flex items-center gap-3">
           <Download className="text-[#2563eb]" />
-          Downloads & Publications
+          Downloads &amp; Publications
         </h1>
         <p className="text-gray-500 text-lg">
           Access and download annual reports, guidelines, and important notices.

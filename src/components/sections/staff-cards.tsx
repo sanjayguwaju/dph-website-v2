@@ -20,13 +20,13 @@ type StaffMember = {
 // Static role order - defined outside component to prevent recreation
 const ROLE_ORDER = ["chair", "cms", "info-officer"];
 
-export const StaffCards = memo(function StaffCards({ staff }: { staff: StaffMember[] }) {
-  if (staff.length === 0) return null;
-
+export const StaffCards = memo(function StaffCards({ staff = [] }: { staff: StaffMember[] }) {
   const sorted = useMemo(
-    () => [...staff].sort((a, b) => ROLE_ORDER.indexOf(a.role || "") - ROLE_ORDER.indexOf(b.role || "")),
+    () => (staff && Array.isArray(staff) ? [...staff] : []).sort((a, b) => ROLE_ORDER.indexOf(a.role || "") - ROLE_ORDER.indexOf(b.role || "")),
     [staff]
   );
+
+  if (!staff || staff.length === 0) return null;
 
   return (
     <div className="staff-cards-list">

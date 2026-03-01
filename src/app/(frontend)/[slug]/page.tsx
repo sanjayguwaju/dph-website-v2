@@ -16,20 +16,18 @@ interface PageProps {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const settings = await getSiteSettings();
+  const [settings, page] = await Promise.all([
+    getSiteSettings(),
+    getPageBySlug(slug),
+  ]);
+
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
-  const payload = await getPayloadClient();
+  const hospitalName = s?.hospitalNameEn || "Amppipal Hospital";
 
-  const page = await payload.find({
-    collection: "pages",
-    where: { slug: { equals: slug } },
-  });
-
-  if (!page.docs[0]) return { title: "Not Found" };
+  if (!page) return { title: "Not Found" };
 
   return {
-    title: `${page.docs[0].title} | ${hospitalName}`,
+    title: `${page.title} | ${hospitalName}`,
   };
 }
 
@@ -43,25 +41,29 @@ export default async function DynamicPage({ params }: PageProps) {
 
   let committeeMembers: any[] = [];
   if (slug === "committee") {
-    const payload = await getPayloadClient();
-    const res = await payload.find({
-      collection: "staff",
-      where: {
-        role: { equals: "management-committee" },
-        isActive: { equals: true },
-      },
-      sort: "order",
-    });
-    committeeMembers = res.docs;
+    try {
+      const payload = await getPayloadClient();
+      const res = await payload.find({
+        collection: "staff",
+        where: {
+          role: { equals: "management-committee" },
+          isActive: { equals: true },
+        },
+        sort: "order",
+      });
+      committeeMembers = res.docs;
+    } catch (_) { }
   }
 
   let contactSettings: any = null;
 
   if (slug === "contact") {
-    const payload = await getPayloadClient();
-    contactSettings = await payload.findGlobal({
-      slug: "site-settings",
-    });
+    try {
+      const payload = await getPayloadClient();
+      contactSettings = await payload.findGlobal({
+        slug: "site-settings",
+      });
+    } catch (_) { }
   }
 
   return (
@@ -112,7 +114,7 @@ export default async function DynamicPage({ params }: PageProps) {
                     Get In Touch
                   </h2>
                   <p className="text-slate-600 font-bold mb-6">
-                    Have a question or suggestion? Send us a message and we'll get back to you.
+                    Have a question or suggestion? Send us a message and we&apos;ll get back to you.
                   </p>
                 </div>
                 <FeedbackForm />

@@ -38,37 +38,39 @@ export default async function SearchPage({ searchParams }: PageProps) {
   let results: ResultSet = { news: [], notices: [], services: [], staff: [] };
 
   if (query) {
-    const payload = await getPayloadClient();
+    try {
+      const payload = await getPayloadClient();
 
-    const [newsRes, noticeRes, serviceRes, staffRes] = await Promise.all([
-      payload.find({
-        collection: "news",
-        where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
-        limit: 8, depth: 1, sort: "-publishedDate",
-      }),
-      payload.find({
-        collection: "notices",
-        where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
-        limit: 8, depth: 0, sort: "-publishedDate",
-      }),
-      payload.find({
-        collection: "services",
-        where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
-        limit: 8, depth: 0,
-      }),
-      payload.find({
-        collection: "staff",
-        where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
-        limit: 8, depth: 1,
-      }),
-    ]);
+      const [newsRes, noticeRes, serviceRes, staffRes] = await Promise.all([
+        payload.find({
+          collection: "news",
+          where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
+          limit: 8, depth: 1, sort: "-publishedDate",
+        }),
+        payload.find({
+          collection: "notices",
+          where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
+          limit: 8, depth: 0, sort: "-publishedDate",
+        }),
+        payload.find({
+          collection: "services",
+          where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
+          limit: 8, depth: 0,
+        }),
+        payload.find({
+          collection: "staff",
+          where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
+          limit: 8, depth: 1,
+        }),
+      ]);
 
-    results = {
-      news: newsRes.docs,
-      notices: noticeRes.docs,
-      services: serviceRes.docs,
-      staff: staffRes.docs,
-    };
+      results = {
+        news: newsRes.docs,
+        notices: noticeRes.docs,
+        services: serviceRes.docs,
+        staff: staffRes.docs,
+      };
+    } catch (_) { }
   }
 
   const totalResults =

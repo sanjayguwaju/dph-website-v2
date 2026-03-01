@@ -11,10 +11,17 @@ test.describe("Frontend", () => {
   test("can go on homepage", async ({ page }) => {
     await page.goto("http://localhost:3000");
 
-    await expect(page).toHaveTitle(/Payload Blank Template/);
+    // Expect the title to contain "Hospital" or whatever is in site settings (defaults to Amppipal Hospital)
+    // We'll use a regex that matches the default or typical hospital name
+    await expect(page).toHaveTitle(/Hospital/);
 
-    const heading = page.locator("h1").first();
+    // Check for the presence of the header title or a key section
+    // The header has a h1 with the hospital name
+    const heading = page.locator("h1.header-hospital-title");
+    await expect(heading).toBeVisible();
 
-    await expect(heading).toHaveText("Welcome to your new project.");
+    // Check for a section like "Gallery" or "News"
+    const gallerySection = page.locator("h2.gallery-optimized-title");
+    await expect(gallerySection).toContainText("Gallery");
   });
 });

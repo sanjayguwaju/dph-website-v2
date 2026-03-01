@@ -14,7 +14,7 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "test": "pnpm run test:int && pnpm run test:e2e",
-    "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation --no-experimental-strip-types\" pnpm exec playwright test",
+    "test:e2e": "cross-env NODE_OPTIONS=\"--no-deprecation\" pnpm exec playwright test",
     "test:int": "cross-env NODE_OPTIONS=--no-deprecation vitest run --config ./vitest.config.mts",
     "format": "cross-env NODE_OPTIONS=--no-deprecation prettier --write .",
     "format:check": "cross-env NODE_OPTIONS=--no-deprecation prettier --check .",
@@ -87,6 +87,7 @@
     "node": "^20.9.0 || ^22.0.0",
     "pnpm": "^9 || ^10"
   },
+  "packageManager": "pnpm@10.4.5",
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp",

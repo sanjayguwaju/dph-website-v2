@@ -8,6 +8,11 @@ export const getPayloadClient = async () => {
     return cachedPayload;
   }
 
-  cachedPayload = await getPayload({ config });
-  return cachedPayload;
+  try {
+    cachedPayload = await getPayload({ config });
+    return cachedPayload;
+  } catch (error) {
+    console.error("Failed to initialize Payload:", error);
+    throw error;
+  }
 };

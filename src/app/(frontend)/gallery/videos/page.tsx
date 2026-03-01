@@ -39,17 +39,22 @@ export default async function VideoGalleryPage({
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
 
-  const payload = await getPayloadClient();
-  const result = await payload.find({
-    collection: "video-gallery",
-    where: { isActive: { equals: true } },
-    sort: "-publishedDate",
-    limit,
-    page: currentPage,
-    depth: 0,
-  });
+  let docs: any[] = [];
+  let totalPages = 0;
 
-  const { docs, totalPages } = result;
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "video-gallery",
+      where: { isActive: { equals: true } },
+      sort: "-publishedDate",
+      limit,
+      page: currentPage,
+      depth: 0,
+    });
+    docs = result.docs;
+    totalPages = result.totalPages;
+  } catch (_) { }
 
   return (
     <PageLayout
