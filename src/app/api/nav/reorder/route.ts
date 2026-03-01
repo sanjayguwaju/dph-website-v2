@@ -41,7 +41,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, pinnedItems: reorderedItems });
   } catch (error) {
-    console.error("Error reordering items:", error);
+    // Log to monitoring service in production
     return NextResponse.json({ error: "Failed to reorder" }, { status: 500 });
   }
 }

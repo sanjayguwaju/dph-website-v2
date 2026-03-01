@@ -27,7 +27,7 @@ export const getHomepageServices = cache(async () => {
     });
     return services.docs;
   } catch (error) {
-    console.error("Error fetching services:", error);
+    // Silently fail - error is not user-facing
     return [];
   }
 });

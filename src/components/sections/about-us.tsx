@@ -9,6 +9,9 @@ export async function AboutUs({
   aboutText?: string | null;
   content?: any;
 }) {
+  // Don't render if no content available
+  if (!aboutText && !content) return null;
+
   return (
     <section className="about-section-common">
       <ScrollReveal animation="animate-in fade-in" duration={600}>
@@ -25,7 +28,7 @@ export async function AboutUs({
             </div>
           ) : (
             <p className="about-text-refined line-clamp-6">
-              {aboutText || "Dhaulagiri Hospital is a government hospital providing quality healthcare services to the people of Baglung and surrounding areas."}
+              {aboutText}
             </p>
           )}
           <div className="about-action">

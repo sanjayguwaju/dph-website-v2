@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getSiteSettings, getFooter } from "@/lib/queries/globals";
-import type { Footer as FooterType, Category, Page } from "@/payload-types";
+import type { Footer as FooterType } from "@/payload-types";
 import { FooterTabs } from "./footer-tabs";
 import { toNepaliNum } from "@/utils/nepali-date";
 

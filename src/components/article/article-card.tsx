@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Clock } from "lucide-react";
@@ -16,29 +17,29 @@ interface ArticleCardProps {
     publishedDate: string;
     readTime?: number | null;
     category?:
-      | {
-          id: string;
-          name: string;
-          slug: string;
-          color?: string | null;
-        }
-      | string;
+    | {
+      id: string;
+      name: string;
+      slug: string;
+      color?: string | null;
+    }
+    | string;
     author?:
-      | {
-          id: string;
-          name: string;
-          slug: string;
-          avatar?: any;
-        }
-      | string;
+    | {
+      id: string;
+      name: string;
+      slug: string;
+      avatar?: any;
+    }
+    | string;
   };
   variant?: "default" | "horizontal" | "compact";
   priority?: boolean;
 }
 
-export function ArticleCard({ article, variant = "default", priority = false }: ArticleCardProps) {
-  const category = typeof article.category === "object" ? article.category : null;
-  const author = typeof article.author === "object" ? article.author : null;
+export const ArticleCard = memo(function ArticleCard({ article, variant = "default", priority = false }: ArticleCardProps) {
+  const category = useMemo(() => typeof article.category === "object" ? article.category : null, [article.category]);
+  const author = useMemo(() => typeof article.author === "object" ? article.author : null, [article.author]);
 
   if (variant === "horizontal") {
     return (
@@ -146,4 +147,4 @@ export function ArticleCard({ article, variant = "default", priority = false }: 
       </div>
     </article>
   );
-}
+});

@@ -10,10 +10,10 @@ export async function Marquee() {
   return (
     <div className="marquee-bar" role="region" aria-label="Latest notices ticker">
       <div className="marquee-label">
-        <span>हाइलाइट्स</span>
+        <span>हाइलाइटहरू</span>
       </div>
       <div className="marquee-track-wrap">
-        <div className="marquee-track">
+        <div className="marquee-track animate-marquee">
           {items.map((notice, i) => (
             <a key={`${notice.id}-${i}`} href={`/notices/${notice.id}`} className="marquee-item">
               {typeof notice.title === "string" ? notice.title : String(notice.title)}

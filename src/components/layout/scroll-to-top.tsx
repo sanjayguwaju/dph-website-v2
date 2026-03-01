@@ -1,40 +1,45 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useRef } from "react";
 import { ChevronUp } from "lucide-react";
+import { useScroll } from "@/hooks/use-scroll";
+
+const SCROLL_THRESHOLD = 300;
 
 export function ScrollToTop() {
-  const [isVisible, setIsVisible] = useState(false);
+  const { scrollY } = useScroll(SCROLL_THRESHOLD);
+  const isVisible = scrollY > SCROLL_THRESHOLD;
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  useEffect(() => {
-    const toggleVisibility = () => {
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener("scroll", toggleVisibility);
-    return () => window.removeEventListener("scroll", toggleVisibility);
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    // Return focus to the start of the document
+    const mainContent = document.querySelector("main") || document.querySelector("h1");
+    if (mainContent) {
+      (mainContent as HTMLElement).focus({ preventScroll: true });
+    }
   }, []);
 
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
-  };
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      scrollToTop();
+    }
+  }, [scrollToTop]);
 
   if (!isVisible) return null;
 
   return (
     <button
+      ref={buttonRef}
       onClick={scrollToTop}
+      onKeyDown={handleKeyDown}
       className="scroll-to-top"
-      aria-label="Scroll to top"
+      aria-label="Scroll to top of page"
+      title="Scroll to top"
+      tabIndex={0}
     >
-      <ChevronUp size={24} />
+      <ChevronUp size={24} aria-hidden="true" />
     </button>
   );
 }

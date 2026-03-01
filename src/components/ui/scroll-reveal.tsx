@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Children } from "react";
 import { cn } from "@/lib/utils";
 
 interface ScrollRevealProps {
@@ -25,7 +25,11 @@ export function ScrollReveal({
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
+  // Don't render if children are empty/null/undefined
+  const hasChildren = Children.count(children) > 0 && children != null;
+
   useEffect(() => {
+    if (!hasChildren) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -43,20 +47,24 @@ export function ScrollReveal({
     }
 
     return () => observer.disconnect();
-  }, [once, threshold]);
+  }, [once, threshold, hasChildren]);
+
+  // Don't render wrapper at all if no children
+  if (!hasChildren) return null;
 
   return (
     <div
       ref={ref}
       className={cn(
-        "transition-all duration-700 ease-out",
-        isVisible 
-          ? "opacity-100 translate-y-0" 
+        "transition-all ease-out",
+        isVisible
+          ? "opacity-100 translate-y-0"
           : "opacity-0 translate-y-8",
         isVisible && animation,
         className
       )}
       style={{
+        transitionDuration: `${duration}ms`,
         animationDelay: `${delay}ms`,
         animationFillMode: "forwards",
       }}

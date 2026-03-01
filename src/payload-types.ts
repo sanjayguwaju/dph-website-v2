@@ -84,6 +84,8 @@ export interface Config {
     'photo-gallery': PhotoGallery;
     'video-gallery': VideoGallery;
     'quick-links': QuickLink;
+    appointments: Appointment;
+    feedback: Feedback;
     redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -109,6 +111,8 @@ export interface Config {
     'photo-gallery': PhotoGallerySelect<false> | PhotoGallerySelect<true>;
     'video-gallery': VideoGallerySelect<false> | VideoGallerySelect<true>;
     'quick-links': QuickLinksSelect<false> | QuickLinksSelect<true>;
+    appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
+    feedback: FeedbackSelect<false> | FeedbackSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -662,6 +666,41 @@ export interface QuickLink {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "appointments".
+ */
+export interface Appointment {
+  id: string;
+  patientName: string;
+  phone: string;
+  email?: string | null;
+  department: string | Service;
+  appointmentDate: string;
+  message?: string | null;
+  status?: ('pending' | 'confirmed' | 'completed' | 'cancelled') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback".
+ */
+export interface Feedback {
+  id: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  type: 'suggestion' | 'complaint' | 'appreciation' | 'general';
+  message: string;
+  status?: ('new' | 'in-review' | 'resolved' | 'archived') | null;
+  /**
+   * Internal notes or response to the feedback
+   */
+  adminResponse?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -774,6 +813,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quick-links';
         value: string | QuickLink;
+      } | null)
+    | ({
+        relationTo: 'appointments';
+        value: string | Appointment;
+      } | null)
+    | ({
+        relationTo: 'feedback';
+        value: string | Feedback;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1206,6 +1253,36 @@ export interface QuickLinksSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "appointments_select".
+ */
+export interface AppointmentsSelect<T extends boolean = true> {
+  patientName?: T;
+  phone?: T;
+  email?: T;
+  department?: T;
+  appointmentDate?: T;
+  message?: T;
+  status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "feedback_select".
+ */
+export interface FeedbackSelect<T extends boolean = true> {
+  name?: T;
+  email?: T;
+  phone?: T;
+  type?: T;
+  message?: T;
+  status?: T;
+  adminResponse?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects_select".
  */
 export interface RedirectsSelect<T extends boolean = true> {
@@ -1285,6 +1362,8 @@ export interface SiteSetting {
    */
   mapEmbedUrl?: string | null;
   facebook?: string | null;
+  facebookPageName?: string | null;
+  facebookFollowers?: string | null;
   twitter?: string | null;
   youtube?: string | null;
   instagram?: string | null;
@@ -1323,6 +1402,13 @@ export interface Navigation {
         id?: string | null;
       }[]
     | null;
+  ctaButton: {
+    label: string;
+    type: 'page' | 'custom';
+    page?: (string | null) | Page;
+    customUrl?: string | null;
+    showDropdownArrow?: boolean | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1408,6 +1494,8 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   addressEn?: T;
   mapEmbedUrl?: T;
   facebook?: T;
+  facebookPageName?: T;
+  facebookFollowers?: T;
   twitter?: T;
   youtube?: T;
   instagram?: T;
@@ -1442,6 +1530,15 @@ export interface NavigationSelect<T extends boolean = true> {
               id?: T;
             };
         id?: T;
+      };
+  ctaButton?:
+    | T
+    | {
+        label?: T;
+        type?: T;
+        page?: T;
+        customUrl?: T;
+        showDropdownArrow?: T;
       };
   updatedAt?: T;
   createdAt?: T;

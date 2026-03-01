@@ -56,7 +56,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, pinnedItems: newItems });
   } catch (error) {
-    console.error("Error unpinning item:", error);
+    // Log to monitoring service in production
     return NextResponse.json({ error: "Failed to unpin" }, { status: 500 });
   }
 }

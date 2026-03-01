@@ -23,9 +23,10 @@ import { OpdStatsBanner } from "@/components/sections/opd-stats-banner";
 import { ServicesGrid } from "@/components/sections/services-grid";
 import { NoticesTabs } from "@/components/sections/notices-tabs";
 import { OptimizedPhotoGallery } from "@/components/sections/optimized-photo-gallery";
+
+export const revalidate = 60;
 import { VideoGallery } from "@/components/sections/video-gallery";
 import { QuickAccessLinks } from "@/components/sections/quick-access-links";
-import { toNepaliNum } from "@/utils/nepali-date";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { EmergencyFloatingButton } from "@/components/ui/emergency-float";
 
@@ -66,7 +67,6 @@ export default async function HomePage() {
 
   const s = settings as any;
   const ap = aboutPage as any;
-  const hospitalName = s.hospitalNameNe || s.hospitalNameEn;
 
   return (
     <>
@@ -115,7 +115,11 @@ export default async function HomePage() {
         <aside className="home-sidebar-col">
           {/* Facebook Widget */}
           <ScrollReveal delay={400}>
-            <FacebookWidget pageName={hospitalName} />
+            <FacebookWidget
+              pageName={s.facebookPageName || s.hospitalNameNe}
+              followerCount={s.facebookFollowers}
+              facebookUrl={s.facebook || "https://facebook.com"}
+            />
           </ScrollReveal>
 
           {/* Nepali Calendar */}

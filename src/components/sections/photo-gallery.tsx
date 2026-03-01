@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
@@ -41,17 +41,20 @@ function resolveCover(album: Album): string | null {
 export function PhotoGallery({ albums }: { albums: Album[] }) {
   const [lightbox, setLightbox] = useState<{ images: FlatImage[]; idx: number } | null>(null);
 
-  // Flatten all images from all albums for lightbox navigation
-  const allImages: FlatImage[] = [];
-  for (const album of albums) {
-    const cover = resolveCover(album);
-    const albumTitle = getLocalizedValue(album.title);
-    if (cover) allImages.push({ url: cover, alt: albumTitle });
-    for (const img of album.images ?? []) {
-      const url = resolveImg(img);
-      if (url) allImages.push({ url, alt: getLocalizedValue(img.caption) || albumTitle });
+  // Flatten all images from all albums for lightbox navigation - memoized to prevent recalculation
+  const allImages = useMemo<FlatImage[]>(() => {
+    const images: FlatImage[] = [];
+    for (const album of albums) {
+      const cover = resolveCover(album);
+      const albumTitle = getLocalizedValue(album.title);
+      if (cover) images.push({ url: cover, alt: albumTitle });
+      for (const img of album.images ?? []) {
+        const url = resolveImg(img);
+        if (url) images.push({ url, alt: getLocalizedValue(img.caption) || albumTitle });
+      }
     }
-  }
+    return images;
+  }, [albums]);
 
   const prev = useCallback(
     () => setLightbox((lb) => lb && { ...lb, idx: (lb.idx - 1 + lb.images.length) % lb.images.length }),

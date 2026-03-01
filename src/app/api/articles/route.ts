@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(articles);
   } catch (error) {
-    console.error("Articles API Error:", error);
+    // Log to monitoring service in production
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
