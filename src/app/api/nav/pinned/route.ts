@@ -35,7 +35,7 @@ export async function GET() {
       )?.pinnedItems || [];
     return NextResponse.json({ pinnedItems });
   } catch (error) {
-    console.error("Error fetching pinned items:", error);
-    return NextResponse.json({ pinnedItems: [] });
+    // Log to monitoring service in production
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

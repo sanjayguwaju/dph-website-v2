@@ -109,11 +109,27 @@ export const SiteSettings: GlobalConfig = {
         {
           label: "Social Media",
           fields: [
-            { name: "facebook", type: "text" },
-            { name: "twitter", type: "text" },
-            { name: "youtube", type: "text" },
-            { name: "instagram", type: "text" },
-            { name: "tiktok", type: "text" },
+            {
+              name: "facebook",
+              type: "text",
+              label: "Facebook Page URL",
+            },
+            {
+              name: "facebookPageName",
+              type: "text",
+              label: "Facebook Page Name",
+              defaultValue: "धौलागिरी प्रादेशिक अस्पताल",
+            },
+            {
+              name: "facebookFollowers",
+              type: "text",
+              label: "Facebook Followers (e.g., 4.5K)",
+              defaultValue: "4.5K",
+            },
+            { name: "twitter", type: "text", label: "Twitter/X URL" },
+            { name: "youtube", type: "text", label: "YouTube URL" },
+            { name: "instagram", type: "text", label: "Instagram URL" },
+            { name: "tiktok", type: "text", label: "TikTok URL" },
           ],
         },
         {

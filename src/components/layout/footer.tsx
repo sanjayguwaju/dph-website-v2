@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getSiteSettings, getFooter } from "@/lib/queries/globals";
-import type { Footer as FooterType, Category, Page } from "@/payload-types";
+import type { Footer as FooterType } from "@/payload-types";
 import { FooterTabs } from "./footer-tabs";
 import { toNepaliNum } from "@/utils/nepali-date";
 
@@ -112,7 +112,17 @@ export async function Footer() {
         </p>
 
         <div className="footer-developed-by">
-          <span>Developed By</span>
+          <span>
+            Developed By{" "}
+            <a
+              href="https://www.instagram.com/dark_alaric8/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-500 hover:underline"
+            >
+              Abhishek Pyakurel
+            </a>
+          </span>
         </div>
       </div>
     </footer>

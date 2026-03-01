@@ -1,23 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Network, RefreshCw, Accessibility, Moon, Sun, PhoneCall, Calendar } from "lucide-react";
+import { Network, RefreshCw, Accessibility, Moon, Sun, PhoneCall, Calendar, Globe } from "lucide-react";
 import { formatNepaliDate } from "@/utils/nepali-date";
 
-export function TopBar({
-  contactPhone,
-  emergencyNumber,
-}: {
+type FontSize = "sm" | "md" | "lg";
+
+interface TopBarProps {
   contactPhone?: string | null;
   emergencyNumber?: string | null;
-}) {
-  const [fontSize, setFontSize] = useState<"sm" | "md" | "lg">("md");
+}
+
+export function TopBar({ contactPhone, emergencyNumber }: TopBarProps) {
+  const [fontSize, setFontSize] = useState<FontSize>("md");
   const [isDark, setIsDark] = useState(false);
   const [nepaliDate, setNepaliDate] = useState("");
+  const [mounted, setMounted] = useState(false);
 
+  // Initialize theme and font size from localStorage
   useEffect(() => {
-    // Initial Theme Load
+    setMounted(true);
     const savedTheme = localStorage.getItem("theme");
     const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     const shouldBeDark = savedTheme === "dark" || (!savedTheme && systemDark);
@@ -25,96 +28,69 @@ export function TopBar({
     setIsDark(shouldBeDark);
     if (shouldBeDark) document.documentElement.classList.add("dark");
 
-    // Accessibility Load
-    const savedSize = (localStorage.getItem("fontSize") as "sm" | "md" | "lg") || "md";
+    const savedSize = (localStorage.getItem("fontSize") as FontSize) || "md";
     setFontSize(savedSize);
     applyFontSize(savedSize);
 
-    // Scroll listener for sticky header
-    const handleScroll = () => {
-      const header = document.querySelector(".hospital-header");
-      if (window.scrollY > 20) {
-        header?.classList.add("scrolled");
-      } else {
-        header?.classList.remove("scrolled");
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-
-    // Format for Nepali Date (BS)
-    const now = new Date();
-    setNepaliDate(formatNepaliDate(now));
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    setNepaliDate(formatNepaliDate(new Date()));
   }, []);
 
-  function applyFontSize(size: "sm" | "md" | "lg") {
-    const html = document.documentElement;
-    html.classList.remove("text-sm-mode", "text-md-mode", "text-lg-mode");
-    html.classList.add(`text-${size}-mode`);
-  }
+  const applyFontSize = useCallback((size: FontSize) => {
+    document.documentElement.classList.remove("text-sm-mode", "text-md-mode", "text-lg-mode");
+    document.documentElement.classList.add(`text-${size}-mode`);
+  }, []);
 
-  function changeSize(size: "sm" | "md" | "lg") {
+  const changeSize = useCallback((size: FontSize) => {
     setFontSize(size);
     localStorage.setItem("fontSize", size);
     applyFontSize(size);
-  }
+  }, [applyFontSize]);
 
-  function toggleTheme() {
-    const next = !isDark;
-    setIsDark(next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-    if (next) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }
+  const toggleTheme = useCallback(() => {
+    setIsDark((prev) => {
+      const next = !prev;
+      localStorage.setItem("theme", next ? "dark" : "light");
+      document.documentElement.classList.toggle("dark", next);
+      return next;
+    });
+  }, []);
 
   return (
-    <div className="top-bar">
-      <div className="top-bar-left">
-        <div className="top-bar-icons">
-          <Link href="/sitemap" className="top-bar-btn">
-            <Network size={14} className="icon-blue" /> Site Map
+    <div className="top-bar-v3">
+      <div className="container-refined flex flex-wrap items-center justify-between">
+        <div className="top-bar-left-v3 hidden lg:flex flex-wrap items-center">
+          <Link href="/sitemap" className="top-bar-item-v3">
+            <Network size={14} className="top-icon-v3" /> साईटम्याप
           </Link>
-          <button className="top-bar-btn">
-            <RefreshCw size={14} className="icon-blue" /> Low Bandwidth
+          <button className="top-bar-item-v3">
+            <RefreshCw size={14} className="top-icon-v3" /> लो ब्यान्डविथ
           </button>
-          <button className="top-bar-btn">
-            <Accessibility size={14} className="icon-blue" /> Screen Reader
+          <button className="top-bar-item-v3">
+            <Accessibility size={14} className="top-icon-v3" /> स्क्रीन रीडर
           </button>
+          <span className="top-bar-item-v3 hidden sm:flex">
+            <PhoneCall size={14} className="top-icon-v3" /> प्रशासन ०६८५२०२८८ आकस्मिक ०६८५२४१०४
+          </span>
+          <span className="top-bar-item-v3 border-none hidden lg:flex">
+            <Calendar size={14} className="top-icon-v3" /> {mounted ? nepaliDate : "Loading..."}
+          </span>
         </div>
-        <div className="top-bar-emergency-wrap">
-          {contactPhone && (
-            <span className="top-bar-info">
-              <PhoneCall size={13} className="icon-blue mr-1" /> Admin: {contactPhone}
-            </span>
-          )}
-          {emergencyNumber && (
-            <span className="top-bar-info">
-              Emergency: {emergencyNumber}
-            </span>
-          )}
-        </div>
-      </div>
 
-      <div className="top-bar-center">
-        <span className="top-bar-date"><Calendar size={14} style={{ display: 'inline', verticalAlign: 'middle', marginRight: '5px' }} /> {nepaliDate}</span>
-      </div>
+        <div className="top-bar-right-v3 flex items-center w-full lg:w-auto justify-between lg:justify-end">
+          <button onClick={toggleTheme} className="top-bar-item-v3 !border-l-0 lg:!border-l">
+            {isDark ? <Sun size={15} strokeWidth={2.5} className="top-icon-v3" /> : <Moon size={15} strokeWidth={2.5} className="top-icon-v3" />}
+            <span className="hidden md:inline">{isDark ? "Light" : "Dark"}</span>
+          </button>
 
-      <div className="top-bar-right">
-        <button onClick={toggleTheme} className="top-bar-btn dark-toggle-btn">
-          {isDark ? <Sun size={14} /> : <Moon size={14} />}
-          <span className="ml-1">{isDark ? "Light" : "Dark"}</span>
-        </button>
+          <div className="top-bar-item-v3 a11y-font-group-v3 flex items-center justify-center flex-1 lg:flex-none">
+            <button onClick={() => changeSize("lg")} className={`a11y-btn ${fontSize === "lg" ? "active" : ""}`}>अ+</button>
+            <button onClick={() => changeSize("md")} className={`a11y-btn ${fontSize === "md" ? "active" : ""}`}>अ</button>
+            <button onClick={() => changeSize("sm")} className={`a11y-btn ${fontSize === "sm" ? "active" : ""}`}>अ-</button>
+          </div>
 
-        <div className="top-bar-a11y">
-          <button onClick={() => changeSize("lg")} className={`a11y-btn ${fontSize === "lg" ? "active" : ""}`}>A+</button>
-          <button onClick={() => changeSize("md")} className={`a11y-btn ${fontSize === "md" ? "active" : ""}`}>A</button>
-          <button onClick={() => changeSize("sm")} className={`a11y-btn ${fontSize === "sm" ? "active" : ""}`}>A-</button>
+          <button className="top-bar-item-v3 !border-r-0 btn-lang-v3">
+            <span className="lang-icon-v3">A</span><span className="lang-icon-v3-ne">अ</span> <span className="hidden md:inline ml-1">English</span>
+          </button>
         </div>
       </div>
     </div>

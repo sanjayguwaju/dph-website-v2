@@ -1,6 +1,6 @@
 "use client";
 
-import { Facebook, Twitter, Share2 } from "lucide-react";
+import { Facebook, Twitter } from "lucide-react";
 
 interface ServiceShareButtonsProps {
   title: string;

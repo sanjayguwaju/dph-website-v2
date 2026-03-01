@@ -5,27 +5,19 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight, Download, ExternalLink } from "lucide-react";
 import type { Notice } from "@/payload-types";
-
-// Helper to extract string from potentially localized CMS fields
-function getLocalizedValue(value: any): string {
-  if (typeof value === "string") return value;
-  if (value && typeof value === "object") {
-    return value.ne || value.en || String(value);
-  }
-  return String(value);
-}
+import { getLocalizedValue } from "@/lib/utils/localized";
 
 interface NoticesPopupProps {
-  notices: Notice[];
+  notices?: Notice[];
 }
 
-export function NoticesPopup({ notices }: NoticesPopupProps) {
+export function NoticesPopup({ notices = [] }: NoticesPopupProps) {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState(0);
 
   const closePopup = useCallback(() => {
     setOpen(false);
-    document.body.style.overflow = "auto";
+    document.body.style.overflow = "";
   }, []);
 
   const nextNotice = useCallback(() => {
@@ -48,10 +40,10 @@ export function NoticesPopup({ notices }: NoticesPopupProps) {
     if (open) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
     };
   }, [open]);
 

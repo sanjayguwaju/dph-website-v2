@@ -108,5 +108,50 @@ export const Navigation: GlobalConfig = {
         },
       ],
     },
+    {
+      name: "ctaButton",
+      type: "group",
+      label: "CTA Button (Right side of nav)",
+      fields: [
+        {
+          name: "label",
+          type: "text",
+          defaultValue: "Online Services",
+          required: true,
+        },
+        {
+          name: "type",
+          type: "select",
+          required: true,
+          defaultValue: "page",
+          options: [
+            { label: "Page", value: "page" },
+            { label: "Custom URL", value: "custom" },
+          ],
+        },
+        {
+          name: "page",
+          type: "relationship",
+          relationTo: "pages",
+          admin: {
+            condition: (data, siblingData) => siblingData?.type === "page",
+          },
+        },
+        {
+          name: "customUrl",
+          type: "text",
+          defaultValue: "/appointments",
+          admin: {
+            condition: (data, siblingData) => siblingData?.type === "custom",
+          },
+        },
+        {
+          name: "showDropdownArrow",
+          type: "checkbox",
+          defaultValue: true,
+          label: "Show dropdown arrow",
+        },
+      ],
+    },
   ],
 };

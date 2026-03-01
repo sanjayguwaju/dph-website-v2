@@ -34,6 +34,9 @@ import { PhotoGallery } from "./collections/PhotoGallery";
 import { VideoGallery } from "./collections/VideoGallery";
 import { QuickLinks } from "./collections/QuickLinks";
 
+import { Appointments } from "./collections/Appointments";
+import { Feedback } from "./collections/Feedback";
+
 // ── Globals ───────────────────────────────────────────────────────────────────
 import { SiteSettings } from "./globals/SiteSettings";
 import { Navigation } from "./globals/Navigation";
@@ -110,6 +113,9 @@ export default buildConfig({
     PhotoGallery,
     VideoGallery,
     QuickLinks,
+    // Forms
+    Appointments,
+    Feedback,
   ],
   globals: [SiteSettings, Navigation, Footer, OpdStats],
   editor,

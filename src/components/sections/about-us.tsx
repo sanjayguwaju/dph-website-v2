@@ -9,6 +9,9 @@ export async function AboutUs({
   aboutText?: string | null;
   content?: any;
 }) {
+  // Don't render if no content available
+  if (!aboutText && !content) return null;
+
   return (
     <section className="about-section-common">
       <ScrollReveal animation="animate-in fade-in" duration={600}>

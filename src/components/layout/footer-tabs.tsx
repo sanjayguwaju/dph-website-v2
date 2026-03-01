@@ -28,9 +28,9 @@ export function FooterTabs() {
   ];
 
   const TABS = [
-    { id: "province", label: "Province" },
-    { id: "federal", label: "Federal" },
-    { id: "other", label: "Other" },
+    { id: "province", label: "प्रदेश तर्फ" },
+    { id: "federal", label: "संघ तर्फ" },
+    { id: "other", label: "अन्य" },
   ];
 
   const getLinks = () => {

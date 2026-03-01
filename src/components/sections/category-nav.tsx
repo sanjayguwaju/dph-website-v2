@@ -13,16 +13,15 @@ interface CategoryNavProps {
 
 export function CategoryNav({ categories, activeSlug }: CategoryNavProps) {
   return (
-    <div className="border-b border-[var(--color-ink-800)] bg-[var(--color-ink-900)]/50">
-      <div className="container mx-auto px-[var(--spacing-page)]">
-        <div className="scrollbar-hide flex items-center gap-1 overflow-x-auto py-3">
+    <div className="border-b border-[#E0E0E0] bg-white">
+      <div className="container mx-auto px-4">
+        <div className="scrollbar-hide flex items-center gap-2 overflow-x-auto py-3">
           <Link
             href="/"
-            className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              !activeSlug
-                ? "bg-[var(--color-crimson)] text-white"
-                : "text-[var(--color-ink-300)] hover:bg-[var(--color-ink-800)] hover:text-white"
-            }`}
+            className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${!activeSlug
+                ? "bg-[var(--brand-blue)] text-white"
+                : "text-[#666666] hover:bg-[#F3EFE7] hover:text-[#222222]"
+              }`}
           >
             All
           </Link>
@@ -30,11 +29,10 @@ export function CategoryNav({ categories, activeSlug }: CategoryNavProps) {
             <Link
               key={category.id}
               href={getCategoryUrl(category.slug)}
-              className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-                activeSlug === category.slug
-                  ? "bg-[var(--color-crimson)] text-white"
-                  : "text-[var(--color-ink-300)] hover:bg-[var(--color-ink-800)] hover:text-white"
-              }`}
+              className={`flex-shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${activeSlug === category.slug
+                  ? "bg-[var(--brand-blue)] text-white"
+                  : "text-[#666666] hover:bg-[#F3EFE7] hover:text-[#222222]"
+                }`}
             >
               {category.name}
             </Link>

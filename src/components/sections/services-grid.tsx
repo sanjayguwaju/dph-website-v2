@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getLocalizedValue } from "@/lib/utils/localized";
@@ -11,33 +12,44 @@ type Service = {
   slug?: string | null;
 };
 
-export async function ServicesGrid({ services }: { services: Service[] }) {
+export const ServicesGrid = memo(function ServicesGrid({ services }: { services: Service[] }) {
   if (services.length === 0) return null;
 
   return (
-    <section className="container-refined my-12">
-      <div className="section-header-v2">
-        <h2 className="section-heading-v2">Our Services</h2>
-      </div>
+    <section className="services-section-v3">
+      <div className="container-refined">
+        <div className="services-header-v3">
+          <div className="line-deco"></div>
+          <h2>हाम्रा सेवाहरु</h2>
+          <div className="line-deco"></div>
+        </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
-        {services.map((service, i) => (
-          <ScrollReveal
-            key={service.id}
-            delay={i * 50}
-            animation="animate-in fade-in"
-            duration={400}
-          >
-            <Link
-              href={service.link || `/services/${service.slug || service.id}`}
-              className="flex items-center gap-3 p-4 bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-all hover:-translate-y-1 hover:border-blue-300 group"
+        <div className="services-grid-wrapper">
+          {services.map((service, i) => (
+            <ScrollReveal
+              key={service.id}
+              delay={i * 30}
+              animation="animate-in fade-in zoom-in"
+              duration={400}
             >
-              <span className="text-2xl text-blue-600 bg-blue-50 p-2 rounded flex-shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">{service.icon || "🏥"}</span>
-              <span className="text-sm font-bold text-gray-800 leading-tight">{getLocalizedValue(service.name)}</span>
-            </Link>
-          </ScrollReveal>
-        ))}
+              <Link
+                href={service.link || `/services/${service.slug || service.id}`}
+                className="service-card-v3"
+              >
+                <div className="service-icon-v3">
+                  {/* Attempt to parse generic icon names into real SVGs or just show the string if emoji */}
+                  {service.icon?.startsWith("<svg") ? (
+                    <div dangerouslySetInnerHTML={{ __html: service.icon }} />
+                  ) : (
+                    <span className="text-3xl">{service.icon || "💊"}</span>
+                  )}
+                </div>
+                <h3 className="service-name-v3">{getLocalizedValue(service.name)}</h3>
+              </Link>
+            </ScrollReveal>
+          ))}
+        </div>
       </div>
     </section>
   );
-}
+});
