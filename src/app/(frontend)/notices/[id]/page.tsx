@@ -10,40 +10,24 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
-  const payload = await getPayloadClient();
+  const notice = await import("@/lib/queries/notices").then((m) => m.getNoticeById(id, 0));
 
-  const result = await payload.find({
-    collection: "notices",
-    where: { id: { equals: id } },
-    limit: 1,
-    depth: 0,
-  });
-
-  const notice = result.docs[0] as any;
   if (!notice) return { title: "Not Found" };
 
   return {
     title: `${notice.title} | Amppipal Hospital`,
-    description: notice.description?.slice(0, 160) || "Notice detail",
+    description: (notice.description as string)?.slice(0, 160) || "Notice detail",
     openGraph: {
-      title: notice.title,
-      description: notice.description?.slice(0, 160),
+      title: notice.title as string,
+      description: (notice.description as string)?.slice(0, 160),
     },
   };
 }
 
 export default async function NoticeDetailPage({ params }: Props) {
   const { id } = await params;
-  const payload = await getPayloadClient();
+  const notice = await import("@/lib/queries/notices").then((m) => m.getNoticeById(id, 1)) as any;
 
-  const result = await payload.find({
-    collection: "notices",
-    where: { id: { equals: id } },
-    limit: 1,
-    depth: 1,
-  });
-
-  const notice = result.docs[0] as any;
   if (!notice) notFound();
 
   // Extract file and image

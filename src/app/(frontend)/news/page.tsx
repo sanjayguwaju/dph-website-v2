@@ -42,21 +42,25 @@ export default async function NewsPage({
     bid: "Bid",
   };
 
-  const payload = await getPayloadClient();
-
   const where: any = { status: { equals: "published" } };
   if (type && type !== "all") {
     where.type = { equals: type };
   }
 
-  const result = await payload.find({
-    collection: "news",
-    where,
-    sort: "-publishedDate",
-    limit,
-    page: currentPage,
-    depth: 1,
-  });
+  let result: any = { docs: [], totalPages: 0, totalDocs: 0 };
+  try {
+    const payload = await getPayloadClient();
+    result = await payload.find({
+      collection: "news",
+      where,
+      sort: "-publishedDate",
+      limit,
+      page: currentPage,
+      depth: 1,
+    });
+  } catch (error) {
+    console.error("NewsPage fetch error:", error);
+  }
 
   const { docs, totalPages, totalDocs } = result;
   const tabs = [

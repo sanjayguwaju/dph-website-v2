@@ -37,3 +37,18 @@ export const getPopupNotices = cache(async (): Promise<Notice[]> => {
     return [];
   }
 });
+
+export const getNoticeById = cache(async (id: string, depth = 1) => {
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "notices",
+      where: { id: { equals: id } },
+      limit: 1,
+      depth,
+    });
+    return (result.docs[0] as Notice) || null;
+  } catch (error) {
+    return null;
+  }
+});

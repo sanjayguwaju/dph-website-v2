@@ -29,16 +29,7 @@ export default async function StaffPage() {
 
   const ROLE_ORDER = ["chair", "cms", "info-officer", "doctor", "nurse", "administrative", "other"];
 
-  const payload = await getPayloadClient();
-  const result = await payload.find({
-    collection: "staff",
-    where: { isActive: { equals: true } },
-    sort: "order",
-    limit: 100,
-    depth: 1,
-  });
-
-  const staff = result.docs;
+  const staff = await import("@/lib/queries/homepage").then((m) => m.getHomepageStaff());
 
   // Group by role
   const grouped: Record<string, typeof staff> = {};
