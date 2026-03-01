@@ -112,7 +112,17 @@ export async function Footer() {
         </p>
 
         <div className="footer-developed-by">
-          <span>Developed By</span>
+          <span>
+            Developed By{" "}
+            <a
+              href="https://www.instagram.com/dark_alaric8/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-pink-500 hover:underline"
+            >
+              Abhishek Pyakurel
+            </a>
+          </span>
         </div>
       </div>
     </footer>

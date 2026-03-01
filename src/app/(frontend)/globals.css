@@ -226,7 +226,6 @@ body {
 }
 
 html {
-  scroll-behavior: smooth;
   /* overflow-x on html (not body) to avoid breaking position:sticky */
   overflow-x: hidden;
 }
@@ -1333,6 +1332,7 @@ html.high-contrast a {
   position: relative;
   z-index: 10;
   width: 100%;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
 
 /* Row 1: Branding - smooth transition */
@@ -1344,15 +1344,22 @@ html.high-contrast a {
   overflow: hidden;
   opacity: 1;
   transform: translateY(0);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .header-main-v3.hide-branding .hospital-branding-row-v3 {
   max-height: 0;
   padding: 0;
+  margin: 0;
   opacity: 0;
-  transform: translateY(-40px);
+  transform: translateY(-20px);
   pointer-events: none;
+}
+
+/* Added is-sticky styles for better visual feedback */
+.header-main-v3.is-sticky {
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 /* Row 2: Nav Bar - always visible and sticky-ready */
@@ -1364,6 +1371,7 @@ html.high-contrast a {
   align-items: center;
   position: relative;
   z-index: 1001;
+  transition: background-color 0.3s ease;
 }
 
 .header-logo-img {
@@ -4791,7 +4799,16 @@ a.about-contact-value:hover {
   cursor: pointer;
   z-index: 1000;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) scale(0.8);
+}
+
+.scroll-to-top.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
 }
 
 .scroll-to-top:hover {

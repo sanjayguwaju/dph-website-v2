@@ -27,17 +27,16 @@ export function ScrollToTop() {
     }
   }, [scrollToTop]);
 
-  if (!isVisible) return null;
-
   return (
     <button
       ref={buttonRef}
       onClick={scrollToTop}
       onKeyDown={handleKeyDown}
-      className="scroll-to-top"
+      className={`scroll-to-top ${isVisible ? "is-visible" : ""}`}
       aria-label="Scroll to top of page"
       title="Scroll to top"
-      tabIndex={0}
+      tabIndex={isVisible ? 0 : -1}
+      aria-hidden={!isVisible}
     >
       <ChevronUp size={24} aria-hidden="true" />
     </button>
