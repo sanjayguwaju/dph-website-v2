@@ -171,6 +171,10 @@ export const getQuickLinks = cache(async () => {
 });
 
 export const getOpdStats = cache(async () => {
-  const payload = await getPayloadClient();
-  return await payload.findGlobal({ slug: "opd-stats" });
+  try {
+    const payload = await getPayloadClient();
+    return await payload.findGlobal({ slug: "opd-stats" });
+  } catch (error) {
+    return {};
+  }
 });
