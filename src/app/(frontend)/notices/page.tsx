@@ -27,17 +27,24 @@ export default async function NoticesPage({
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 20;
 
-  const payload = await getPayloadClient();
-  const result = await payload.find({
-    collection: "notices",
-    where: { status: { equals: "published" } },
-    sort: "-publishedDate",
-    limit,
-    page: currentPage,
-    depth: 1,
-  });
+  let docs: any[] = [];
+  let totalPages = 0;
+  let totalDocs = 0;
 
-  const { docs, totalPages, totalDocs } = result;
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "notices",
+      where: { status: { equals: "published" } },
+      sort: "-publishedDate",
+      limit,
+      page: currentPage,
+      depth: 1,
+    });
+    docs = result.docs;
+    totalPages = result.totalPages;
+    totalDocs = result.totalDocs;
+  } catch (_) { }
 
   return (
     <PageLayout

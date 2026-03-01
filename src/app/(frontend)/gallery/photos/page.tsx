@@ -25,17 +25,22 @@ export default async function PhotoGalleryPage({
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 24;
 
-  const payload = await getPayloadClient();
-  const result = await payload.find({
-    collection: "photo-gallery",
-    where: { isActive: { equals: true } },
-    sort: "-publishedDate",
-    limit,
-    page: currentPage,
-    depth: 2,
-  });
+  let docs: any[] = [];
+  let totalPages = 0;
 
-  const { docs, totalPages } = result;
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "photo-gallery",
+      where: { isActive: { equals: true } },
+      sort: "-publishedDate",
+      limit,
+      page: currentPage,
+      depth: 2,
+    });
+    docs = result.docs;
+    totalPages = result.totalPages;
+  } catch (_) { }
 
   return (
     <PageLayout

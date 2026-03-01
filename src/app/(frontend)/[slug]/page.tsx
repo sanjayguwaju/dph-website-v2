@@ -41,25 +41,29 @@ export default async function DynamicPage({ params }: PageProps) {
 
   let committeeMembers: any[] = [];
   if (slug === "committee") {
-    const payload = await getPayloadClient();
-    const res = await payload.find({
-      collection: "staff",
-      where: {
-        role: { equals: "management-committee" },
-        isActive: { equals: true },
-      },
-      sort: "order",
-    });
-    committeeMembers = res.docs;
+    try {
+      const payload = await getPayloadClient();
+      const res = await payload.find({
+        collection: "staff",
+        where: {
+          role: { equals: "management-committee" },
+          isActive: { equals: true },
+        },
+        sort: "order",
+      });
+      committeeMembers = res.docs;
+    } catch (_) { }
   }
 
   let contactSettings: any = null;
 
   if (slug === "contact") {
-    const payload = await getPayloadClient();
-    contactSettings = await payload.findGlobal({
-      slug: "site-settings",
-    });
+    try {
+      const payload = await getPayloadClient();
+      contactSettings = await payload.findGlobal({
+        slug: "site-settings",
+      });
+    } catch (_) { }
   }
 
   return (

@@ -10,30 +10,32 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const payload = await getPayloadClient();
-  const staff = await payload.findByID({
-    collection: "staff",
-    id,
-  });
-
-  if (!staff) return { title: "Not Found" };
-
-  return {
-    title: `${staff.name} | Amppipal Hospital`,
-  };
+  try {
+    const payload = await getPayloadClient();
+    const staff = await payload.findByID({
+      collection: "staff",
+      id,
+    });
+    if (!staff) return { title: "Not Found" };
+    return {
+      title: `${staff.name} | Amppipal Hospital`,
+    };
+  } catch (_) {
+    return { title: "Staff | Amppipal Hospital" };
+  }
 }
 
 export default async function StaffDetailPage({ params }: Props) {
   const { id } = await params;
-  const payload = await getPayloadClient();
 
-  let staff;
+  let staff: any = null;
   try {
+    const payload = await getPayloadClient();
     staff = await payload.findByID({
       collection: "staff",
       id,
     });
-  } catch (e) {
+  } catch (_) {
     notFound();
   }
 

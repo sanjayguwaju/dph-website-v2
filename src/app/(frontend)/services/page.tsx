@@ -27,16 +27,18 @@ export default async function ServicesPage() {
     other: "Other",
   };
 
-  const payload = await getPayloadClient();
-  const result = await payload.find({
-    collection: "services",
-    where: { isActive: { equals: true } },
-    sort: "order",
-    limit: 100,
-    depth: 0,
-  });
-
-  const services = result.docs;
+  let services: any[] = [];
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "services",
+      where: { isActive: { equals: true } },
+      sort: "order",
+      limit: 100,
+      depth: 0,
+    });
+    services = result.docs;
+  } catch (_) { }
 
   // Group by category
   const grouped: Record<string, typeof services> = {};

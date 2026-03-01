@@ -82,44 +82,52 @@ export const getArticleBySlug = cache(async (slug: string) => {
 
 export const getRelatedArticles = cache(
   async (articleId: string, categoryId: string, limit = 4) => {
+    try {
+      const payload = await getPayloadClient();
+
+      const articles = await payload.find({
+        collection: "articles",
+        where: {
+          and: [
+            { id: { not_equals: articleId } },
+            { category: { equals: categoryId } },
+            { status: { equals: "published" } },
+          ],
+        },
+        limit,
+        sort: "-publishedDate",
+        depth: 1,
+      });
+
+      return articles.docs;
+    } catch (error) {
+      return [];
+    }
+  },
+);
+
+export const searchArticles = cache(async (query: string, limit = 10) => {
+  try {
     const payload = await getPayloadClient();
 
     const articles = await payload.find({
       collection: "articles",
       where: {
         and: [
-          { id: { not_equals: articleId } },
-          { category: { equals: categoryId } },
+          {
+            or: [{ title: { like: query } }, { excerpt: { like: query } }],
+          },
           { status: { equals: "published" } },
         ],
       },
       limit,
-      sort: "-publishedDate",
       depth: 1,
     });
 
     return articles.docs;
-  },
-);
-
-export const searchArticles = cache(async (query: string, limit = 10) => {
-  const payload = await getPayloadClient();
-
-  const articles = await payload.find({
-    collection: "articles",
-    where: {
-      and: [
-        {
-          or: [{ title: { like: query } }, { excerpt: { like: query } }],
-        },
-        { status: { equals: "published" } },
-      ],
-    },
-    limit,
-    depth: 1,
-  });
-
-  return articles.docs;
+  } catch (error) {
+    return [];
+  }
 });
 
 export const getTrendingArticles = cache(async (limit = 5) => {
