@@ -112,7 +112,7 @@ export default async function DynamicPage({ params }: PageProps) {
                     Get In Touch
                   </h2>
                   <p className="text-slate-600 font-bold mb-6">
-                    Have a question or suggestion? Send us a message and we'll get back to you.
+                    Have a question or suggestion? Send us a message and we&apos;ll get back to you.
                   </p>
                 </div>
                 <FeedbackForm />

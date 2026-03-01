@@ -21,12 +21,12 @@ type StaffMember = {
 const ROLE_ORDER = ["chair", "cms", "info-officer"];
 
 export const StaffCards = memo(function StaffCards({ staff }: { staff: StaffMember[] }) {
-  if (staff.length === 0) return null;
-
   const sorted = useMemo(
     () => [...staff].sort((a, b) => ROLE_ORDER.indexOf(a.role || "") - ROLE_ORDER.indexOf(b.role || "")),
     [staff]
   );
+
+  if (staff.length === 0) return null;
 
   return (
     <div className="staff-cards-list">

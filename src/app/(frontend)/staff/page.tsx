@@ -98,7 +98,7 @@ export default async function StaffPage() {
                         <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-[#2563eb] transition-colors">{getLocalizedValue(member.name)}</h3>
                         {member.nameEn && <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{getLocalizedValue(member.nameEn)}</p>}
                         <p className="mt-3 inline-block px-3 py-1 bg-blue-50 text-[#2563eb] text-[11px] font-bold rounded-full uppercase tracking-wider">{getLocalizedValue(member.designation)}</p>
-                        {member.department && <p className="text-gray-500 text-sm mt-2 font-medium italic">" {getLocalizedValue(member.department)} "</p>}
+                        {member.department && <p className="text-gray-500 text-sm mt-2 font-medium italic">&quot; {getLocalizedValue(member.department)} &quot;</p>}
                       </div>
 
                       <div className="w-full pt-6 border-t border-gray-50 flex flex-col gap-3">
