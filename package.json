@@ -87,7 +87,7 @@
     "node": "^20.9.0 || ^22.0.0",
     "pnpm": "^9 || ^10"
   },
-  "packageManager": "pnpm@10.4.5",
+  "packageManager": "pnpm@10.6.5",
   "pnpm": {
     "onlyBuiltDependencies": [
       "sharp",
