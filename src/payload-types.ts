@@ -122,7 +122,7 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('en' | 'ne') | ('en' | 'ne')[];
   globals: {
     'site-settings': SiteSetting;
     navigation: Navigation;
@@ -135,7 +135,7 @@ export interface Config {
     footer: FooterSelect<false> | FooterSelect<true>;
     'opd-stats': OpdStatsSelect<false> | OpdStatsSelect<true>;
   };
-  locale: null;
+  locale: 'en' | 'ne';
   user: User;
   jobs: {
     tasks: unknown;
@@ -1343,10 +1343,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
  */
 export interface SiteSetting {
   id: string;
-  hospitalNameNe: string;
-  hospitalNameEn: string;
-  taglineNe?: string | null;
-  taglineEn?: string | null;
+  govermentName: string;
+  ministryName: string;
+  hospitalName: string;
+  tagline?: string | null;
   logo?: (string | null) | Media;
   favicon?: (string | null) | Media;
   siteUrl: string;
@@ -1356,7 +1356,6 @@ export interface SiteSetting {
   emergencyNumber?: string | null;
   faxNumber?: string | null;
   address?: string | null;
-  addressEn?: string | null;
   /**
    * Paste the src URL from Google Maps > Share > Embed a map
    */
@@ -1478,10 +1477,10 @@ export interface OpdStat {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
-  hospitalNameNe?: T;
-  hospitalNameEn?: T;
-  taglineNe?: T;
-  taglineEn?: T;
+  govermentName?: T;
+  ministryName?: T;
+  hospitalName?: T;
+  tagline?: T;
   logo?: T;
   favicon?: T;
   siteUrl?: T;
@@ -1491,7 +1490,6 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   emergencyNumber?: T;
   faxNumber?: T;
   address?: T;
-  addressEn?: T;
   mapEmbedUrl?: T;
   facebook?: T;
   facebookPageName?: T;

@@ -129,7 +129,13 @@ function Lightbox({
 }
 
 // ── Album Card ────────────────────────────────────────────────────────────────
-function AlbumCard({ album, onClick }: { album: Album; onClick: () => void }) {
+import { getLocaleClient } from "@/utils/locale-client";
+import { toNepaliNum } from "@/utils/nepali-date";
+
+// ... (types and helpers remain same)
+
+// ── Album Card ────────────────────────────────────────────────────────────────
+function AlbumCard({ album, onClick, locale }: { album: Album; onClick: () => void; locale: string }) {
   const cover = resolveCoverUrl(album);
   const count = (album.images ?? []).filter((img) => resolveImageUrl(img)).length;
 
@@ -149,7 +155,11 @@ function AlbumCard({ album, onClick }: { album: Album; onClick: () => void }) {
             <Images size={36} />
           </div>
         )}
-        {count > 0 && <span className="gallery-album-badge">{count} Photos</span>}
+        {count > 0 && (
+          <span className="gallery-album-badge">
+            {locale === "ne" ? toNepaliNum(count) : count} {locale === "ne" ? "तस्बिरहरू" : "Photos"}
+          </span>
+        )}
         <div className="gallery-album-hover-overlay">
           <ZoomIn size={28} />
         </div>
@@ -166,9 +176,17 @@ function AlbumCard({ album, onClick }: { album: Album; onClick: () => void }) {
 
 // ── Main Component ────────────────────────────────────────────────────────────
 export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
+  const locale = getLocaleClient();
   const [view, setView] = useState<"albums" | "grid">("albums");
   const [activeAlbum, setActiveAlbum] = useState<Album | null>(null);
   const [lightbox, setLightbox] = useState<{ images: FlatImage[]; startIndex: number } | null>(null);
+
+  const labels = {
+    albums: locale === "ne" ? "एल्बमहरू" : "Albums",
+    allPhotos: locale === "ne" ? "सबै तस्बिरहरू" : "All Photos",
+    back: locale === "ne" ? "फर्कनुहोस्" : "Back",
+    empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
+  };
 
   // All images across ALL albums
   const allImages: FlatImage[] = albums.flatMap(getAlbumImages);
@@ -209,29 +227,29 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
           onClick={backToAlbums}
         >
           <Images size={15} />
-          Albums
-          <span className="gallery-tab-count">{albums.length}</span>
+          {labels.albums}
+          <span className="gallery-tab-count">{locale === "ne" ? toNepaliNum(albums.length) : albums.length}</span>
         </button>
         <button
           className={`gallery-tab-btn${view === "grid" && !activeAlbum ? " active" : ""}`}
           onClick={showAll}
         >
-          All Photos
-          <span className="gallery-tab-count">{allImages.length}</span>
+          {labels.allPhotos}
+          <span className="gallery-tab-count">{locale === "ne" ? toNepaliNum(allImages.length) : allImages.length}</span>
         </button>
         {activeAlbum && (
           <span className="gallery-tab-breadcrumb">
-            › {activeAlbum.title}
-            <span className="gallery-tab-count">{getAlbumImages(activeAlbum).length}</span>
+            {activeAlbum.title}
+            <span className="gallery-tab-count">{locale === "ne" ? toNepaliNum(getAlbumImages(activeAlbum).length) : getAlbumImages(activeAlbum).length}</span>
           </span>
         )}
       </div>
 
       {/* ── Back button inside album ── */}
       {activeAlbum && (
-        <button className="gallery-back-btn" onClick={backToAlbums}>
+        <button className="gallery-back-btn font-bold" onClick={backToAlbums}>
           <ChevronLeft size={16} />
-          Back
+          {labels.back}
         </button>
       )}
 
@@ -239,13 +257,14 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
       {view === "albums" && !activeAlbum && (
         <>
           {albums.length === 0 ? (
-            <p className="page-empty">No data available</p>
+            <p className="page-empty font-bold">{labels.empty}</p>
           ) : (
             <div className="gallery-albums-grid">
               {albums.map((album) => (
                 <AlbumCard
                   key={album.id}
                   album={album}
+                  locale={locale}
                   onClick={() => enterAlbum(album)}
                 />
               ))}
@@ -258,7 +277,7 @@ export function PhotoGalleryClient({ albums }: { albums: Album[] }) {
       {(view === "grid" || activeAlbum) && (
         <>
           {currentImages.length === 0 ? (
-            <p className="page-empty">No data available</p>
+            <p className="page-empty font-bold">{labels.empty}</p>
           ) : (
             <div className="gallery-masonry-grid">
               {currentImages.map((img, i) => (

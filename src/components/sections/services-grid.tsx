@@ -1,7 +1,10 @@
-import { memo } from "react";
+"use client";
+
+import { memo, useState, useEffect } from "react";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getLocalizedValue } from "@/lib/utils/localized";
+import { getLocaleClient } from "@/utils/locale-client";
 
 type Service = {
   id: string;
@@ -13,14 +16,22 @@ type Service = {
 };
 
 export const ServicesGrid = memo(function ServicesGrid({ services }: { services: Service[] }) {
+  const [locale, setLocale] = useState("ne");
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
+
   if (services.length === 0) return null;
+
+  const headerTitle = locale === "ne" ? "हाम्रा सेवाहरु" : "Our Services";
 
   return (
     <section className="services-section-v3">
       <div className="container-refined">
         <div className="services-header-v3">
           <div className="line-deco"></div>
-          <h2>हाम्रा सेवाहरु</h2>
+          <h2>{headerTitle}</h2>
           <div className="line-deco"></div>
         </div>
 

@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { TrendingUp } from "lucide-react";
 import { ArticleCard } from "@/components/article/article-card";
@@ -18,22 +20,34 @@ interface TrendingSectionProps {
   }>;
 }
 
+import { getLocaleClient } from "@/utils/locale-client";
+import { toNepaliNum } from "@/utils/nepali-date";
+import { useState, useEffect } from "react";
+
 export function TrendingSection({ articles }: TrendingSectionProps) {
+  const [locale, setLocale] = useState("ne");
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
+
   if (articles.length === 0) return null;
+
+  const title = locale === "ne" ? "अहिले चर्चित" : "Trending Now";
 
   return (
     <section className="border-ink-800 py-section border-y">
       <div className="px-page container mx-auto">
         <div className="mb-8 flex items-center gap-3">
           <TrendingUp className="text-crimson h-6 w-6" />
-          <h2 className="text-ink-50 text-2xl font-bold">Trending Now</h2>
+          <h2 className="text-ink-50 text-2xl font-bold">{title}</h2>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
           {articles.map((article, index) => (
             <div key={article.id} className="group flex items-start gap-4">
               <span className="text-ink-700 group-hover:text-crimson shrink-0 text-4xl font-bold transition-colors">
-                {String(index + 1).padStart(2, "0")}
+                {locale === "ne" ? toNepaliNum(String(index + 1).padStart(2, "0")) : String(index + 1).padStart(2, "0")}
               </span>
               <div className="min-w-0 flex-1">
                 <Link href={getArticleUrl(article.slug)}>
@@ -42,7 +56,7 @@ export function TrendingSection({ articles }: TrendingSectionProps) {
                   </h3>
                 </Link>
                 <time dateTime={article.publishedDate} className="text-ink-500 mt-1 block text-xs">
-                  {formatDate(article.publishedDate, "relative")}
+                  {formatDate(article.publishedDate, "relative", locale)}
                 </time>
               </div>
             </div>

@@ -13,19 +13,24 @@ interface PageLayoutProps {
   maxWidth?: string;
 }
 
+import { getLocale } from "@/utils/locale-server";
+
 export async function PageLayout({
   children,
   breadcrumbs,
   className = "",
   maxWidth = "max-w-7xl",
 }: PageLayoutProps) {
+  const locale = await getLocale();
+  const homeLabel = locale === "ne" ? "गृह पृष्ठ" : "Home";
+
   return (
     <>
       <div className="breadcrumb-wrap-v3">
         <div className="container px-page">
           <nav className="breadcrumb-nav-v3" aria-label="Breadcrumb">
             <Link href="/" className="breadcrumb-link-v3">
-              Home
+              {homeLabel}
             </Link>
             {breadcrumbs.map((item, i) => (
               <div key={i} className="breadcrumb-item-v3">

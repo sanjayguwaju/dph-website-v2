@@ -6,18 +6,25 @@ import { formatDate } from "@/utils/format";
 import { PageLayout } from "@/components/layout/page-layout";
 import Link from "next/link";
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   return {
-    title: `Downloads | ${hospitalName}`,
-    description: "Download important documents, annual reports, and publications.",
+    title: locale === "ne" ? `डाउनलोडहरू | ${hospitalName}` : `Downloads | ${hospitalName}`,
+    description: locale === "ne"
+      ? "महत्त्वपूर्ण कागजातहरू, वार्षिक प्रतिवेदनहरू र प्रकाशनहरू डाउनलोड गर्नुहोस्।"
+      : "Download important documents, annual reports, and publications.",
   };
 }
 
 export default async function DownloadsPage() {
+  const locale = await getLocale();
   let downloads: any[] = [];
 
   try {
@@ -38,6 +45,7 @@ export default async function DownloadsPage() {
             }
           ]
         },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 50,
       }),
@@ -54,6 +62,7 @@ export default async function DownloadsPage() {
             }
           ]
         },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 50,
       })
@@ -61,25 +70,37 @@ export default async function DownloadsPage() {
 
     // Combine and sort by date
     downloads = [
-      ...newsRes.docs.map(d => ({ ...d, resourceType: "News/Pub" })),
-      ...noticesRes.docs.map(d => ({ ...d, resourceType: "Notice" }))
+      ...newsRes.docs.map(d => ({ ...d, resourceType: locale === "ne" ? "समाचार/प्रकाशन" : "News/Pub" })),
+      ...noticesRes.docs.map(d => ({ ...d, resourceType: locale === "ne" ? "सूचना" : "Notice" }))
     ].sort((a: any, b: any) =>
       new Date(b.publishedDate).getTime() - new Date(a.publishedDate).getTime()
     );
   } catch (_) { }
 
+  const labels = {
+    downloads: locale === "ne" ? "डाउनलोडहरू" : "Downloads",
+    title: locale === "ne" ? "डाउनलोड तथा प्रकाशनहरू" : "Downloads & Publications",
+    desc: locale === "ne" ? "वार्षिक प्रतिवेदनहरू, निर्देशिकाहरू र महत्त्वपूर्ण सूचनाहरू पहुँच र डाउनलोड गर्नुहोस्।" : "Access and download annual reports, guidelines, and important notices.",
+    empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
+    downloadBtn: locale === "ne" ? "डाउनलोड" : "Download",
+    stayUpdated: locale === "ne" ? "अद्यावधिक रहनुहोस्" : "Stay Updated",
+    stayUpdatedDesc: locale === "ne" ? "नवीनतम अपडेटहरूको लागि हाम्रो समाचार र सूचना खण्ड नियमित रूपमा जाँच गर्नुहोस्।" : "Check our News and Notices section regularly for the latest updates.",
+    news: locale === "ne" ? "समाचार" : "News",
+    notices: locale === "ne" ? "सूचनाहरू" : "Notices",
+  };
+
   return (
     <PageLayout
-      breadcrumbs={[{ label: "Downloads" }]}
+      breadcrumbs={[{ label: labels.downloads }]}
       maxWidth="max-w-6xl"
     >
       <div className="mb-12 border-b border-gray-100 pb-8">
         <h1 className="text-3xl font-bold text-[#003580] mb-3 flex items-center gap-3">
           <Download className="text-[#2563eb]" />
-          Downloads &amp; Publications
+          {labels.title}
         </h1>
         <p className="text-gray-500 text-lg">
-          Access and download annual reports, guidelines, and important notices.
+          {labels.desc}
         </p>
       </div>
 
@@ -87,7 +108,7 @@ export default async function DownloadsPage() {
         {downloads.length === 0 ? (
           <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
             <Search size={40} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500 font-medium">No data available</p>
+            <p className="text-gray-500 font-bold">{labels.empty}</p>
           </div>
         ) : (
           downloads.map((item: any) => {
@@ -95,9 +116,13 @@ export default async function DownloadsPage() {
             if (!fileUrl) return null;
 
             const fileName = (item.file as any)?.filename || item.externalFile?.split('/').pop() || "document.pdf";
-            const fileSize = (item.file as any)?.filesize
+            let fileSize = (item.file as any)?.filesize
               ? `${(item.file.filesize / 1024 / 1024).toFixed(2)} MB`
               : "";
+
+            if (locale === "ne" && fileSize) {
+              fileSize = `${toNepaliNum((item.file.filesize / 1024 / 1024).toFixed(2))} एमबी`;
+            }
 
             return (
               <div
@@ -115,12 +140,12 @@ export default async function DownloadsPage() {
                       </span>
                       {item.publishedDate && (
                         <span className="text-xs text-gray-400 flex items-center gap-1 ml-2">
-                          <Calendar size={12} /> {formatDate(item.publishedDate, "short")}
+                          <Calendar size={12} /> {formatDate(item.publishedDate, "short", locale)}
                         </span>
                       )}
                     </div>
                     <h3 className="text-lg font-bold text-gray-900 leading-snug group-hover:text-[#2563eb] transition-colors">
-                      {typeof item.title === "object" ? item.title.ne || item.title.en || JSON.stringify(item.title) : item.title}
+                      {item.title}
                     </h3>
                     <p className="text-sm text-gray-500 mt-1 line-clamp-1">{fileName}</p>
                   </div>
@@ -135,7 +160,7 @@ export default async function DownloadsPage() {
                     className="flex items-center gap-2 px-6 py-2.5 bg-gray-50 text-[#2563eb] border border-blue-100 rounded-full text-sm font-bold hover:bg-[#2563eb] hover:text-white transition-all shadow-sm"
                   >
                     <Download size={16} />
-                    Download
+                    {labels.downloadBtn}
                   </a>
                 </div>
               </div>
@@ -148,18 +173,18 @@ export default async function DownloadsPage() {
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <h2 className="text-2xl font-bold mb-2">
-              Stay Updated
+              {labels.stayUpdated}
             </h2>
             <p className="text-blue-100">
-              Check our News and Notices section regularly for the latest updates.
+              {labels.stayUpdatedDesc}
             </p>
           </div>
           <div className="flex gap-4">
             <Link href="/news" className="px-6 py-3 bg-white/10 hover:bg-white/20 rounded-xl font-bold transition-colors">
-              News
+              {labels.news}
             </Link>
             <Link href="/notices" className="px-6 py-3 bg-white text-blue-900 rounded-xl font-bold hover:bg-blue-50 transition-colors">
-              Notices
+              {labels.notices}
             </Link>
           </div>
         </div>

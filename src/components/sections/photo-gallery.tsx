@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getLocalizedValue } from "@/lib/utils/localized";
+import { getLocaleClient } from "@/utils/locale-client";
 
 type GalleryImage = {
   image?: any;
@@ -40,6 +41,11 @@ function resolveCover(album: Album): string | null {
 
 export function PhotoGallery({ albums }: { albums: Album[] }) {
   const [lightbox, setLightbox] = useState<{ images: FlatImage[]; idx: number } | null>(null);
+  const [locale, setLocale] = useState("ne");
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
 
   // Flatten all images from all albums for lightbox navigation - memoized to prevent recalculation
   const allImages = useMemo<FlatImage[]>(() => {
@@ -91,17 +97,22 @@ export function PhotoGallery({ albums }: { albums: Album[] }) {
 
   const previewImages = allImages.slice(0, 8);
 
+  const labels = {
+    title: locale === "ne" ? "फोटो ग्यालरी" : "Photo Gallery",
+    viewAll: locale === "ne" ? "सबै हेर्नुहोस्" : "View All",
+  };
+
   return (
     <section className="gallery-section-v2">
       <div className="gallery-header-v2 flex items-center justify-between gap-4">
         <div className="gallery-header-line flex-1"></div>
-        <h2 className="flex-shrink-0">Photo Gallery</h2>
+        <h2 className="flex-shrink-0 text-white font-bold">{labels.title}</h2>
         <div className="gallery-header-line flex-1"></div>
         <Link
           href="/gallery/photos"
           className="gallery-view-all text-sm font-bold text-white uppercase tracking-wider hover:text-white/80 transition-colors"
         >
-          View All
+          {labels.viewAll}
         </Link>
       </div>
 

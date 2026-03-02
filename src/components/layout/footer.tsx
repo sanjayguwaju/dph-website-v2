@@ -3,16 +3,29 @@ import { getSiteSettings, getFooter } from "@/lib/queries/globals";
 import type { Footer as FooterType } from "@/payload-types";
 import { FooterTabs } from "./footer-tabs";
 import { toNepaliNum } from "@/utils/nepali-date";
+import { getLocale } from "@/utils/locale-server";
 
 export async function Footer() {
-  const [settings, footerGlobal] = await Promise.all([getSiteSettings(), getFooter()]);
+  const [settings, footerGlobal, locale] = await Promise.all([
+    getSiteSettings(),
+    getFooter(),
+    getLocale(),
+  ]);
   const s = settings as any;
   const f = footerGlobal as FooterType;
 
-  const hospitalName = s.hospitalNameNe || s.hospitalNameEn;
-  const address = s.address || s.addressEn;
-  const govText = "Government of Nepal";
-  const ministryText = "Ministry of Health and Population";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
+  const address = s.address || (locale === "ne" ? "पालुङटार-३, गोरखा" : "Palungtar-3, Gorkha");
+  const govermentName = s.govermentName || (locale === "ne" ? "गण्डकी प्रदेश सरकार" : "Gandaki Province Government");
+  const ministryName = s.ministryName || (locale === "ne" ? "स्वास्थ्य मन्त्रालय" : "Ministry of Health");
+
+  const labels = {
+    importantLinks: locale === "ne" ? "महत्वपूर्ण लिङ्कहरू" : "Important Links",
+    location: locale === "ne" ? "हाम्रो स्थान" : "Location",
+    contactInfo: locale === "ne" ? "सम्पर्क जानकारी" : "Contact Information",
+    admin: locale === "ne" ? "प्रशासन:" : "Admin:",
+    emergency: locale === "ne" ? "आकस्मिक:" : "Emergency:",
+  };
 
   return (
     <footer className="hospital-footer">
@@ -20,15 +33,15 @@ export async function Footer() {
         {/* Column 1: tabbed links */}
         <div className="hospital-footer-col">
           <h3 className="hospital-footer-heading">
-            Important Links
+            {labels.importantLinks}
           </h3>
-          <FooterTabs />
+          <FooterTabs locale={locale} />
         </div>
 
         {/* Column 2: Map Embed */}
         <div className="hospital-footer-col">
           <h3 className="hospital-footer-heading">
-            Location
+            {labels.location}
           </h3>
           <div className="footer-map-v3">
             {s.mapEmbedUrl ? (
@@ -53,11 +66,11 @@ export async function Footer() {
         {/* Column 3: Contact Details */}
         <div className="hospital-footer-col">
           <h3 className="hospital-footer-heading">
-            Contact Information
+            {labels.contactInfo}
           </h3>
           <div className="hospital-footer-contact">
             <div className="footer-org-badge">
-              <p className="footer-contact-org-sm">{govText} / {ministryText}</p>
+              <p className="footer-contact-org-sm">{govermentName} / {ministryName}</p>
               <h2 className="footer-contact-org-lg">
                 {hospitalName}
               </h2>
@@ -75,9 +88,9 @@ export async function Footer() {
                 <div className="footer-detail-item">
                   <span>📞</span>
                   <div>
-                    <p><strong>Admin:</strong> <a href={`tel:${s.contactPhone}`}>{s.contactPhone}</a></p>
+                    <p><strong>{labels.admin}</strong> <a href={`tel:${s.contactPhone}`}>{s.contactPhone}</a></p>
                     {s.emergencyNumber && (
-                      <p><strong>Emergency:</strong> <a href={`tel:${s.emergencyNumber}`} className="text-red-400">{s.emergencyNumber}</a></p>
+                      <p><strong>{labels.emergency}</strong> <a href={`tel:${s.emergencyNumber}`} className="text-red-400">{s.emergencyNumber}</a></p>
                     )}
                   </div>
                 </div>
@@ -107,7 +120,9 @@ export async function Footer() {
       <div className="hospital-footer-bottom">
         <p className="footer-bottom-text">
           {f.copyright || (
-            `© ${toNepaliNum(new Date().getFullYear())} ${hospitalName}। सर्वाधिकार सुरक्षित।`
+            locale === "ne"
+              ? `© ${toNepaliNum(new Date().getFullYear())} ${hospitalName}। सर्वाधिकार सुरक्षित।`
+              : `© ${new Date().getFullYear()} ${hospitalName}. All rights reserved.`
           )}
         </p>
 

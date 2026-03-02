@@ -4,33 +4,40 @@ import { getCategoryBySlug, getCategories } from "@/lib/queries/categories";
 import { getArticles } from "@/lib/queries/articles";
 import { ArticleGrid } from "@/components/article";
 import { CategoryNav, Pagination, NewsletterSection } from "@/components/sections";
+import { getSiteSettings } from "@/lib/queries/globals";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
   searchParams: Promise<{ page?: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+import { PageLayout } from "@/components/layout/page-layout";
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getLocale();
   const category = await getCategoryBySlug(slug);
+  const settings = await getSiteSettings();
+  const s = settings as any;
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   if (!category) {
     return {
-      title: "Category Not Found",
+      title: locale === "ne" ? `कोटी फेला परेन | ${hospitalName}` : `Category Not Found | ${hospitalName}`,
     };
   }
 
   return {
-    title: `${category.name} News`,
-    description: category.description || `Latest news and articles in ${category.name}`,
+    title: locale === "ne" ? `${category.name} | ${hospitalName}` : `${category.name} | ${hospitalName}`,
+    description: category.description || (locale === "ne" ? `${category.name} को कोटीमा नवीनतम समाचार र लेखहरू` : `Latest news and articles in ${category.name}`),
   };
 }
-
-import { PageLayout } from "@/components/layout/page-layout";
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { slug } = await params;
   const { page: pageParam } = await searchParams;
+  const locale = await getLocale();
 
   const [category, categories] = await Promise.all([getCategoryBySlug(slug), getCategories()]);
 
@@ -44,6 +51,10 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
     page,
     limit: 12,
   });
+
+  const labels = {
+    empty: locale === "ne" ? "यस कोटीमा कुनै लेखहरू फेला परेनन् अझै।" : "No articles found in this category yet.",
+  };
 
   return (
     <PageLayout
@@ -79,7 +90,7 @@ export default async function CategoryPage({ params, searchParams }: PageProps) 
           </>
         ) : (
           <div className="py-12 text-center">
-            <p className="text-gray-400">No articles found in this category yet.</p>
+            <p className="text-gray-400 font-bold">{labels.empty}</p>
           </div>
         )}
       </div>

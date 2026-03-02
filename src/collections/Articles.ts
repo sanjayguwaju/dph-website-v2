@@ -85,6 +85,7 @@ export const Articles: CollectionConfig = {
       type: "text",
       required: true,
       maxLength: 150,
+      localized: true,
     },
     {
       name: "slug",
@@ -150,6 +151,7 @@ export const Articles: CollectionConfig = {
       admin: {
         description: "Brief summary for social media and article listings",
       },
+      localized: true,
     },
     {
       name: "content",
@@ -168,6 +170,7 @@ export const Articles: CollectionConfig = {
         ],
       }),
       required: true,
+      localized: true,
     },
     {
       name: "featuredImage",

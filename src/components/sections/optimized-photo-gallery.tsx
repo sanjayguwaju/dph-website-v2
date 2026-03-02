@@ -5,6 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
 import { getLocalizedValue } from "@/lib/utils/localized";
+import { getLocaleClient } from "@/utils/locale-client";
+import { toNepaliNum } from "@/utils/nepali-date";
 
 type GalleryImage = {
   image?: any;
@@ -63,6 +65,21 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
   const [isPaused, setIsPaused] = useState(false);
   const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
+  const [locale, setLocale] = useState("ne");
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+    setMounted(true);
+  }, []);
+
+  const labels = {
+    title: locale === "ne" ? "फोटो ग्यालरी" : "Photo Gallery",
+    photos: locale === "ne" ? "तस्बिरहरू" : "Photos",
+    viewDetails: locale === "ne" ? "विवरण हेर्नुहोस् →" : "View Details →",
+    viewAll: locale === "ne" ? "सबै फोटोहरू हेर्नुहोस् →" : "View All Photos →",
+    prev: locale === "ne" ? "अघिल्लो" : "Previous",
+    next: locale === "ne" ? "अर्को" : "Next",
+  };
 
   // Flatten all images from all albums
   const allImages: FlatImage[] = albums.flatMap(getAlbumImages);
@@ -99,13 +116,6 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
     setCurrentIndex((prev) => (prev < maxIndex ? prev + 1 : 0));
   }, [maxIndex]);
 
-  const openLightbox = (index: number) => {
-    const flatIndex = currentIndex * itemsPerView + index;
-    if (flatIndex < allImages.length) {
-      setLightbox({ images: allImages, idx: flatIndex });
-    }
-  };
-
   const prevImage = useCallback(
     () => setLightbox((lb) => lb && { ...lb, idx: (lb.idx - 1 + lb.images.length) % lb.images.length }),
     []
@@ -114,10 +124,6 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
     () => setLightbox((lb) => lb && { ...lb, idx: (lb.idx + 1) % lb.images.length }),
     []
   );
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (!lightbox) {
@@ -154,7 +160,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
     return () => clearInterval(interval);
   }, [maxIndex, albumCovers.length, itemsPerView, isPaused]);
 
-  if (!mounted) return <GallerySkeleton />;
+  if (!mounted) return <GallerySkeleton locale={locale} labels={labels} />;
   if (albumCovers.length === 0) return null;
 
   const visibleItems = albumCovers.slice(
@@ -166,7 +172,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
     <section className="gallery-section-optimized">
       <div className="gallery-optimized-container">
         {/* Header */}
-        <h2 className="gallery-optimized-title">Gallery</h2>
+        <h2 className="gallery-optimized-title">{labels.title}</h2>
 
         {/* Carousel Container */}
         <div
@@ -179,7 +185,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
             <button
               className="gallery-nav-btn gallery-nav-prev"
               onClick={prevSlide}
-              aria-label="Previous"
+              aria-label={labels.prev}
             >
               <ChevronLeft size={20} />
             </button>
@@ -192,7 +198,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
                 key={item.albumId}
                 href={`/gallery/photos?album=${item.albumId}`}
                 className="gallery-card"
-                aria-label={`View album: ${item.alt}`}
+                aria-label={locale === "ne" ? `एल्बम हेर्नुहोस्: ${item.alt}` : `View album: ${item.alt}`}
               >
                 <div className="gallery-card-image-wrap">
                   {failedImages.has(item.url) ? (
@@ -214,14 +220,16 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
                         onError={() => handleImageError(item.url)}
                       />
                       {item.imageCount > 0 && (
-                        <span className="gallery-card-badge">{item.imageCount} Photos</span>
+                        <span className="gallery-card-badge">
+                          {locale === "ne" ? toNepaliNum(item.imageCount) : item.imageCount} {labels.photos}
+                        </span>
                       )}
                     </>
                   )}
                 </div>
                 <div className="gallery-card-content">
                   <p className="gallery-card-caption">{item.alt}</p>
-                  <span className="gallery-card-view-btn">View Details →</span>
+                  <span className="gallery-card-view-btn">{labels.viewDetails}</span>
                 </div>
               </Link>
             ))}
@@ -232,7 +240,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
             <button
               className="gallery-nav-btn gallery-nav-next"
               onClick={nextSlide}
-              aria-label="Next"
+              aria-label={labels.next}
             >
               <ChevronRight size={20} />
             </button>
@@ -242,7 +250,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
         {/* View All Link */}
         <div className="gallery-optimized-footer">
           <Link href="/gallery/photos" className="gallery-view-all-link">
-            View All Photos →
+            {labels.viewAll}
           </Link>
         </div>
       </div>
@@ -283,7 +291,7 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
               <p className="gallery-lb-title">{lightbox.images[lightbox.idx].alt}</p>
               {lightbox.images.length > 1 && (
                 <span className="gallery-lb-index">
-                  {lightbox.idx + 1} / {lightbox.images.length}
+                  {locale === "ne" ? toNepaliNum(lightbox.idx + 1) : lightbox.idx + 1} / {locale === "ne" ? toNepaliNum(lightbox.images.length) : lightbox.images.length}
                 </span>
               )}
             </div>
@@ -294,11 +302,11 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
   );
 }
 
-function GallerySkeleton() {
+function GallerySkeleton({ locale, labels }: { locale: string, labels: any }) {
   return (
     <section className="gallery-section-optimized">
       <div className="gallery-optimized-container animate-pulse">
-        <h2 className="gallery-optimized-title">Gallery</h2>
+        <h2 className="gallery-optimized-title">{labels.title}</h2>
         <div className="gallery-cards-grid">
           {[1, 2, 3].map((i) => (
             <div key={i} className="gallery-card">

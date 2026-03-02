@@ -42,7 +42,19 @@ interface ArticleContentProps {
   };
 }
 
+import { getLocaleClient } from "@/utils/locale-client";
+import { toNepaliNum } from "@/utils/nepali-date";
+import { useState, useEffect } from "react";
+
 export function ArticleContent({ article }: ArticleContentProps) {
+  const [locale, setLocale] = useState("ne");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+    setMounted(true);
+  }, []);
+
   const category = typeof article.category === "object" ? article.category : null;
   const author = typeof article.author === "object" ? article.author : null;
   const tags = article.tags?.filter(
@@ -52,7 +64,15 @@ export function ArticleContent({ article }: ArticleContentProps) {
   const shareUrl = absoluteUrl(getArticleUrl(article.slug));
   const shareText = encodeURIComponent(article.title);
 
-  const displayViews = article.views ? formatNumber(article.views) : "";
+  const displayViews = mounted ? (locale === "ne" ? toNepaliNum(article.views || 0) : formatNumber(article.views || 0)) : "";
+
+  const labels = {
+    views: locale === "ne" ? "पटक हेरिएको" : "views",
+    tags: locale === "ne" ? "ट्यागहरू:" : "Tags:",
+    share: locale === "ne" ? "साझा गर्नुहोस्" : "Share",
+    shareOn: locale === "ne" ? "मा साझा गर्नुहोस्" : "Share on",
+    readTime: locale === "ne" ? "मिनेट पढ्ने समय" : "min read",
+  };
 
   return (
     <div className="px-page container mx-auto">
@@ -101,19 +121,19 @@ export function ArticleContent({ article }: ArticleContentProps) {
             <span className="flex items-center gap-1.5">
               <Calendar className="h-4 w-4" />
               <time dateTime={article.publishedDate}>
-                {formatDate(article.publishedDate, "short")}
+                {formatDate(article.publishedDate, "short", locale)}
               </time>
             </span>
             {article.readTime && (
               <span className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4" />
-                {formatReadTime(article.readTime)}
+                {formatReadTime(article.readTime, locale)}
               </span>
             )}
             {article.views && article.views > 0 && (
               <span className="flex items-center gap-1.5">
                 <Eye className="h-4 w-4" />
-                {displayViews} views
+                {displayViews} {labels.views}
               </span>
             )}
           </div>
@@ -151,7 +171,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
         {/* Tags */}
         {tags && tags.length > 0 && (
           <div className="border-ink-800 mt-8 flex flex-wrap items-center gap-2 border-t pt-8">
-            <span className="text-ink-400 mr-2 text-sm">Tags:</span>
+            <span className="text-ink-400 mr-2 text-sm">{labels.tags}</span>
             {tags.map((tag) => (
               <Link
                 key={tag.id}
@@ -168,7 +188,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
         <div className="border-ink-800 mt-8 flex items-center justify-between gap-4 border-t py-6">
           <div className="text-ink-400 flex items-center gap-2 text-sm">
             <Share2 className="h-4 w-4" />
-            <span>Share</span>
+            <span>{labels.share}</span>
           </div>
           <div className="flex items-center gap-2">
             <a
@@ -176,7 +196,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="text-ink-400 hover:bg-ink-800 rounded-lg p-2 transition-colors hover:text-white"
-              aria-label="Share on Twitter"
+              aria-label={`${labels.shareOn} Twitter`}
             >
               <Twitter className="h-5 w-5" />
             </a>
@@ -185,7 +205,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="text-ink-400 hover:bg-ink-800 rounded-lg p-2 transition-colors hover:text-white"
-              aria-label="Share on Facebook"
+              aria-label={`${labels.shareOn} Facebook`}
             >
               <Facebook className="h-5 w-5" />
             </a>
@@ -194,7 +214,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
               target="_blank"
               rel="noopener noreferrer"
               className="text-ink-400 hover:bg-ink-800 rounded-lg p-2 transition-colors hover:text-white"
-              aria-label="Share on LinkedIn"
+              aria-label={`${labels.shareOn} LinkedIn`}
             >
               <Linkedin className="h-5 w-5" />
             </a>

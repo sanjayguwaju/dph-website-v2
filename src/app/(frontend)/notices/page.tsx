@@ -5,14 +5,23 @@ import Link from "next/link";
 import { formatDate } from "@/utils/format";
 import { FileText, Download, Calendar, ChevronRight, Bell } from "lucide-react";
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
+
+  const title = locale === "ne" ? `सूचनाहरू | ${hospitalName}` : `Notices | ${hospitalName}`;
+  const description = locale === "ne"
+    ? `${hospitalName} बाट जारी आधिकारिक सूचनाहरू, परिपत्रहरू र घोषणाहरू।`
+    : `Official notices, circulars and announcements from ${hospitalName}.`;
 
   return {
-    title: `Notices | ${hospitalName}`,
-    description: `Official notices, circulars and announcements from ${hospitalName}.`,
+    title,
+    description,
   };
 }
 
@@ -23,7 +32,10 @@ export default async function NoticesPage({
 }: {
   searchParams: Promise<{ page?: string }>;
 }) {
-  const { page } = await searchParams;
+  const [{ page }, locale] = await Promise.all([
+    searchParams,
+    getLocale()
+  ]);
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 20;
 
@@ -40,33 +52,45 @@ export default async function NoticesPage({
       limit,
       page: currentPage,
       depth: 1,
+      locale: locale as any,
     });
     docs = result.docs;
     totalPages = result.totalPages;
     totalDocs = result.totalDocs;
   } catch (_) { }
 
+  const labels = {
+    title: locale === "ne" ? "सूचनाहरू" : "Notices",
+    countText: locale === "ne"
+      ? `${toNepaliNum(totalDocs)} आधिकारिक सूचना र घोषणाहरू`
+      : `${totalDocs} official notices and announcements`,
+    empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
+    view: locale === "ne" ? "हेर्नुहोस्" : "View",
+    prev: locale === "ne" ? "‹ अघिल्लो" : "‹ Prev",
+    next: locale === "ne" ? "अर्को ›" : "Next ›",
+  };
+
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "Notices" },
+        { label: labels.title },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-8 border-b border-gray-100 pb-6">
         <h1 className="text-3xl font-bold text-[#003580] mb-2 flex items-center gap-2">
           <Bell size={28} className="text-[#dc2626]" />
-          Notices
+          {labels.title}
         </h1>
         <p className="text-gray-500">
-          {`${totalDocs} official notices and announcements`}
+          {labels.countText}
         </p>
       </div>
 
       {/* Notices list */}
       <div className="space-y-4">
         {docs.length === 0 ? (
-          <p className="page-empty text-center py-20 text-gray-400">No data available</p>
+          <p className="page-empty text-center py-20 text-gray-400 font-bold">{labels.empty}</p>
         ) : (
           docs.map((notice: any) => {
             const file =
@@ -93,7 +117,7 @@ export default async function NoticesPage({
                     {notice.publishedDate && (
                       <time className="flex items-center gap-1">
                         <Calendar size={13} className="opacity-70" />
-                        {formatDate(notice.publishedDate, "short")}
+                        {formatDate(notice.publishedDate, "short", locale)}
                       </time>
                     )}
                   </div>
@@ -108,7 +132,7 @@ export default async function NoticesPage({
                     href={`/notices/${notice.id}`}
                     className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-6 py-2 bg-[#2563eb] text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors"
                   >
-                    View
+                    {labels.view}
                     <ChevronRight size={14} />
                   </Link>
                   {hasPdf && (
@@ -135,15 +159,15 @@ export default async function NoticesPage({
         <div className="page-pagination mt-12">
           {currentPage > 1 && (
             <Link href={`/notices?page=${currentPage - 1}`} className="page-nav-btn">
-              ‹ Prev
+              {labels.prev}
             </Link>
           )}
           <span className="page-num">
-            {currentPage} / {totalPages}
+            {locale === "ne" ? toNepaliNum(currentPage) : currentPage} / {locale === "ne" ? toNepaliNum(totalPages) : totalPages}
           </span>
           {currentPage < totalPages && (
             <Link href={`/notices?page=${currentPage + 1}`} className="page-nav-btn">
-              Next ›
+              {labels.next}
             </Link>
           )}
         </div>

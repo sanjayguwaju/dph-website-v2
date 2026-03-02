@@ -11,8 +11,11 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getLocale();
   const [settings, item] = await Promise.all([
     import("@/lib/queries/globals").then((m) => m.getSiteSettings()),
     import("@/lib/queries/news").then((m) => m.getNewsBySlug(slug)),
@@ -21,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!item) return { title: "Not Found" };
 
   const s = settings as any;
-  const hospitalName = s?.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s?.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
   const img = item.featuredImage && typeof item.featuredImage === "object" ? item.featuredImage : null;
 
   return {
@@ -37,6 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
+  const locale = await getLocale();
   const item = await import("@/lib/queries/news").then((m) => m.getNewsBySlug(slug));
 
   if (!item) notFound();
@@ -46,10 +50,24 @@ export default async function NewsDetailPage({ params }: Props) {
   const imgUrl = (img as any)?.url || (item as any).externalFeaturedImage || null;
   const file = item.file && typeof item.file === "object" ? item.file : null;
 
+  const labels = {
+    news: locale === "ne" ? "समाचार तथा गतिविधिहरू" : "News & Activities",
+    back: locale === "ne" ? "‹ समाचारमा फर्कनुहोस्" : "‹ Back to News",
+    download: locale === "ne" ? "डाउनलोड" : "Download",
+    downloadBtn: locale === "ne" ? "📄 डाउनलोड (PDF)" : "📄 Download (PDF)",
+  };
+
+  const TYPE_LABELS: Record<string, string> = {
+    news: locale === "ne" ? "समाचार" : "News",
+    "press-release": locale === "ne" ? "प्रेस विज्ञप्ति" : "Press Release",
+    publication: locale === "ne" ? "प्रकाशन" : "Publication",
+    bid: locale === "ne" ? "बोलपत्र" : "Bid",
+  };
+
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "News & Activities", href: "/news" },
+        { label: labels.news, href: "/news" },
         { label: item.title as string },
       ]}
       maxWidth="max-w-4xl"
@@ -71,10 +89,17 @@ export default async function NewsDetailPage({ params }: Props) {
 
         <div className="news-detail-meta mb-8 border-b border-[#eee] pb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {item.type && <span className="news-badge">{item.type as string}</span>}
+            {item.type && (
+              <span className="news-badge">
+                {TYPE_LABELS[(item.type as string)] || (item.type as string)}
+              </span>
+            )}
             {item.publishedDate && (
               <time className="news-detail-date text-[15px] font-medium text-gray-600">
-                {formatDate(item.publishedDate as string, "long")}
+                {locale === "ne"
+                  ? new Date(item.publishedDate as string).toLocaleDateString("ne-NP", { dateStyle: "long" })
+                  : formatDate(item.publishedDate as string, "long")
+                }
               </time>
             )}
           </div>
@@ -95,14 +120,14 @@ export default async function NewsDetailPage({ params }: Props) {
 
         {file?.url && (
           <div className="mt-12 bg-[#f8fbff] border border-[#d1e3ff] p-6 rounded-lg text-center">
-            <p className="mb-4 text-[#2563eb] font-medium">Download</p>
+            <p className="mb-4 text-[#2563eb] font-medium">{labels.download}</p>
             <a
               href={file.url as string}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 bg-[#dc2626] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-red-700 rounded shadow-sm"
             >
-              📄 Download (PDF)
+              {labels.downloadBtn}
             </a>
           </div>
         )}
@@ -113,7 +138,7 @@ export default async function NewsDetailPage({ params }: Props) {
           href="/news"
           className="inline-flex items-center gap-2 text-[#2563eb] hover:underline font-medium"
         >
-          ‹ Back to News
+          {labels.back}
         </Link>
       </div>
     </PageLayout>

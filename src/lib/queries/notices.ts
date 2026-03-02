@@ -1,6 +1,7 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
 import type { Notice } from "@/payload-types";
+import { getLocale } from "@/utils/locale-server";
 
 // Re-export the generated type for use in components
 export type { Notice as PopupNotice };
@@ -12,6 +13,8 @@ export const getPopupNotices = cache(async (): Promise<Notice[]> => {
   try {
     const payload = await getPayloadClient();
     const now = new Date().toISOString();
+
+    const locale = await getLocale();
 
     const notices = await payload.find({
       collection: "notices",
@@ -27,6 +30,7 @@ export const getPopupNotices = cache(async (): Promise<Notice[]> => {
           },
         ],
       },
+      locale: locale as any,
       sort: "-publishedDate",
       limit: 10,
       depth: 1,
@@ -41,9 +45,11 @@ export const getPopupNotices = cache(async (): Promise<Notice[]> => {
 export const getNoticeById = cache(async (id: string, depth = 1) => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const result = await payload.find({
       collection: "notices",
       where: { id: { equals: id } },
+      locale: locale as any,
       limit: 1,
       depth,
     });

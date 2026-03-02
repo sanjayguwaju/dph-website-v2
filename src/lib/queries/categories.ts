@@ -1,14 +1,17 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
+import { getLocale } from "@/utils/locale-server";
 
 export const getCategories = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
 
     const categories = await payload.find({
       collection: "categories",
       limit: 100,
       sort: "order",
+      locale: locale as any,
       depth: 1,
     });
 
@@ -21,12 +24,14 @@ export const getCategories = cache(async () => {
 export const getCategoryBySlug = cache(async (slug: string) => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
 
     const categories = await payload.find({
       collection: "categories",
       where: {
         slug: { equals: slug },
       },
+      locale: locale as any,
       limit: 1,
       depth: 2,
     });
@@ -40,11 +45,13 @@ export const getCategoryBySlug = cache(async (slug: string) => {
 export const getCategoryWithArticleCount = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
 
     const categories = await payload.find({
       collection: "categories",
       limit: 100,
       sort: "order",
+      locale: locale as any,
       depth: 0,
     });
 
@@ -58,6 +65,7 @@ export const getCategoryWithArticleCount = cache(async () => {
               category: { equals: category.id },
               status: { equals: "published" },
             },
+            locale: locale as any,
           });
           return {
             ...category,

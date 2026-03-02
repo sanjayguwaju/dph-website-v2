@@ -6,6 +6,8 @@ import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import type { HeroSlide } from "@/payload-types";
 import { cn } from "@/lib/utils";
+import { getLocaleClient } from "@/utils/locale-client";
+import { toNepaliNum } from "@/utils/nepali-date";
 
 interface HeroSliderProps {
     slides: HeroSlide[];
@@ -16,9 +18,14 @@ const AUTO_PLAY_INTERVAL = 6000;
 export function HeroSlider({ slides }: HeroSliderProps) {
     const [current, setCurrent] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
+    const [locale, setLocale] = useState("ne");
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const touchStartX = useRef<number | null>(null);
     const count = slides.length;
+
+    useEffect(() => {
+        setLocale(getLocaleClient());
+    }, []);
 
     const goTo = useCallback(
         (index: number) => {
@@ -70,6 +77,8 @@ export function HeroSlider({ slides }: HeroSliderProps) {
         );
     }
 
+    const ctaLabel = locale === "ne" ? "थप जान्नुहोस्" : "Learn More";
+
     return (
         <div
             className="hero-slider-v3 group rounded-xl bg-slate-900"
@@ -105,7 +114,10 @@ export function HeroSlider({ slides }: HeroSliderProps) {
                                         alt={slide.title || ""}
                                         fill
                                         priority={i === 0}
-                                        className="slide-img-v3 object-cover brightness-[0.7] transform group-hover:scale-105 transition-transform duration-10000"
+                                        className={cn(
+                                            "slide-img-v3 object-cover brightness-[0.7] transform transition-transform duration-[8000ms] ease-out",
+                                            i === current ? "scale-110" : "scale-100"
+                                        )}
                                         sizes="(max-width: 768px) 100vw, 80vw"
                                     />
                                 ) : (
@@ -113,25 +125,26 @@ export function HeroSlider({ slides }: HeroSliderProps) {
                                 )}
 
                                 {/* Content Overlay */}
-                                <div className="slide-overlay-v3 flex flex-col items-center justify-center p-6 text-center z-10 w-full h-full max-w-2xl mx-auto">
+                                <div className="slide-overlay-v3 flex flex-col items-center justify-center p-6 text-center z-10 w-full h-full max-w-4xl mx-auto">
                                     <div className={cn(
                                         "slide-content-v3 transition-all duration-700 delay-300 transform",
-                                        i === current ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                                        i === current ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"
                                     )}>
-                                        <h2 className="slide-title-v3 text-3xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-lg leading-tight">
+                                        <h2 className="slide-title-v3 text-4xl md:text-6xl font-black text-white mb-6 drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] leading-tight uppercase tracking-tight">
                                             {slide.title}
                                         </h2>
                                         {slide.caption && (
-                                            <p className="slide-caption-v3 text-lg md:text-xl text-white/90 mb-8 max-w-xl line-clamp-2 font-medium drop-shadow-md">
+                                            <p className="slide-caption-v3 text-xl md:text-2xl text-white/95 mb-10 max-w-2xl mx-auto line-clamp-3 font-medium drop-shadow-md leading-relaxed">
                                                 {slide.caption}
                                             </p>
                                         )}
                                         {slide.link && (
                                             <Link
                                                 href={slide.link}
-                                                className="inline-flex items-center gap-2 bg-brand-red hover:bg-red-700 text-white px-8 py-3 rounded-full font-bold transition-all transform hover:scale-105 shadow-xl"
+                                                className="inline-flex items-center gap-3 bg-brand-red hover:bg-red-700 text-white px-10 py-4 rounded-full font-extrabold transition-all transform hover:scale-105 shadow-[0_8px_30px_rgb(225,32,39,0.3)] hover:shadow-[0_8px_30px_rgb(225,32,39,0.5)] group"
                                             >
-                                                थप जान्नुहोस् <ArrowRight size={18} />
+                                                {ctaLabel}
+                                                <ArrowRight size={22} className="transition-transform group-hover:translate-x-1" />
                                             </Link>
                                         )}
                                     </div>
@@ -146,18 +159,18 @@ export function HeroSlider({ slides }: HeroSliderProps) {
             {count > 1 && (
                 <>
                     <button
-                        className="slider-nav-btn prev left-4"
+                        className="slider-nav-btn-v3 prev left-8"
                         onClick={prev}
                         aria-label="Previous slide"
                     >
-                        <ChevronLeft size={24} />
+                        <ChevronLeft size={32} strokeWidth={2.5} />
                     </button>
                     <button
-                        className="slider-nav-btn next right-4"
+                        className="slider-nav-btn-v3 next right-8"
                         onClick={next}
                         aria-label="Next slide"
                     >
-                        <ChevronRight size={24} />
+                        <ChevronRight size={32} strokeWidth={2.5} />
                     </button>
                 </>
             )}
@@ -181,7 +194,7 @@ export function HeroSlider({ slides }: HeroSliderProps) {
 
             {/* Counter badge */}
             <div className="absolute top-6 right-6 px-3 py-1 bg-black/30 backdrop-blur-md rounded-full border border-white/10 text-white/90 text-xs font-bold tracking-widest uppercase">
-                {current + 1} <span className="mx-1 opacity-50">/</span> {count}
+                {locale === "ne" ? toNepaliNum(current + 1) : current + 1} <span className="mx-1 opacity-50">/</span> {locale === "ne" ? toNepaliNum(count) : count}
             </div>
 
             {/* Progress line */}

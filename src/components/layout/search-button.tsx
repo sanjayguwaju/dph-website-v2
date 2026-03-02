@@ -4,12 +4,18 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getLocaleClient } from "@/utils/locale-client";
 
 export function SearchButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [locale, setLocale] = useState("ne");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -41,17 +47,26 @@ export function SearchButton() {
     }
   };
 
+  const labels = {
+    search: locale === "ne" ? "खोज्नुहोस्" : "Search",
+    placeholder: locale === "ne" ? "खोज्नुहोस्..." : "Search...",
+    ctrlK: locale === "ne" ? "Ctrl K" : "Ctrl K",
+    pressEnter: locale === "ne" ? "खोज्नको लागि Enter थिच्नुहोस्" : "Press Enter to search",
+    pressEsc: locale === "ne" ? "बन्द गर्न Esc थिच्नुहोस्" : "Press Esc to close",
+    dphSearch: locale === "ne" ? "DPH खोज" : "DPH Search",
+  };
+
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
         className="flex items-center gap-2 rounded bg-[var(--card)] px-3 py-1.5 text-sm text-[var(--brand-blue)] border border-[var(--brand-blue)] transition-all hover:bg-[var(--brand-blue)] hover:text-white group"
-        aria-label="Search"
+        aria-label={labels.search}
       >
         <Search className="h-4 w-4 transition-transform group-hover:scale-110" />
-        <span className="hidden sm:inline font-bold">Search</span>
+        <span className="hidden sm:inline font-bold">{labels.search}</span>
         <kbd className="hidden items-center gap-1 rounded bg-[var(--muted)] px-1 font-mono text-[10px] text-[var(--muted-foreground)] md:inline-flex border border-[var(--border)]">
-          Ctrl K
+          {labels.ctrlK}
         </kbd>
       </button>
 
@@ -80,7 +95,7 @@ export function SearchButton() {
                 type="text"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search..."
+                placeholder={labels.placeholder}
                 className="h-14 flex-1 bg-transparent px-4 text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] focus:outline-none font-medium"
               />
               <button
@@ -95,11 +110,11 @@ export function SearchButton() {
 
           <div className="bg-[var(--muted)] p-3 flex justify-between items-center transition-colors duration-300">
             <p className="text-[11px] text-[var(--muted-foreground)] flex gap-2">
-              <span>Press <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Enter</kbd> to search</span>
+              <span>{labels.pressEnter}</span>
               <span className="opacity-50">|</span>
-              <span>Press <kbd className="rounded bg-[var(--card)] border border-[var(--border)] px-1 font-mono">Esc</kbd> to close</span>
+              <span>{labels.pressEsc}</span>
             </p>
-            <div className="text-[var(--brand-blue)] font-bold text-xs">DPH Search</div>
+            <div className="text-[var(--brand-blue)] font-bold text-xs">{labels.dphSearch}</div>
           </div>
         </div>
       </div>

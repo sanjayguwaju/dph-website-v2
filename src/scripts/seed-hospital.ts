@@ -142,13 +142,12 @@ async function seed() {
     await payload.updateGlobal({
       slug: "site-settings",
       data: {
-        hospitalNameNe: "अम्पिपाल अस्पताल",
-        hospitalNameEn: "Amppipal Hospital",
-        taglineNe: "स्वास्थ्य सेवा, सबैका लागि",
-        taglineEn: "Healthcare for All",
+        govermentName: "गण्डकी प्रदेश सरकार",
+        ministryName: "स्वास्थ्य मन्त्रालय",
+        hospitalName: "अम्पिपाल अस्पताल",
+        tagline: "स्वास्थ्य सेवा, सबैका लागि",
         siteUrl: "https://amppipalhospital.gov.np",
         address: "पालुङटार नगरपालिका – ३, गोरखा, नेपाल",
-        addressEn: "Palungtar Municipality - 3, Gorkha, Nepal",
         contactEmail: "Amppipalhospital25@gmail.com",
         contactPhone: "00977-9846-208709",
         emergencyNumber: "00977-9846-208709",
