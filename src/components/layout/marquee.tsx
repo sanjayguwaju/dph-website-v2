@@ -1,7 +1,11 @@
 import { getLatestNoticesForMarquee } from "@/lib/queries/marquee-notices";
+import { getLocale } from "@/utils/locale-server";
 
 export async function Marquee() {
-  const notices = await getLatestNoticesForMarquee();
+  const [notices, locale] = await Promise.all([
+    getLatestNoticesForMarquee(),
+    getLocale(),
+  ]);
 
   if (notices.length === 0) return null;
 
@@ -10,7 +14,7 @@ export async function Marquee() {
   return (
     <div className="marquee-bar" role="region" aria-label="Latest notices ticker">
       <div className="marquee-label">
-        <span>हाइलाइटहरू</span>
+        <span>{locale === "ne" ? "हाइलाइटहरू" : "Highlights"}</span>
       </div>
       <div className="marquee-track-wrap">
         <div className="marquee-track animate-marquee">

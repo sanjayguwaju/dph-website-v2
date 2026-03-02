@@ -4,25 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toNepaliNum } from "@/utils/nepali-date";
 import { getLocalizedValue } from "@/lib/utils/localized";
-
-const NP_MONTHS_AD = [
-  "जनवरी",
-  "फेब्रुअरी",
-  "मार्च",
-  "अप्रिल",
-  "मे",
-  "जुन",
-  "जुलाई",
-  "अगस्त",
-  "सेप्टेम्बर",
-  "अक्टोबर",
-  "नोभेम्बर",
-  "डिसेम्बर",
-];
-
-const EN_MONTHS = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
+import { getLocaleClient } from "@/utils/locale-client";
+import { formatDate } from "@/utils/format";
 
 type NoticeItem = {
   id: string;
@@ -45,40 +28,16 @@ type Props = {
   pressReleases: NewsItem[];
   publications: NewsItem[];
   bids: NewsItem[];
+  locale?: string;
 };
 
 type TabId = "notices" | "news" | "pressReleases" | "publications" | "bids";
 
-function useFormatDate(dateStr?: string | null) {
-  const [formatted, setFormatted] = useState("");
-
-  useEffect(() => {
-    if (!dateStr) return;
-    try {
-      const date = new Date(dateStr);
-      if (isNaN(date.getTime())) {
-        setFormatted(dateStr);
-        return;
-      }
-
-      const year = toNepaliNum(date.getFullYear());
-      const month = NP_MONTHS_AD[date.getMonth()];
-      const day = toNepaliNum(date.getDate());
-      setFormatted(`${year} ${month} ${day}`);
-    } catch {
-      setFormatted(dateStr);
-    }
-  }, [dateStr]);
-
-  return formatted;
-}
-
-function NoticeRow({ item, href }: { item: NoticeItem | NewsItem; href: string }) {
-  const dateStr = useFormatDate(item.publishedDate);
+function NoticeRow({ item, href, locale }: { item: NoticeItem | NewsItem; href: string; locale: string }) {
   const file = "file" in item && item.file && typeof item.file === "object" ? item.file : null;
 
   return (
-    <div className="notices-row">
+    <div className="notices-row" key={item.id}>
       <div className="pdf-icon-v3">
         <span className="pdf-tag">PDF</span>
         <div className="pdf-line-decor"></div>
@@ -87,8 +46,10 @@ function NoticeRow({ item, href }: { item: NoticeItem | NewsItem; href: string }
         <Link href={href} className="notices-row-title">
           {getLocalizedValue(item.title)}
         </Link>
-        {dateStr && (
-          <span className="notices-row-date">Published: {dateStr}</span>
+        {item.publishedDate && (
+          <span className="notices-row-date">
+            {locale === "ne" ? "प्रकाशित:" : "Published:"} {formatDate(item.publishedDate, "short", locale)}
+          </span>
         )}
       </div>
       {file?.url && (
@@ -108,16 +69,23 @@ function NoticeRow({ item, href }: { item: NoticeItem | NewsItem; href: string }
   );
 }
 
-export function NoticesTabs({ notices, news, pressReleases, publications, bids }: Props) {
+export function NoticesTabs({ notices, news, pressReleases, publications, bids, locale: initialLocale }: Props) {
   const [active, setActive] = useState<TabId>("notices");
   const [loading, setLoading] = useState(false);
+  const [locale, setLocale] = useState(initialLocale || "ne");
 
-  const tabs: { id: TabId; label: string }[] = [
-    { id: "notices", label: "Notices" },
-    { id: "news", label: "News" },
-    { id: "pressReleases", label: "Press Releases" },
-    { id: "publications", label: "Publications" },
-    { id: "bids", label: "Bids" },
+  useEffect(() => {
+    if (!initialLocale) {
+      setLocale(getLocaleClient());
+    }
+  }, [initialLocale]);
+
+  const tabs: { id: TabId; label: Record<string, string> }[] = [
+    { id: "notices", label: { ne: "सूचनाहरू", en: "Notices" } },
+    { id: "news", label: { ne: "समाचार", en: "News" } },
+    { id: "pressReleases", label: { ne: "प्रेस विज्ञप्ति", en: "Press Releases" } },
+    { id: "publications", label: { ne: "प्रकाशनहरू", en: "Publications" } },
+    { id: "bids", label: { ne: "बोलपत्र", en: "Bids" } },
   ];
 
   const dataMap: Record<TabId, (NoticeItem | NewsItem)[]> = {
@@ -156,9 +124,11 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
             aria-selected={active === tab.id}
             role="tab"
           >
-            {tab.label}
+            {tab.label[locale] || tab.label.en}
             {dataMap[tab.id].length > 0 && (
-              <span className="notices-tab-count">{dataMap[tab.id].length}</span>
+              <span className="notices-tab-count">
+                {locale === "ne" ? toNepaliNum(dataMap[tab.id].length) : dataMap[tab.id].length}
+              </span>
             )}
           </button>
         ))}
@@ -177,13 +147,22 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids }
             ))}
           </div>
         ) : items.length === 0 ? (
-          <p className="notices-empty text-center py-12 text-gray-400 font-bold">No data available</p>
+          <p className="notices-empty text-center py-12 text-gray-400 font-bold">
+            {locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available"}
+          </p>
         ) : (
-          items.map((item) => <NoticeRow key={item.id} item={item} href={hrefMap[active](item)} />)
+          items.map((item) => (
+            <NoticeRow
+              key={item.id}
+              item={item}
+              href={hrefMap[active](item)}
+              locale={locale}
+            />
+          ))
         )}
         <div className="notices-tab-footer">
           <Link href={`/${active === "notices" ? "notices" : "news"}`} className="section-view-all">
-            View All
+            {locale === "ne" ? "सबै हेर्नुहोस्" : "View All"}
           </Link>
         </div>
       </div>

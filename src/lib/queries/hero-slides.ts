@@ -1,6 +1,7 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
 import type { HeroSlide } from "@/payload-types";
+import { getLocale } from "@/utils/locale-server";
 
 /**
  * Fetch active hero slides sorted by `order` ascending.
@@ -8,12 +9,14 @@ import type { HeroSlide } from "@/payload-types";
 export const getHeroSlides = cache(async (): Promise<HeroSlide[]> => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
 
     const slides = await payload.find({
       collection: "hero-slides",
       where: {
         isActive: { equals: true },
       },
+      locale: locale as any,
       sort: "order",
       limit: 20,
       depth: 1,

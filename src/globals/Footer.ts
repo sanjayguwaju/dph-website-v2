@@ -16,6 +16,7 @@ export const Footer: GlobalConfig = {
       type: "text",
       required: true,
       defaultValue: "© 2025 The Daily Chronicle. All rights reserved.",
+      localized: true,
     },
     {
       name: "footerText",
@@ -23,6 +24,7 @@ export const Footer: GlobalConfig = {
       admin: {
         description: "Additional footer text or disclaimer",
       },
+      localized: true,
     },
     {
       name: "columns",
@@ -34,6 +36,7 @@ export const Footer: GlobalConfig = {
           name: "title",
           type: "text",
           required: true,
+          localized: true,
         },
         {
           name: "links",
@@ -43,6 +46,7 @@ export const Footer: GlobalConfig = {
               name: "label",
               type: "text",
               required: true,
+              localized: true,
             },
             {
               name: "type",
@@ -93,6 +97,7 @@ export const Footer: GlobalConfig = {
           name: "label",
           type: "text",
           required: true,
+          localized: true,
         },
         {
           name: "page",

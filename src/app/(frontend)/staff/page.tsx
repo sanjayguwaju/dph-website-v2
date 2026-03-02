@@ -4,27 +4,32 @@ import { getSiteSettings } from "@/lib/queries/globals";
 import Image from "next/image";
 import { getLocalizedValue } from "@/lib/utils/localized";
 
+import { getLocale } from "@/utils/locale-server";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   return {
-    title: `Staff | ${hospitalName}`,
+    title: locale === "ne" ? `कर्मचारीहरू | ${hospitalName}` : `Staff | ${hospitalName}`,
   };
 }
 
 import { PageLayout } from "@/components/layout/page-layout";
 
 export default async function StaffPage() {
+  const locale = await getLocale();
+
   const ROLE_LABELS: Record<string, string> = {
-    chair: "Chairperson",
-    cms: "Chief Medical Superintendent",
-    "info-officer": "Information Officer",
-    doctor: "Doctor",
-    nurse: "Nurse",
-    administrative: "Administrative",
-    other: "Other",
+    chair: locale === "ne" ? "व्यवस्थापन समिति" : "Management Committee",
+    cms: locale === "ne" ? "प्रमुख मेडिकल सुपरिटेन्डेन्ट" : "Chief Medical Superintendent",
+    "info-officer": locale === "ne" ? "सूचना अधिकारी" : "Information Officer",
+    doctor: locale === "ne" ? "डाक्टर" : "Doctor",
+    nurse: locale === "ne" ? "नर्स" : "Nurse",
+    administrative: locale === "ne" ? "प्रशासनिक" : "Administrative",
+    other: locale === "ne" ? "अन्य" : "Other",
   };
 
   const ROLE_ORDER = ["chair", "cms", "info-officer", "doctor", "nurse", "administrative", "other"];
@@ -41,16 +46,22 @@ export default async function StaffPage() {
 
   const orderedGroups = ROLE_ORDER.filter((r) => grouped[r]?.length > 0);
 
+  const labels = {
+    staff: locale === "ne" ? "कर्मचारीहरू" : "Staff",
+    desc: locale === "ne" ? "हाम्रा समर्पित स्वास्थ्यकर्मीहरू" : "Our dedicated healthcare professionals",
+    empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
+  };
+
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "Staff" },
+        { label: labels.staff },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-12 border-b border-gray-100 pb-8">
-        <h1 className="text-3xl font-bold text-[#003580] mb-2">👨‍⚕️ Staff</h1>
-        <p className="text-gray-500 text-lg">Our dedicated healthcare professionals</p>
+        <h1 className="text-3xl font-bold text-[#003580] mb-2">👨‍⚕️ {labels.staff}</h1>
+        <p className="text-gray-500 text-lg">{labels.desc}</p>
       </div>
 
       <div className="space-y-20">
@@ -66,6 +77,8 @@ export default async function StaffPage() {
               {grouped[role].map((member: any) => {
                 const photo = member.photo && typeof member.photo === "object" ? member.photo : null;
                 const photoUrl = photo?.url || member.externalPhoto || null;
+                const name = getLocalizedValue(member.name);
+
                 return (
                   <div key={member.id} className="group relative bg-white border border-gray-100 rounded-3xl p-8 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
                     <div className="flex flex-col items-center text-center">
@@ -75,7 +88,7 @@ export default async function StaffPage() {
                           <div className="relative w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-lg">
                             <Image
                               src={photoUrl}
-                              alt={member.nameEn || member.name}
+                              alt={name}
                               fill
                               className="object-cover transition-transform duration-500 group-hover:scale-110"
                             />
@@ -86,8 +99,7 @@ export default async function StaffPage() {
                       </div>
 
                       <div className="mb-6">
-                        <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-[#2563eb] transition-colors">{getLocalizedValue(member.name)}</h3>
-                        {member.nameEn && <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">{getLocalizedValue(member.nameEn)}</p>}
+                        <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-[#2563eb] transition-colors">{name}</h3>
                         <p className="mt-3 inline-block px-3 py-1 bg-blue-50 text-[#2563eb] text-[11px] font-bold rounded-full uppercase tracking-wider">{getLocalizedValue(member.designation)}</p>
                         {member.department && <p className="text-gray-500 text-sm mt-2 font-medium italic">&quot; {getLocalizedValue(member.department)} &quot;</p>}
                       </div>
@@ -95,7 +107,7 @@ export default async function StaffPage() {
                       <div className="w-full pt-6 border-t border-gray-50 flex flex-col gap-3">
                         {member.phone && (
                           <a href={`tel:${member.phone}`} className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-[#2563eb] transition-colors bg-gray-50/50 py-2 rounded-xl">
-                            <span className="text-xs">📞</span> {member.phone}
+                            <span className="text-xs">📞</span> {getLocalizedValue(member.phone)}
                           </a>
                         )}
                         {member.email && (
@@ -113,7 +125,7 @@ export default async function StaffPage() {
         ))}
       </div>
 
-      {staff.length === 0 && <p className="page-empty text-center py-20 text-gray-400">No data available</p>}
+      {staff.length === 0 && <p className="page-empty text-center py-20 text-gray-400 font-bold">{labels.empty}</p>}
     </PageLayout>
   );
 }

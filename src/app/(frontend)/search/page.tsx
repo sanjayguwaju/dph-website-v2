@@ -11,28 +11,33 @@ interface PageProps {
   searchParams: Promise<{ q?: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata({ searchParams }: { searchParams: Promise<{ q?: string }> }): Promise<Metadata> {
   const { q } = await searchParams;
+  const locale = await getLocale();
   const settings = await getSiteSettings();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   if (q) {
     return {
-      title: `"${q}" Search Results | ${hospitalName}`,
-      description: `Search results for "${q}" on ${hospitalName}`,
+      title: locale === "ne" ? `"${q}" खोज नतिजाहरू | ${hospitalName}` : `"${q}" Search Results | ${hospitalName}`,
+      description: locale === "ne" ? `${hospitalName} मा "${q}" को लागि खोज नतिजाहरू` : `Search results for "${q}" on ${hospitalName}`,
     };
   }
 
   return {
-    title: `Search | ${hospitalName}`,
-    description: `Search news, notices, services and staff of ${hospitalName}`,
+    title: locale === "ne" ? `खोज | ${hospitalName}` : `Search | ${hospitalName}`,
+    description: locale === "ne" ? `${hospitalName} को समाचार, सूचना, सेवा र कर्मचारीहरू खोज्नुहोस्` : `Search news, notices, services and staff of ${hospitalName}`,
   };
 }
 
 export default async function SearchPage({ searchParams }: PageProps) {
   const { q } = await searchParams;
   const query = q?.trim() || "";
+  const locale = await getLocale();
 
   type ResultSet = { news: any[]; notices: any[]; services: any[]; staff: any[] };
   let results: ResultSet = { news: [], notices: [], services: [], staff: [] };
@@ -45,21 +50,25 @@ export default async function SearchPage({ searchParams }: PageProps) {
         payload.find({
           collection: "news",
           where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
+          locale: locale as any,
           limit: 8, depth: 1, sort: "-publishedDate",
         }),
         payload.find({
           collection: "notices",
           where: { and: [{ status: { equals: "published" } }, { title: { contains: query } }] },
+          locale: locale as any,
           limit: 8, depth: 0, sort: "-publishedDate",
         }),
         payload.find({
           collection: "services",
           where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
+          locale: locale as any,
           limit: 8, depth: 0,
         }),
         payload.find({
           collection: "staff",
           where: { and: [{ isActive: { equals: true } }, { name: { contains: query } }] },
+          locale: locale as any,
           limit: 8, depth: 1,
         }),
       ]);
@@ -76,17 +85,31 @@ export default async function SearchPage({ searchParams }: PageProps) {
   const totalResults =
     results.news.length + results.notices.length + results.services.length + results.staff.length;
 
+  const labels = {
+    search: locale === "ne" ? "खोज" : "Search",
+    resultsFor: locale === "ne" ? `"${query}" को लागि खोज नतिजाहरू: ${toNepaliNum(totalResults)} नतिजाहरू` : `Search results for "${query}": ${totalResults} results`,
+    placeholder: locale === "ne" ? "समाचार, सूचना, सेवाहरू खोज्नुहोस्..." : "Search for news, notices, services...",
+    searchBtn: locale === "ne" ? "खोज्नुहोस्" : "Search",
+    noResults: locale === "ne" ? `"${query}" को लागि कुनै नतिजा फेला परेन` : `"${query}" No results found`,
+    tryDifferent: locale === "ne" ? "विभिन्न शब्दहरू प्रयास गर्नुहोस्" : "Try different keywords",
+    enterKeywords: locale === "ne" ? "खोज्नको लागि शब्दहरू प्रविष्ट गर्नुहोस्" : "Enter keywords to search",
+    news: locale === "ne" ? "समाचार तथा गतिविधिहरू" : "News & Activities",
+    notices: locale === "ne" ? "सूचनाहरू" : "Notices",
+    services: locale === "ne" ? "सेवाहरू" : "Services",
+    staff: locale === "ne" ? "कर्मचारी" : "Staff",
+  };
+
   return (
-    <PageLayout breadcrumbs={[{ label: "Search" }]} maxWidth="max-w-5xl">
+    <PageLayout breadcrumbs={[{ label: labels.search }]} maxWidth="max-w-5xl">
       {/* Header */}
       <div className="mb-8 border-b border-gray-100 pb-6">
         <h1 className="text-3xl font-bold text-[var(--brand-blue)] mb-2 flex items-center gap-2">
           <Search size={28} className="opacity-80" />
-          Search
+          {labels.search}
         </h1>
         {query && (
-          <p className="text-gray-500 text-sm">
-            Search results for &quot;{query}&quot;: {totalResults} results
+          <p className="text-gray-500 text-sm font-bold">
+            {labels.resultsFor}
           </p>
         )}
       </div>
@@ -101,14 +124,14 @@ export default async function SearchPage({ searchParams }: PageProps) {
               type="search"
               name="q"
               defaultValue={query}
-              placeholder="Search for news, notices, services..."
+              placeholder={labels.placeholder}
               className="search-page-input"
               autoFocus={!query}
-              aria-label="Search"
+              aria-label={labels.search}
             />
           </div>
-          <button type="submit" className="search-page-btn">
-            Search
+          <button type="submit" className="search-page-btn font-bold">
+            {labels.searchBtn}
           </button>
         </div>
       </form>
@@ -118,10 +141,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
         totalResults === 0 ? (
           <div className="search-no-results">
             <Search size={48} className="opacity-20 mb-4" />
-            <p className="text-gray-500 text-lg font-medium">
-              &quot;{query}&quot; No results found
+            <p className="text-gray-500 text-lg font-bold">
+              {labels.noResults}
             </p>
-            <p className="text-gray-400 text-sm mt-2">Try different keywords</p>
+            <p className="text-gray-400 text-sm mt-2 font-bold">{labels.tryDifferent}</p>
           </div>
         ) : (
           <div className="space-y-10">
@@ -129,10 +152,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
             {/* ── News ── */}
             {results.news.length > 0 && (
               <section className="search-result-section">
-                <h2 className="search-result-heading blue">
+                <h2 className="search-result-heading blue font-bold">
                   <Newspaper size={17} />
-                  News & Activities
-                  <span className="search-result-count">{results.news.length}</span>
+                  {labels.news}
+                  <span className="search-result-count font-bold">{locale === "ne" ? toNepaliNum(results.news.length) : results.news.length}</span>
                 </h2>
                 <div className="search-result-list">
                   {results.news.map((item: any) => {
@@ -158,7 +181,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
                           <p className="search-result-title">{item.title}</p>
                           {item.excerpt && <p className="search-result-excerpt">{item.excerpt}</p>}
                           {item.publishedDate && (
-                            <time className="search-result-date">{formatDate(item.publishedDate, "short")}</time>
+                            <time className="search-result-date font-bold">
+                              {formatDate(item.publishedDate, "short", locale)}
+                            </time>
                           )}
                         </div>
                       </Link>
@@ -171,10 +196,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
             {/* ── Notices ── */}
             {results.notices.length > 0 && (
               <section className="search-result-section">
-                <h2 className="search-result-heading red">
+                <h2 className="search-result-heading red font-bold">
                   <Bell size={17} />
-                  Notices
-                  <span className="search-result-count">{results.notices.length}</span>
+                  {labels.notices}
+                  <span className="search-result-count font-bold">{locale === "ne" ? toNepaliNum(results.notices.length) : results.notices.length}</span>
                 </h2>
                 <div className="search-result-list">
                   {results.notices.map((notice: any) => (
@@ -194,7 +219,9 @@ export default async function SearchPage({ searchParams }: PageProps) {
                           <p className="search-result-excerpt">{notice.description}</p>
                         )}
                         {notice.publishedDate && (
-                          <time className="search-result-date">{formatDate(notice.publishedDate, "short")}</time>
+                          <time className="search-result-date font-bold">
+                            {formatDate(notice.publishedDate, "short", locale)}
+                          </time>
                         )}
                       </div>
                     </Link>
@@ -206,10 +233,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
             {/* ── Services ── */}
             {results.services.length > 0 && (
               <section className="search-result-section">
-                <h2 className="search-result-heading green">
+                <h2 className="search-result-heading green font-bold">
                   <Stethoscope size={17} />
-                  Services
-                  <span className="search-result-count">{results.services.length}</span>
+                  {labels.services}
+                  <span className="search-result-count font-bold">{locale === "ne" ? toNepaliNum(results.services.length) : results.services.length}</span>
                 </h2>
                 <div className="search-result-list">
                   {results.services.map((svc: any) => (
@@ -238,10 +265,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
             {/* ── Staff ── */}
             {results.staff.length > 0 && (
               <section className="search-result-section">
-                <h2 className="search-result-heading purple">
+                <h2 className="search-result-heading purple font-bold">
                   <Users size={17} />
-                  Staff
-                  <span className="search-result-count">{results.staff.length}</span>
+                  {labels.staff}
+                  <span className="search-result-count font-bold">{locale === "ne" ? toNepaliNum(results.staff.length) : results.staff.length}</span>
                 </h2>
                 <div className="search-result-list">
                   {results.staff.map((member: any) => {
@@ -266,7 +293,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
                           <p className="search-result-title">{member.name}</p>
                           <p className="search-result-excerpt">{member.designation}</p>
                           {member.department && (
-                            <span className="search-result-date">{member.department}</span>
+                            <span className="search-result-date font-bold">{member.department}</span>
                           )}
                         </div>
                       </Link>
@@ -281,19 +308,19 @@ export default async function SearchPage({ searchParams }: PageProps) {
         /* Empty state */
         <div className="search-empty-state">
           <Search size={52} className="opacity-15 mb-6" />
-          <p className="text-gray-500 mb-6 font-medium text-lg">Enter keywords to search</p>
+          <p className="text-gray-500 mb-6 font-bold text-lg">{labels.enterKeywords}</p>
           <div className="search-quick-links">
-            <Link href="/news" className="search-quick-link blue">
-              <Newspaper size={15} /> News
+            <Link href="/news" className="search-quick-link blue font-bold">
+              <Newspaper size={15} /> {locale === "ne" ? "समाचार" : "News"}
             </Link>
-            <Link href="/notices" className="search-quick-link red">
-              <Bell size={15} /> Notices
+            <Link href="/notices" className="search-quick-link red font-bold">
+              <Bell size={15} /> {locale === "ne" ? "सूचनाहरू" : "Notices"}
             </Link>
-            <Link href="/services" className="search-quick-link green">
-              <Stethoscope size={15} /> Services
+            <Link href="/services" className="search-quick-link green font-bold">
+              <Stethoscope size={15} /> {locale === "ne" ? "सेवाहरू" : "Services"}
             </Link>
-            <Link href="/staff" className="search-quick-link purple">
-              <Users size={15} /> Staff
+            <Link href="/staff" className="search-quick-link purple font-bold">
+              <Users size={15} /> {labels.staff}
             </Link>
           </div>
         </div>

@@ -9,12 +9,15 @@ interface Service {
   slug?: string;
 }
 
+import { getLocaleClient } from "@/utils/locale-client";
+
 export function AppointmentForm() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
   const [error, setError] = useState("");
+  const [locale, setLocale] = useState("ne");
 
   const [formData, setFormData] = useState({
     patientName: "",
@@ -24,6 +27,33 @@ export function AppointmentForm() {
     appointmentDate: "",
     message: "",
   });
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
+
+  const labels = {
+    formTitle: locale === "ne" ? "अनलाइन टिकट / नियुक्ति" : "Online Appointment",
+    formDesc: locale === "ne" ? "अस्पताल भ्रमणको तालिका बनाउन कृपया तलका विवरणहरू भर्नुहोस्।" : "Please fill in the details below to schedule your hospital visit.",
+    fullName: locale === "ne" ? "पूरा नाम *" : "Full Name *",
+    namePlaceholder: locale === "ne" ? "तपाईंको नाम" : "Your Name",
+    phoneLabel: locale === "ne" ? "फोन नम्बर *" : "Phone Number *",
+    phonePlaceholder: locale === "ne" ? "९८XXXXXXXX" : "98XXXXXXXX",
+    emailLabel: locale === "ne" ? "इमेल (वैकल्पिक)" : "Email (Optional)",
+    emailPlaceholder: locale === "ne" ? "तपाईंको@email.com" : "your@email.com",
+    departmentLabel: locale === "ne" ? "विभाग चयन गर्नुहोस् *" : "Select Department *",
+    selectPlaceholder: locale === "ne" ? (servicesLoading ? "लोड हुँदैछ..." : "-- चयन गर्नुहोस् --") : (servicesLoading ? "Loading..." : "-- Select --"),
+    dateLabel: locale === "ne" ? "रुचाइएको मिति *" : "Preferred Date *",
+    messageLabel: locale === "ne" ? "विवरण / सन्देश (वैकल्पिक)" : "Detail / Message (Optional)",
+    messagePlaceholder: locale === "ne" ? "तपाईंको सन्देश..." : "Your message...",
+    submitBtn: locale === "ne" ? "अनुरोध पठाउनुहोस्" : "Send Request",
+    sending: locale === "ne" ? "पठाउँदै..." : "Sending...",
+    successTitle: locale === "ne" ? "अनुरोध पेश गरियो!" : "Request Submitted!",
+    successMsg: locale === "ne" ? "तपाईंको नियुक्ति अनुरोध प्राप्त भएको छ। हामी छिट्टै पुष्टिको लागि तपाईंलाई सम्पर्क गर्नेछौं।" : "Your appointment request has been received. We will contact you shortly to confirm.",
+    newBtn: locale === "ne" ? "नयाँ नियुक्ति" : "New Appointment",
+    errorSubmit: locale === "ne" ? "नियुक्ति पेश गर्न असफल भयो" : "Failed to submit appointment",
+    errorNetwork: locale === "ne" ? "नेटवर्क त्रुटि। कृपया फेरि प्रयास गर्नुहोस।" : "Network error. Please try again.",
+  };
 
   // Fetch services dynamically
   useEffect(() => {
@@ -68,10 +98,10 @@ export function AppointmentForm() {
           message: "",
         });
       } else {
-        setError(data.error || "Failed to submit appointment");
+        setError(data.error || labels.errorSubmit);
       }
     } catch (err) {
-      setError("Network error. Please try again.");
+      setError(labels.errorNetwork);
     } finally {
       setLoading(false);
     }
@@ -90,12 +120,12 @@ export function AppointmentForm() {
         <div className="success-icon-wrap">
           <CheckCircle2 size={64} className="text-green-500" />
         </div>
-        <h3 className="success-title">Request Submitted!</h3>
+        <h3 className="success-title">{labels.successTitle}</h3>
         <p className="success-msg">
-          Your appointment request has been received. We will contact you shortly to confirm.
+          {labels.successMsg}
         </p>
         <button onClick={() => setSubmitted(false)} className="btn-v3-primary mt-6">
-          New Appointment
+          {labels.newBtn}
         </button>
       </div>
     );
@@ -104,9 +134,9 @@ export function AppointmentForm() {
   return (
     <div className="appointment-card-v3">
       <div className="form-header-v3">
-        <h2 className="form-title-v3">Online Appointment</h2>
+        <h2 className="form-title-v3">{labels.formTitle}</h2>
         <p className="form-desc-v3">
-          Please fill in the details below to schedule your hospital visit.
+          {labels.formDesc}
         </p>
       </div>
 
@@ -119,42 +149,42 @@ export function AppointmentForm() {
       <form onSubmit={handleSubmit} className="appointment-form-v3">
         <div className="form-grid-v3">
           <div className="input-field-v3">
-            <label><User size={16} /> Full Name *</label>
+            <label><User size={16} /> {labels.fullName}</label>
             <input
               type="text"
               name="patientName"
               value={formData.patientName}
               onChange={handleChange}
-              placeholder="Your Name"
+              placeholder={labels.namePlaceholder}
               required
             />
           </div>
 
           <div className="input-field-v3">
-            <label><Phone size={16} /> Phone Number *</label>
+            <label><Phone size={16} /> {labels.phoneLabel}</label>
             <input
               type="tel"
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="98XXXXXXXX"
+              placeholder={labels.phonePlaceholder}
               required
             />
           </div>
 
           <div className="input-field-v3">
-            <label><Mail size={16} /> Email (Optional)</label>
+            <label><Mail size={16} /> {labels.emailLabel}</label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              placeholder="your@email.com"
+              placeholder={labels.emailPlaceholder}
             />
           </div>
 
           <div className="input-field-v3">
-            <label><Building2 size={16} /> Select Department *</label>
+            <label><Building2 size={16} /> {labels.departmentLabel}</label>
             <select
               name="department"
               value={formData.department}
@@ -162,7 +192,7 @@ export function AppointmentForm() {
               required
               disabled={servicesLoading}
             >
-              <option value="">{servicesLoading ? "Loading..." : "-- Select --"}</option>
+              <option value="">{labels.selectPlaceholder}</option>
               {services.map((service) => (
                 <option key={service.id} value={service.id}>
                   {service.name}
@@ -172,7 +202,7 @@ export function AppointmentForm() {
           </div>
 
           <div className="input-field-v3">
-            <label><Calendar size={16} /> Preferred Date *</label>
+            <label><Calendar size={16} /> {labels.dateLabel}</label>
             <input
               type="date"
               name="appointmentDate"
@@ -185,24 +215,24 @@ export function AppointmentForm() {
         </div>
 
         <div className="input-field-v3 full-width">
-          <label>Detail / Message (Optional)</label>
+          <label>{labels.messageLabel}</label>
           <textarea
             name="message"
             value={formData.message}
             onChange={handleChange}
             rows={3}
-            placeholder="Your message..."
+            placeholder={labels.messagePlaceholder}
           />
         </div>
 
         <button type="submit" disabled={loading} className="form-submit-btn-v3">
           {loading ? (
             <span className="flex items-center gap-2">
-              <div className="spinner-small"></div> Sending...
+              <div className="spinner-small"></div> {labels.sending}
             </span>
           ) : (
             <span className="flex items-center gap-2">
-              <Send size={18} /> Send Request
+              <Send size={18} /> {labels.submitBtn}
             </span>
           )}
         </button>

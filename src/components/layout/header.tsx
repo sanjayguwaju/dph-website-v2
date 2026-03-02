@@ -36,19 +36,25 @@ function resolveCtaHref(ctaButton: NavigationType["ctaButton"]): string {
   return ctaButton.customUrl || "#";
 }
 
+import { getLocale } from "@/utils/locale-server";
+
 // ─── Component ───────────────────────────────────────────────────────────────
 
 export async function Header() {
-  const [settings, navGlobal] = await Promise.all([
+  const [settings, navGlobal, locale] = await Promise.all([
     getSiteSettings(),
     getNavigation(),
+    getLocale(),
   ]);
 
   const navigation = (navGlobal as NavigationType)?.mainNav || [];
   const ctaButton = (navGlobal as NavigationType)?.ctaButton;
   const s = settings as any;
-  const hospitalName = s.hospitalNameNe || s.hospitalNameEn;
-  const address = s.address || s.addressEn;
+
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
+  const address = s.address || (locale === "ne" ? "पालुङटार-३, गोरखा" : "Palungtar-3, Gorkha");
+  const govermentName = s.govermentName || (locale === "ne" ? "गण्डकी प्रदेश सरकार" : "Gandaki Province Government");
+  const ministryName = s.ministryName || (locale === "ne" ? "स्वास्थ्य मन्त्रालय" : "Ministry of Health");
 
   const navItems = navigation.map((item) => ({
     label: item.label,
@@ -61,7 +67,7 @@ export async function Header() {
   }));
 
   const ctaHref = resolveCtaHref(ctaButton);
-  const ctaLabel = ctaButton?.label || "Online Services";
+  const ctaLabel = ctaButton?.label || (locale === "ne" ? "अनलाइन सेवा" : "Online Services");
   const showCtaArrow = ctaButton?.showDropdownArrow ?? true;
 
   // Logo source: prefer CMS upload → fallback to local static file
@@ -96,11 +102,11 @@ export async function Header() {
 
             {/* Center: Title block */}
             <div className="header-title-block flex-1 text-center">
-              <p className="header-gov-text">गण्डकी प्रदेश सरकार</p>
-              <p className="header-ministry-text">स्वास्थ्य मन्त्रालय</p>
+              <p className="header-gov-text">{govermentName}</p>
+              <p className="header-ministry-text">{ministryName}</p>
               <h1 className="header-hospital-title">{hospitalName}</h1>
               <p className="header-location-text">
-                {address || "बाग्लुङ, नेपाल"}
+                {address}
               </p>
             </div>
 

@@ -27,11 +27,18 @@ function resolveNewsImg(item: NewsItem): string | null {
 export async function NewsActivities({
   featured,
   recent,
+  locale = "ne"
 }: {
   featured: NewsItem | null;
   recent: NewsItem[];
+  locale?: string;
 }) {
   if (!featured && recent.length === 0) return null;
+
+  const labels = {
+    title: locale === "ne" ? "समाचार तथा गतिविधिहरु" : "News & Activities",
+    viewAll: locale === "ne" ? "सबै हेर्नुहोस्" : "View All",
+  };
 
   const featuredImg = featured ? resolveNewsImg(featured) : null;
 
@@ -39,10 +46,10 @@ export async function NewsActivities({
     <section className="news-section-v2">
       <div className="section-header-v2 no-border items-center justify-between flex">
         <h2 className="section-heading-v2 uppercase">
-          News & Activities
+          {labels.title}
         </h2>
         <Link href="/news" className="view-all-v2">
-          View All
+          {labels.viewAll}
         </Link>
       </div>
 
@@ -72,7 +79,7 @@ export async function NewsActivities({
                   {/* Content overlayed on image */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10">
                     <div className="flex items-center gap-3 text-gray-300 text-xs font-bold mb-3">
-                      <span className="uppercase tracking-widest">{formatDate(featured.publishedDate || "", "long")}</span>
+                      <span className="uppercase tracking-widest">{formatDate(featured.publishedDate || "", "long", locale)}</span>
                     </div>
                     <h3 className="text-2xl md:text-3xl font-extrabold text-white group-hover:text-gray-200 transition-colors leading-tight mb-3 text-balance drop-shadow-md">
                       {getLocalizedValue(featured.title)}
@@ -117,7 +124,7 @@ export async function NewsActivities({
                     <div className="flex items-center gap-1.5 text-[0.75rem] font-semibold text-gray-600">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                       <time className="uppercase tracking-wide">
-                        {formatDate(item.publishedDate || "", "short")}
+                        {formatDate(item.publishedDate || "", "short", locale)}
                       </time>
                     </div>
                   </div>

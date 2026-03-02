@@ -14,15 +14,19 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getLocale();
   const [settings, page] = await Promise.all([
     getSiteSettings(),
     getPageBySlug(slug),
   ]);
 
   const s = settings as any;
-  const hospitalName = s?.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   if (!page) return { title: "Not Found" };
 
@@ -33,6 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function DynamicPage({ params }: PageProps) {
   const { slug } = await params;
+  const locale = await getLocale();
   const page = await getPageBySlug(slug);
 
   if (!page) {
@@ -50,6 +55,7 @@ export default async function DynamicPage({ params }: PageProps) {
           isActive: { equals: true },
         },
         sort: "order",
+        locale: locale as any,
       });
       committeeMembers = res.docs;
     } catch (_) { }
@@ -62,9 +68,23 @@ export default async function DynamicPage({ params }: PageProps) {
       const payload = await getPayloadClient();
       contactSettings = await payload.findGlobal({
         slug: "site-settings",
+        locale: locale as any,
       });
     } catch (_) { }
   }
+
+  const labels = {
+    noContent: locale === "ne" ? "कुनै सामग्री उपलब्ध छैन" : "No content available",
+    phone: locale === "ne" ? "फोन" : "Phone",
+    email: locale === "ne" ? "इमेल" : "Email",
+    emergency: locale === "ne" ? "आकस्मिक" : "Emergency",
+    getInTouch: locale === "ne" ? "हामीसँग सम्पर्क गर्नुहोस्" : "Get In Touch",
+    feedbackDesc: locale === "ne"
+      ? "के तपाईंसँग कुनै प्रश्न वा सुझाव छ? हामीलाई सन्देश पठाउनुहोस् र हामी तपाईंलाई छिट्टै सम्पर्क गर्नेछौं।"
+      : "Have a question or suggestion? Send us a message and we'll get back to you.",
+    location: locale === "ne" ? "हाम्रो स्थान" : "Our Location",
+    committee: locale === "ne" ? "व्यवस्थापन समिति" : "Management Committee",
+  };
 
   return (
     <PageLayout
@@ -85,8 +105,8 @@ export default async function DynamicPage({ params }: PageProps) {
           {(page as any).content ? (
             <RichText data={(page as any).content} />
           ) : (
-            <p className="no-data-text">
-              No content available
+            <p className="no-data-text font-bold">
+              {labels.noContent}
             </p>
           )}
         </article>
@@ -95,9 +115,9 @@ export default async function DynamicPage({ params }: PageProps) {
           <>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               {[
-                { icon: "📞", label: "Phone", value: contactSettings.contactPhone },
-                { icon: "✉️", label: "Email", value: contactSettings.contactEmail },
-                { icon: "🚨", label: "Emergency", value: contactSettings.emergencyNumber },
+                { icon: "📞", label: labels.phone, value: locale === "ne" ? toNepaliNum(contactSettings.contactPhone) : contactSettings.contactPhone },
+                { icon: "✉️", label: labels.email, value: contactSettings.contactEmail },
+                { icon: "🚨", label: labels.emergency, value: locale === "ne" ? toNepaliNum(contactSettings.emergencyNumber) : contactSettings.emergencyNumber },
               ].map((item, idx) => (
                 <div key={idx} className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100 flex flex-col items-center text-center">
                   <span className="text-3xl mb-3">{item.icon}</span>
@@ -111,10 +131,10 @@ export default async function DynamicPage({ params }: PageProps) {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
                   <h2 className="text-3xl font-black text-[#003580] mb-4">
-                    Get In Touch
+                    {labels.getInTouch}
                   </h2>
                   <p className="text-slate-600 font-bold mb-6">
-                    Have a question or suggestion? Send us a message and we&apos;ll get back to you.
+                    {labels.feedbackDesc}
                   </p>
                 </div>
                 <FeedbackForm />
@@ -126,7 +146,7 @@ export default async function DynamicPage({ params }: PageProps) {
         {slug === "contact" && contactSettings?.mapEmbedUrl && (
           <section className="mt-8">
             <h2 className="text-2xl font-bold text-[#003580] mb-6 flex items-center gap-2">
-              📍 Our Location
+              📍 {labels.location}
             </h2>
             <div className="rounded-3xl overflow-hidden border-4 border-white shadow-2xl h-[500px]">
               <iframe
@@ -137,6 +157,7 @@ export default async function DynamicPage({ params }: PageProps) {
                 allowFullScreen={true}
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
+                title={labels.location}
               ></iframe>
             </div>
           </section>
@@ -146,7 +167,7 @@ export default async function DynamicPage({ params }: PageProps) {
       {slug === "committee" && committeeMembers.length > 0 && (
         <section className="mt-12">
           <h2 className="text-2xl font-bold text-black border-l-4 border-[#2563eb] pl-4 mb-8">
-            Management Committee
+            {labels.committee}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {committeeMembers.map((member) => {
@@ -175,8 +196,8 @@ export default async function DynamicPage({ params }: PageProps) {
 
                   <div className="flex flex-col gap-1 text-sm text-gray-500">
                     {member.phone && (
-                      <p className="flex items-center justify-center gap-1.5">
-                        <span>📞</span> {member.phone}
+                      <p className="flex items-center justify-center gap-1.5 font-bold">
+                        <span>📞</span> {locale === "ne" ? toNepaliNum(member.phone) : member.phone}
                       </p>
                     )}
                   </div>

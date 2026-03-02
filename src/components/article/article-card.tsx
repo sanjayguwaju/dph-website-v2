@@ -1,3 +1,5 @@
+"use client";
+
 import { memo, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -6,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { formatDate, formatReadTime } from "@/utils/format";
 import { getImageUrl, getImageAlt } from "@/utils/image";
 import { getArticleUrl, getCategoryUrl } from "@/utils/url";
+import { getLocaleClient } from "@/utils/locale-client";
+import { useState, useEffect } from "react";
 
 interface ArticleCardProps {
   article: {
@@ -38,6 +42,12 @@ interface ArticleCardProps {
 }
 
 export const ArticleCard = memo(function ArticleCard({ article, variant = "default", priority = false }: ArticleCardProps) {
+  const [locale, setLocale] = useState("ne");
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
+
   const category = useMemo(() => typeof article.category === "object" ? article.category : null, [article.category]);
   const author = useMemo(() => typeof article.author === "object" ? article.author : null, [article.author]);
 
@@ -71,7 +81,7 @@ export const ArticleCard = memo(function ArticleCard({ article, variant = "defau
           </Link>
           <div className="text-ink-400 mt-2 flex items-center gap-2 text-xs">
             <time dateTime={article.publishedDate}>
-              {formatDate(article.publishedDate, "relative")}
+              {formatDate(article.publishedDate, "relative", locale)}
             </time>
           </div>
         </div>
@@ -88,7 +98,7 @@ export const ArticleCard = memo(function ArticleCard({ article, variant = "defau
           </h3>
         </Link>
         <time dateTime={article.publishedDate} className="text-ink-500 mt-1 block text-xs">
-          {formatDate(article.publishedDate, "relative")}
+          {formatDate(article.publishedDate, "relative", locale)}
         </time>
       </article>
     );
@@ -131,14 +141,14 @@ export const ArticleCard = memo(function ArticleCard({ article, variant = "defau
           {author && <span className="text-ink-300 text-sm">{author.name}</span>}
           <div className="text-ink-500 flex items-center gap-3 text-xs">
             <time dateTime={article.publishedDate}>
-              {formatDate(article.publishedDate, "relative")}
+              {formatDate(article.publishedDate, "relative", locale)}
             </time>
             {article.readTime && (
               <>
                 <span>•</span>
                 <span className="flex items-center gap-1">
                   <Clock className="h-3 w-3" />
-                  {formatReadTime(article.readTime)}
+                  {formatReadTime(article.readTime, locale)}
                 </span>
               </>
             )}

@@ -1,16 +1,19 @@
-import { RichText as PayloadRichText } from "@payloadcms/richtext-lexical/react";
+import React from "react";
+import * as LexicalReact from "@payloadcms/richtext-lexical/react";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import {
-  DefaultNodeTypes,
   type SerializedBlockNode,
   type SerializedLinkNode,
 } from "@payloadcms/richtext-lexical";
+import { BannerBlock } from "@/components/blocks/Banner";
 
-// Lazy-import to avoid RSC resolution issues in different render contexts
-import { RichText as LexicalRichText, defaultJSXConverters, LinkJSXConverter } from "@payloadcms/richtext-lexical/react";
-import { BannerBlock, type BannerProps } from "@/components/blocks/Banner";
+// Extract named exports safely
+const PayloadRichText = (LexicalReact as any).RichText;
+const LinkJSXConverter = (LexicalReact as any).LinkJSXConverter;
 
-// Convert internal document links to proper URLs
+/**
+ * Convert internal document links to proper URLs
+ */
 const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }): string => {
   const { relationTo, value } = linkNode.fields.doc || {};
 
@@ -30,31 +33,63 @@ const internalDocToHref = ({ linkNode }: { linkNode: SerializedLinkNode }): stri
   }
 };
 
+/**
+ * Custom JSX converters for RichText
+ */
+const jsxConverters: any = ({ defaultConverters }: any) => {
+  const converters = { ...defaultConverters };
 
-type NodeTypes = DefaultNodeTypes | SerializedBlockNode<BannerProps>;
+  // Safety check and apply Link converter
+  if (typeof LinkJSXConverter === 'function') {
+    try {
+      Object.assign(converters, LinkJSXConverter({ internalDocToHref }));
+    } catch (e) {
+      console.error("Error applying LinkJSXConverter:", e);
+    }
+  }
 
-const jsxConverters = ({ defaultConverters }: { defaultConverters: any }) => ({
-  ...defaultConverters,
-  ...LinkJSXConverter({ internalDocToHref }),
-  blocks: {
-    banner: ({ node }: { node: SerializedBlockNode<BannerProps> }) => <BannerBlock {...node.fields} />,
-  },
-});
+  // Define block converters
+  converters.blocks = {
+    ...(converters.blocks || {}),
+    banner: (props: any) => {
+      if (!BannerBlock) {
+        console.error("BannerBlock component is missing in RichText converters");
+        return null;
+      }
+      return <BannerBlock {...(props.node?.fields || {})} />;
+    },
+  };
+
+  return converters;
+};
 
 type RichTextProps = {
   data: SerializedEditorState | null | undefined;
   className?: string;
 };
 
-export function RichText({ data, className }: RichTextProps) {
+export const RichText: React.FC<RichTextProps> = ({ data, className }) => {
   if (!data) return null;
+
+  const isPayloadRichTextAvailable = typeof PayloadRichText !== "undefined";
+
+  if (!isPayloadRichTextAvailable) {
+    console.error("Payload RichText component is undefined in current environment.");
+  }
 
   return (
     <div className={className}>
-      <PayloadRichText
-        data={data}
-        converters={jsxConverters}
-      />
+      {isPayloadRichTextAvailable ? (
+        <PayloadRichText
+          data={data}
+          converters={jsxConverters}
+        />
+      ) : (
+        <div className="p-4 border border-red-200 bg-red-50 text-red-600 rounded-lg">
+          <p className="font-bold font-sans">Content Rendering Error</p>
+          <p className="text-sm mt-1">The rich text component failed to load. This usually indicates a module resolution issue in the build.</p>
+        </div>
+      )}
     </div>
   );
-}
+};

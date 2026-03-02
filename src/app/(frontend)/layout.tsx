@@ -6,16 +6,17 @@ import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { ProgressBar } from "@/components/layout/progress-bar";
 import { getPopupNotices } from "@/lib/queries/notices";
 import { getSiteSettings } from "@/lib/queries/globals";
+import { getLocale } from "@/utils/locale-server";
 import "./globals.css";
 
 export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const [popupNotices, settings] = await Promise.all([
+  const [popupNotices, settings, locale] = await Promise.all([
     getPopupNotices(),
     getSiteSettings(),
+    getLocale(),
   ]);
 
   const s = settings as any;
-  const locale = "ne";
 
   return (
     <html lang={locale} suppressHydrationWarning>

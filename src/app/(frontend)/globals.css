@@ -914,16 +914,17 @@ button,
   pointer-events: auto;
 }
 
-/* Nav Buttons */
-.slider-nav-btn {
+/* Nav Buttons - Premium Glassmorphism */
+.slider-nav-btn-v3 {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 48px;
-  height: 48px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -931,27 +932,41 @@ button,
   justify-content: center;
   cursor: pointer;
   z-index: 30;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
   opacity: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
 
-.hero-slider-v3:hover .slider-nav-btn {
+.slider-nav-btn-v3.prev {
+  left: -20px;
+}
+
+.slider-nav-btn-v3.next {
+  right: -20px;
+}
+
+.hero-slider-v3:hover .slider-nav-btn-v3 {
   opacity: 1;
 }
 
-.slider-nav-btn:hover {
+.hero-slider-v3:hover .slider-nav-btn-v3.prev {
+  left: 32px;
+}
+
+.hero-slider-v3:hover .slider-nav-btn-v3.next {
+  right: 32px;
+}
+
+.slider-nav-btn-v3:hover {
   background: var(--brand-red);
   border-color: var(--brand-red);
   transform: translateY(-50%) scale(1.1);
-  box-shadow: 0 0 20px rgba(225, 32, 39, 0.4);
+  box-shadow: 0 0 30px rgba(225, 32, 39, 0.5);
+  color: white;
 }
 
-.slider-nav-btn.prev {
-  left: 24px;
-}
-
-.slider-nav-btn.next {
-  right: 24px;
+.slider-nav-btn-v3:active {
+  transform: translateY(-50%) scale(0.95);
 }
 
 /* Pagination indicator dash style is handled in JSX classes, but base styles here */
@@ -959,6 +974,7 @@ button,
   border: none;
   outline: none;
   padding: 0;
+  cursor: pointer;
 }
 
 /* Progress Animation */
@@ -977,106 +993,29 @@ button,
   animation: progressFill linear forwards;
 }
 
+@media (max-width: 1024px) {
+  .hero-slider-v3 {
+    height: 500px;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-slider-v3 {
-    height: 450px;
+    height: 480px;
     border-radius: 0;
   }
 
-  .slider-nav-btn {
+  .slider-nav-btn-v3 {
     display: none;
   }
 
   .slide-title-v3 {
-    font-size: 1.75rem !important;
+    font-size: 2rem !important;
   }
-}
 
-.hero-slide-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-top: 4px;
-  padding: 10px 22px;
-  background: oklch(0.606 0.25 292.717);
-  color: #fff;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-  width: fit-content;
-  transition:
-    background 0.2s,
-    transform 0.15s;
-}
-
-.hero-slide-cta:hover {
-  background: oklch(0.541 0.281 293.009);
-  transform: translateY(-1px);
-}
-
-/* Arrow buttons */
-.hero-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(0, 0, 0, 0.45);
-  color: #fff;
-  font-size: 1.6rem;
-  line-height: 1;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background 0.2s,
-    transform 0.15s;
-  backdrop-filter: blur(4px);
-}
-
-.hero-arrow:hover {
-  background: rgba(0, 0, 0, 0.7);
-  transform: translateY(-50%) scale(1.08);
-}
-
-.hero-arrow-prev {
-  left: 16px;
-}
-
-.hero-arrow-next {
-  right: 16px;
-}
-
-/* Dash indicators centered at bottom */
-.hero-dots {
-  position: absolute;
-  bottom: 25px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  display: flex;
-  gap: 12px;
-}
-
-.hero-dot {
-  width: 25px;
-  height: 4px;
-  border-radius: 2px;
-  border: none;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.4);
-  padding: 0;
-  transition: all 0.3s ease;
-}
-
-.hero-dot.active {
-  background: #fff;
-  width: 40px;
+  .slide-caption-v3 {
+    font-size: 1rem !important;
+  }
 }
 
 /* Semi-transparent caption bar */
@@ -8333,6 +8272,7 @@ a.about-contact-value:hover {
   100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }

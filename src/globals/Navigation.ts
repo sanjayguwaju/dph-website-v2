@@ -21,6 +21,7 @@ export const Navigation: GlobalConfig = {
           name: "label",
           type: "text",
           required: true,
+          localized: true,
         },
         {
           name: "type",
@@ -70,6 +71,7 @@ export const Navigation: GlobalConfig = {
               name: "label",
               type: "text",
               required: true,
+              localized: true,
             },
             {
               name: "type",
@@ -118,6 +120,7 @@ export const Navigation: GlobalConfig = {
           type: "text",
           defaultValue: "Online Services",
           required: true,
+          localized: true,
         },
         {
           name: "type",

@@ -1,4 +1,3 @@
-import { RichText } from "@payloadcms/richtext-lexical/react";
 import { cn } from "@/lib/utils";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 
@@ -57,8 +56,8 @@ export interface BannerProps {
 
 /**
  * BannerBlock renders inside RichText converters.
- * We intentionally do NOT import RichText/PayloadRichText here to avoid
- * circular import issues. Instead, we extract plain text from the editor state.
+ * We intentionally do NOT import RichText here to avoid
+ * circular import issues. Instead, we show the converted plain text.
  */
 export function BannerBlock({ style, content }: BannerProps) {
   if (!content) return null;
@@ -70,8 +69,8 @@ export function BannerBlock({ style, content }: BannerProps) {
   return (
     <div className={cn("my-6 flex items-start gap-3 rounded-lg border p-4", styleClasses[variant])}>
       {icons[variant]}
-      <div className="flex-1 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-        {content && <RichText data={content} />}
+      <div className="flex-1 whitespace-pre-wrap">
+        {plainText}
       </div>
     </div>
   );

@@ -119,20 +119,20 @@ export default buildConfig({
   ],
   globals: [SiteSettings, Navigation, Footer, OpdStats],
   editor,
-  // localization: {
-  //   locales: [
-  //     {
-  //       label: "Nepali",
-  //       code: "ne",
-  //     },
-  //     {
-  //       label: "English",
-  //       code: "en",
-  //     },
-  //   ],
-  //   defaultLocale: "ne",
-  //   fallback: true,
-  // },
+  localization: {
+    locales: [
+      {
+        label: "English",
+        code: "en",
+      },
+      {
+        label: "Nepali",
+        code: "ne",
+      },
+    ],
+    defaultLocale: "ne",
+    fallback: true,
+  },
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),

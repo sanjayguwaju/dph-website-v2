@@ -8,25 +8,32 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
+  const locale = await getLocale();
+  const hospitalName = locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital";
+
   try {
     const payload = await getPayloadClient();
     const staff = await payload.findByID({
       collection: "staff",
       id,
+      locale: locale as any,
     });
     if (!staff) return { title: "Not Found" };
     return {
-      title: `${staff.name} | Amppipal Hospital`,
+      title: `${staff.name} | ${hospitalName}`,
     };
   } catch (_) {
-    return { title: "Staff | Amppipal Hospital" };
+    return { title: locale === "ne" ? `कर्मचारी | ${hospitalName}` : `Staff | ${hospitalName}` };
   }
 }
 
 export default async function StaffDetailPage({ params }: Props) {
   const { id } = await params;
+  const locale = await getLocale();
 
   let staff: any = null;
   try {
@@ -34,6 +41,7 @@ export default async function StaffDetailPage({ params }: Props) {
     staff = await payload.findByID({
       collection: "staff",
       id,
+      locale: locale as any,
     });
   } catch (_) {
     notFound();
@@ -44,10 +52,20 @@ export default async function StaffDetailPage({ params }: Props) {
   const photo = staff.photo && typeof staff.photo === "object" ? staff.photo : null;
   const photoUrl = (photo as any)?.url || (staff as any).externalPhoto || null;
 
+  const labels = {
+    staff: locale === "ne" ? "कर्मचारीहरू" : "Staff",
+    personal: locale === "ne" ? "व्यक्तिगत विवरण" : "Personal Details",
+    name: locale === "ne" ? "नाम" : "Name",
+    designation: locale === "ne" ? "पद" : "Designation",
+    department: locale === "ne" ? "शाखा / विभाग" : "Department",
+    mobile: locale === "ne" ? "मोबाइल" : "Mobile",
+    email: locale === "ne" ? "इमेल" : "Email",
+  };
+
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "Staff", href: "/staff" },
+        { label: labels.staff, href: "/staff" },
         { label: staff.name as string },
       ]}
       maxWidth="max-w-4xl"
@@ -58,8 +76,8 @@ export default async function StaffDetailPage({ params }: Props) {
             {photoUrl ? (
               <img
                 src={photoUrl}
-                alt={(staff.nameEn as string) || (staff.name as string)}
-                style={{ objectFit: "cover", objectPosition: "top" }}
+                alt={staff.name as string}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }}
               />
             ) : (
               <div className="text-6xl">👤</div>
@@ -74,26 +92,26 @@ export default async function StaffDetailPage({ params }: Props) {
 
         <div className="flex-1 text-[#212529]">
           <h2 className="text-xl font-bold mb-6 border-b border-[#eee] pb-4">
-            Personal Details
+            {labels.personal}
           </h2>
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-              <span className="font-semibold text-gray-500">Name</span>
+              <span className="font-semibold text-gray-500">{labels.name}</span>
               <span className="text-black font-medium">{staff.name}</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-              <span className="font-semibold text-gray-500">Designation</span>
+              <span className="font-semibold text-gray-500">{labels.designation}</span>
               <span className="text-black">{staff.designation}</span>
             </div>
             {staff.department && (
               <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-                <span className="font-semibold text-gray-500">Department</span>
+                <span className="font-semibold text-gray-500">{labels.department}</span>
                 <span className="text-black">{staff.department}</span>
               </div>
             )}
             {staff.phone && (
               <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-                <span className="font-semibold text-gray-500">Mobile</span>
+                <span className="font-semibold text-gray-500">{labels.mobile}</span>
                 <a href={`tel:${staff.phone}`} className="text-[#2563eb] hover:underline">
                   {staff.phone}
                 </a>
@@ -101,7 +119,7 @@ export default async function StaffDetailPage({ params }: Props) {
             )}
             {staff.email && (
               <div className="grid grid-cols-1 sm:grid-cols-[160px_1fr] border-b border-gray-50 pb-4">
-                <span className="font-semibold text-gray-500">Email</span>
+                <span className="font-semibold text-gray-500">{labels.email}</span>
                 <a href={`mailto:${staff.email}`} className="text-[#2563eb] hover:underline">
                   {staff.email}
                 </a>

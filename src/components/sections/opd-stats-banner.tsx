@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { User, Users, Bed, Activity, HeartPulse } from "lucide-react";
 import { formatNepaliNumber } from "@/utils/nepali-date";
+import { getLocaleClient } from "@/utils/locale-client";
 
 type OpdStatsData = {
   opdMale?: number | null;
@@ -19,15 +20,19 @@ type OpdStatsData = {
 export function OpdStatsBanner({ stats }: { stats: OpdStatsData }) {
   const [mounted, setMounted] = useState(false);
   const [lastUpdateStr, setLastUpdateStr] = useState<string>("");
+  const [locale, setLocale] = useState("ne");
 
   useEffect(() => {
+    const activeLocale = getLocaleClient();
+    setLocale(activeLocale);
+
     const timer = setTimeout(() => {
       setMounted(true);
       if (stats.lastUpdatedDate) {
         try {
           const dateObj = new Date(stats.lastUpdatedDate);
           setLastUpdateStr(
-            dateObj.toLocaleDateString("en-US", {
+            dateObj.toLocaleDateString(activeLocale === "ne" ? "ne-NP" : "en-US", {
               dateStyle: "medium",
             })
           );
@@ -35,7 +40,7 @@ export function OpdStatsBanner({ stats }: { stats: OpdStatsData }) {
           setLastUpdateStr(stats.lastUpdatedDate);
         }
       } else {
-        setLastUpdateStr("Just now");
+        setLastUpdateStr(activeLocale === "ne" ? "भर्खरै" : "Just now");
       }
     }, 1000);
     return () => clearTimeout(timer);
@@ -45,46 +50,59 @@ export function OpdStatsBanner({ stats }: { stats: OpdStatsData }) {
     return <StatsSkeleton />;
   }
 
+  const labels = {
+    title: locale === "ne" ? "तथ्याङ्क विवरण" : "Statistics",
+    opd: locale === "ne" ? "बहिरङ्ग (OPD) सेवाग्राही" : "OPD Service Recipients",
+    emergency: locale === "ne" ? "आकस्मिक सेवाग्राही" : "Emergency Recipients",
+    admitted: locale === "ne" ? "भर्ना भएका बिरामी" : "Admitted Patients",
+    insurance: locale === "ne" ? "स्वास्थ्य बीमा कार्यक्रम" : "Health Insurance Program",
+    male: locale === "ne" ? "पुरुष" : "Male",
+    female: locale === "ne" ? "महिला" : "Female",
+    total: locale === "ne" ? "कुल" : "Total",
+    beds: locale === "ne" ? "कुल शैया" : "Total Beds",
+    enrolled: locale === "ne" ? "आबद्ध संख्या" : "Enrolled Count",
+  };
+
   const groups = [
     {
-      title: "OPD Service Recipients",
+      title: labels.opd,
       items: [
-        { label: "Male", value: stats.opdMale ?? 0, icon: <User size={18} />, color: "#2563eb" },
-        { label: "Female", value: stats.opdFemale ?? 0, icon: <Users size={18} />, color: "#db2777" },
-        { label: "Total", value: stats.opdTotal ?? 0, icon: <Activity size={18} />, color: "#059669" },
+        { label: labels.male, value: stats.opdMale ?? 0, icon: <User size={18} />, color: "#2563eb" },
+        { label: labels.female, value: stats.opdFemale ?? 0, icon: <Users size={18} />, color: "#db2777" },
+        { label: labels.total, value: stats.opdTotal ?? 0, icon: <Activity size={18} />, color: "#059669" },
       ]
     },
     {
-      title: "Emergency Service Recipients",
+      title: labels.emergency,
       items: [
-        { label: "Male", value: stats.inpatientMale ?? 0, icon: <User size={18} />, color: "#2563eb" },
-        { label: "Female", value: stats.inpatientFemale ?? 0, icon: <Users size={18} />, color: "#db2777" },
-        { label: "Total", value: stats.inpatientTotal ?? 0, icon: <Activity size={18} />, color: "#059669" },
+        { label: labels.male, value: stats.inpatientMale ?? 0, icon: <User size={18} />, color: "#2563eb" },
+        { label: labels.female, value: stats.inpatientFemale ?? 0, icon: <Users size={18} />, color: "#db2777" },
+        { label: labels.total, value: stats.inpatientTotal ?? 0, icon: <Activity size={18} />, color: "#059669" },
       ]
     },
     {
-      title: "Admitted Patients",
+      title: labels.admitted,
       items: [
-        { label: "Total", value: stats.totalBeds ?? 0, icon: <Bed size={22} />, color: "#7c3aed" },
+        { label: labels.beds, value: stats.totalBeds ?? 0, icon: <Bed size={22} />, color: "#7c3aed" },
       ]
     },
     {
-      title: "Health Insurance Program",
+      title: labels.insurance,
       items: [
-        { label: "Total", value: stats.bedOccupancy ?? 0, icon: <HeartPulse size={22} />, color: "#0d9488" },
+        { label: labels.total, value: stats.bedOccupancy ?? 0, icon: <HeartPulse size={22} />, color: "#0d9488" },
       ]
     }
   ];
 
   const formatNum = (n: number) => {
-    return n.toLocaleString("en-US");
+    return locale === "ne" ? formatNepaliNumber(n) : n.toLocaleString("en-US");
   };
 
   return (
     <section className="stats-dashboard-simple container-refined mt-8 mb-12">
       <div className="section-header-v2">
         <h2 className="section-heading-v2">
-          Statistics <span className="text-gray-500 text-lg font-normal ml-2">{lastUpdateStr ? `(${lastUpdateStr})` : ""}</span>
+          {labels.title} <span className="text-gray-500 text-lg font-normal ml-2">{lastUpdateStr ? `(${lastUpdateStr})` : ""}</span>
         </h2>
       </div>
 

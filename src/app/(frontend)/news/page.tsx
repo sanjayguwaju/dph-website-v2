@@ -6,14 +6,23 @@ import Image from "next/image";
 import { formatDate } from "@/utils/format";
 import { FileText, Calendar, ChevronRight } from "lucide-react";
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
+
+  const title = locale === "ne" ? `समाचार तथा गतिविधिहरू | ${hospitalName}` : `News & Activities | ${hospitalName}`;
+  const description = locale === "ne"
+    ? `${hospitalName} बाट नवीनतम समाचार, प्रेस विज्ञप्ति, प्रकाशन र बोलपत्र सूचनाहरू।`
+    : `Latest news, press releases, publications and bid notices from ${hospitalName}.`;
 
   return {
-    title: `News & Activities | ${hospitalName}`,
-    description: `Latest news, press releases, publications and bid notices from ${hospitalName}.`,
+    title,
+    description,
   };
 }
 
@@ -31,15 +40,29 @@ export default async function NewsPage({
 }: {
   searchParams: Promise<{ type?: string; page?: string }>;
 }) {
-  const { type, page } = await searchParams;
+  const [{ type, page }, locale] = await Promise.all([
+    searchParams,
+    getLocale()
+  ]);
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
 
+  const labels = {
+    title: locale === "ne" ? "समाचार तथा गतिविधिहरू" : "News & Activities",
+    countText: locale === "ne"
+      ? `${toNepaliNum(0)} लेख, प्रेस विज्ञप्ति र घोषणाहरू` // totalDocs will replace 0
+      : `0 articles, press releases and announcements`,
+    empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
+    readMore: locale === "ne" ? "थप पढ्नुहोस्" : "Read More",
+    prev: locale === "ne" ? "‹ अघिल्लो" : "‹ Prev",
+    next: locale === "ne" ? "अर्को ›" : "Next ›",
+  };
+
   const TYPE_LABELS: Record<string, string> = {
-    news: "News",
-    "press-release": "Press Release",
-    publication: "Publication",
-    bid: "Bid",
+    news: locale === "ne" ? "समाचार" : "News",
+    "press-release": locale === "ne" ? "प्रेस विज्ञप्ति" : "Press Release",
+    publication: locale === "ne" ? "प्रकाशन" : "Publication",
+    bid: locale === "ne" ? "बोलपत्र" : "Bid",
   };
 
   const where: any = { status: { equals: "published" } };
@@ -57,31 +80,36 @@ export default async function NewsPage({
       limit,
       page: currentPage,
       depth: 1,
+      locale: locale as any,
     });
   } catch (error) {
     console.error("NewsPage fetch error:", error);
   }
 
   const { docs, totalPages, totalDocs } = result;
+  labels.countText = locale === "ne"
+    ? `${toNepaliNum(totalDocs)} लेख, प्रेस विज्ञप्ति र घोषणाहरू`
+    : `${totalDocs} articles, press releases and announcements`;
+
   const tabs = [
-    { id: "all", label: "All" },
-    { id: "news", label: "News" },
-    { id: "press-release", label: "Press Release" },
-    { id: "publication", label: "Publication" },
-    { id: "bid", label: "Bid" },
+    { id: "all", label: locale === "ne" ? "सबै" : "All" },
+    { id: "news", label: TYPE_LABELS.news },
+    { id: "press-release", label: TYPE_LABELS["press-release"] },
+    { id: "publication", label: TYPE_LABELS.publication },
+    { id: "bid", label: TYPE_LABELS.bid },
   ];
 
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "News & Activities" },
+        { label: labels.title },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-8 border-b border-gray-100 pb-6">
-        <h1 className="text-3xl font-bold text-[#003580] mb-2">📰 News & Activities</h1>
+        <h1 className="text-3xl font-bold text-[#003580] mb-2">📰 {labels.title}</h1>
         <p className="text-gray-500">
-          {`${totalDocs} articles, press releases and announcements`}
+          {labels.countText}
         </p>
       </div>
 
@@ -100,7 +128,7 @@ export default async function NewsPage({
 
       {/* News grid */}
       {docs.length === 0 ? (
-        <p className="page-empty">No data available</p>
+        <p className="page-empty py-20 text-center text-gray-400 font-bold">{labels.empty}</p>
       ) : (
         <div className="news-list-grid">
           {docs.map((item: any) => {
@@ -150,11 +178,11 @@ export default async function NewsPage({
                     {item.publishedDate && (
                       <time className="news-list-date">
                         <Calendar size={11} style={{ display: "inline", marginRight: 3 }} />
-                        {formatDate(item.publishedDate, "short")}
+                        {formatDate(item.publishedDate, "short", locale)}
                       </time>
                     )}
                     <span className="news-list-read-more">
-                      Read More
+                      {labels.readMore}
                       <ChevronRight size={12} style={{ display: "inline" }} />
                     </span>
                   </div>
@@ -173,18 +201,18 @@ export default async function NewsPage({
               href={`/news?${type ? `type=${type}&` : ""}page=${currentPage - 1}`}
               className="page-nav-btn"
             >
-              ‹ Prev
+              {labels.prev}
             </Link>
           )}
           <span className="page-num">
-            {currentPage} / {totalPages}
+            {locale === "ne" ? toNepaliNum(currentPage) : currentPage} / {locale === "ne" ? toNepaliNum(totalPages) : totalPages}
           </span>
           {currentPage < totalPages && (
             <Link
               href={`/news?${type ? `type=${type}&` : ""}page=${currentPage + 1}`}
               className="page-nav-btn"
             >
-              Next ›
+              {labels.next}
             </Link>
           )}
         </div>

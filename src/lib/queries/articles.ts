@@ -1,6 +1,7 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
 import type { Where } from "payload";
+import { getLocale } from "@/utils/locale-server";
 
 export interface ArticleQueryOptions {
   limit?: number;
@@ -45,12 +46,15 @@ export const getArticles = cache(async (options?: ArticleQueryOptions) => {
       where.or = [{ title: { like: options.search } }, { excerpt: { like: options.search } }];
     }
 
+    const locale = await getLocale();
+
     const articles = await payload.find({
       collection: "articles",
       where,
       limit: options?.limit || 10,
       page: options?.page || 1,
       sort: "-publishedDate",
+      locale: locale as any,
       depth: 2,
     });
 
@@ -64,12 +68,15 @@ export const getArticleBySlug = cache(async (slug: string) => {
   try {
     const payload = await getPayloadClient();
 
+    const locale = await getLocale();
+
     const articles = await payload.find({
       collection: "articles",
       where: {
         slug: { equals: slug },
         status: { equals: "published" },
       },
+      locale: locale as any,
       limit: 1,
       depth: 3,
     });
@@ -85,6 +92,8 @@ export const getRelatedArticles = cache(
     try {
       const payload = await getPayloadClient();
 
+      const locale = await getLocale();
+
       const articles = await payload.find({
         collection: "articles",
         where: {
@@ -94,6 +103,7 @@ export const getRelatedArticles = cache(
             { status: { equals: "published" } },
           ],
         },
+        locale: locale as any,
         limit,
         sort: "-publishedDate",
         depth: 1,
@@ -110,6 +120,8 @@ export const searchArticles = cache(async (query: string, limit = 10) => {
   try {
     const payload = await getPayloadClient();
 
+    const locale = await getLocale();
+
     const articles = await payload.find({
       collection: "articles",
       where: {
@@ -120,6 +132,7 @@ export const searchArticles = cache(async (query: string, limit = 10) => {
           { status: { equals: "published" } },
         ],
       },
+      locale: locale as any,
       limit,
       depth: 1,
     });
@@ -134,11 +147,14 @@ export const getTrendingArticles = cache(async (limit = 5) => {
   try {
     const payload = await getPayloadClient();
 
+    const locale = await getLocale();
+
     const articles = await payload.find({
       collection: "articles",
       where: {
         status: { equals: "published" },
       },
+      locale: locale as any,
       limit,
       sort: "-views",
       depth: 1,

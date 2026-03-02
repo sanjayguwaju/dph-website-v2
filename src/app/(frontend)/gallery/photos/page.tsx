@@ -5,14 +5,18 @@ import { getSiteSettings } from "@/lib/queries/globals";
 import { PhotoGalleryClient } from "./photo-gallery-client";
 import { PageLayout } from "@/components/layout/page-layout";
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   return {
-    title: `Photo Gallery | ${hospitalName}`,
-    description: `Browse official photo gallery of ${hospitalName}`,
+    title: locale === "ne" ? `फोटो ग्यालेरी | ${hospitalName}` : `Photo Gallery | ${hospitalName}`,
+    description: locale === "ne" ? `${hospitalName} को आधिकारिक फोटो ग्यालेरी हेर्नुहोस्` : `Browse official photo gallery of ${hospitalName}`,
   };
 }
 
@@ -22,6 +26,7 @@ export default async function PhotoGalleryPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const { page } = await searchParams;
+  const locale = await getLocale();
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 24;
 
@@ -33,6 +38,7 @@ export default async function PhotoGalleryPage({
     const result = await payload.find({
       collection: "photo-gallery",
       where: { isActive: { equals: true } },
+      locale: locale as any,
       sort: "-publishedDate",
       limit,
       page: currentPage,
@@ -42,22 +48,33 @@ export default async function PhotoGalleryPage({
     totalPages = result.totalPages;
   } catch (_) { }
 
+  const labels = {
+    photos: locale === "ne" ? "फोटोहरू" : "Photos",
+    videos: locale === "ne" ? "भिडियोहरू" : "Videos",
+    albums: locale === "ne" ? "एल्बमहरू" : "albums",
+    photoCount: locale === "ne" ? "फोटोहरू" : "Photos",
+    prev: locale === "ne" ? "‹ अघिल्लो" : "‹ Prev",
+    next: locale === "ne" ? "अर्को ›" : "Next ›",
+  };
+
+  const totalImages = docs.flatMap((a: any) => a.images ?? []).length;
+
   return (
     <PageLayout
-      breadcrumbs={[{ label: "Photos" }]}
+      breadcrumbs={[{ label: labels.photos }]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-8 pb-6 border-b border-gray-100 flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-3xl font-bold text-[var(--brand-blue)] flex items-center gap-3">
-            📷 Photos
+            📷 {labels.photos}
           </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            {docs.length} albums · {docs.flatMap((a: any) => a.images ?? []).length} Photos
+          <p className="text-sm text-gray-500 mt-1 font-bold">
+            {locale === "ne" ? toNepaliNum(docs.length) : docs.length} {labels.albums} · {locale === "ne" ? toNepaliNum(totalImages) : totalImages} {labels.photoCount}
           </p>
         </div>
-        <Link href="/gallery/videos" className="text-sm font-semibold text-[var(--brand-blue)] hover:underline flex items-center gap-1">
-          🎥 Videos →
+        <Link href="/gallery/videos" className="text-sm font-bold text-[var(--brand-blue)] hover:underline flex items-center gap-1">
+          🎥 {labels.videos} →
         </Link>
       </div>
 
@@ -68,13 +85,15 @@ export default async function PhotoGalleryPage({
         <div className="page-pagination mt-10">
           {currentPage > 1 && (
             <Link href={`/gallery/photos?page=${currentPage - 1}`} className="page-nav-btn">
-              ‹ Prev
+              {labels.prev}
             </Link>
           )}
-          <span className="page-num">{currentPage} / {totalPages}</span>
+          <span className="page-num font-bold">
+            {locale === "ne" ? toNepaliNum(currentPage) : currentPage} / {locale === "ne" ? toNepaliNum(totalPages) : totalPages}
+          </span>
           {currentPage < totalPages && (
             <Link href={`/gallery/photos?page=${currentPage + 1}`} className="page-nav-btn">
-              Next ›
+              {labels.next}
             </Link>
           )}
         </div>

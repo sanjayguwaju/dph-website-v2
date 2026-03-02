@@ -18,30 +18,35 @@ export const SiteSettings: GlobalConfig = {
           label: "General",
           fields: [
             {
-              name: "hospitalNameNe",
+              name: "govermentName",
               type: "text",
-              label: "Hospital Name (Nepali)",
+              label: "Government Name",
               required: true,
+              localized: true,
+              defaultValue: "गण्डकी प्रदेश सरकार",
+            },
+            {
+              name: "ministryName",
+              type: "text",
+              label: "Ministry Name",
+              required: true,
+              localized: true,
+              defaultValue: "स्वास्थ्य मन्त्रालय",
+            },
+            {
+              name: "hospitalName",
+              type: "text",
+              label: "Hospital Name",
+              required: true,
+              localized: true,
               defaultValue: "अम्पिपाल अस्पताल",
             },
             {
-              name: "hospitalNameEn",
+              name: "tagline",
               type: "text",
-              label: "Hospital Name (English)",
-              required: true,
-              defaultValue: "Amppipal Hospital",
-            },
-            {
-              name: "taglineNe",
-              type: "text",
-              label: "Tagline (Nepali)",
+              label: "Tagline",
+              localized: true,
               defaultValue: "स्वास्थ्य सेवा, सबैका लागि",
-            },
-            {
-              name: "taglineEn",
-              type: "text",
-              label: "Tagline (English)",
-              defaultValue: "Healthcare for All",
             },
             {
               name: "logo",
@@ -87,14 +92,9 @@ export const SiteSettings: GlobalConfig = {
             {
               name: "address",
               type: "textarea",
-              label: "Address (Nepali)",
+              label: "Address",
+              localized: true,
               defaultValue: "पालुङटार नगरपालिका – ३, गोरखा, नेपाल"
-            },
-            {
-              name: "addressEn",
-              type: "text",
-              label: "Address (English)",
-              defaultValue: "Palungtar Municipality - 3, Gorkha, Nepal"
             },
             {
               name: "mapEmbedUrl",

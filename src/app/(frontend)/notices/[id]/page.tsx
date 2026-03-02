@@ -3,19 +3,24 @@ import Link from "next/link";
 import { getPayloadClient } from "@/lib/payload";
 import { PageLayout } from "@/components/layout/page-layout";
 import { NoticeDetailView } from "@/components/notices/NoticeDetailView";
+import { formatDate } from "@/utils/format";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+
 export async function generateMetadata({ params }: Props) {
   const { id } = await params;
+  const locale = await getLocale();
   const notice = await import("@/lib/queries/notices").then((m) => m.getNoticeById(id, 0));
 
   if (!notice) return { title: "Not Found" };
+  const hospitalName = locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital";
 
   return {
-    title: `${notice.title} | Amppipal Hospital`,
+    title: `${notice.title} | ${hospitalName}`,
     description: (notice.description as string)?.slice(0, 160) || "Notice detail",
     openGraph: {
       title: notice.title as string,
@@ -26,6 +31,7 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function NoticeDetailPage({ params }: Props) {
   const { id } = await params;
+  const locale = await getLocale();
   const notice = await import("@/lib/queries/notices").then((m) => m.getNoticeById(id, 1)) as any;
 
   if (!notice) notFound();
@@ -50,19 +56,21 @@ export default async function NoticeDetailPage({ params }: Props) {
 
   // Format date
   const dateStr = notice.publishedDate
-    ? new Date(notice.publishedDate).toLocaleDateString(
-      "en-US",
-      { year: "numeric", month: "long", day: "numeric", weekday: "long" }
-    )
+    ? formatDate(notice.publishedDate, "long", locale)
     : undefined;
 
-  const siteUrl = "https://dph.gandaki.gov.np";
+  const siteUrl = "https://amppipalhospital.gov.np";
   const shareUrl = `${siteUrl}/notices/${id}`;
+
+  const labels = {
+    notices: locale === "ne" ? "सूचनाहरू" : "Notices",
+    back: locale === "ne" ? "‹ सूचनाहरूमा फर्कनुहोस्" : "‹ Back to Notices",
+  };
 
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "Notices", href: "/notices" },
+        { label: labels.notices, href: "/notices" },
         { label: notice.title as string },
       ]}
       maxWidth="max-w-7xl"
@@ -87,7 +95,7 @@ export default async function NoticeDetailPage({ params }: Props) {
           href="/notices"
           className="inline-flex items-center gap-2 text-[#2563eb] hover:underline font-medium"
         >
-          ‹ Back to Notices
+          {labels.back}
         </Link>
       </div>
     </PageLayout>

@@ -3,13 +3,17 @@ import { getPayloadClient } from "@/lib/payload";
 import { getSiteSettings } from "@/lib/queries/globals";
 import Link from "next/link";
 
+import { getLocale } from "@/utils/locale-server";
+import { toNepaliNum } from "@/utils/nepali-date";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
 
   return {
-    title: `Videos | ${hospitalName}`,
+    title: locale === "ne" ? `भिडियो ग्यालेरी | ${hospitalName}` : `Videos | ${hospitalName}`,
   };
 }
 
@@ -36,6 +40,7 @@ export default async function VideoGalleryPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const { page } = await searchParams;
+  const locale = await getLocale();
   const currentPage = Math.max(1, parseInt(page || "1"));
   const limit = 12;
 
@@ -47,6 +52,7 @@ export default async function VideoGalleryPage({
     const result = await payload.find({
       collection: "video-gallery",
       where: { isActive: { equals: true } },
+      locale: locale as any,
       sort: "-publishedDate",
       limit,
       page: currentPage,
@@ -56,19 +62,26 @@ export default async function VideoGalleryPage({
     totalPages = result.totalPages;
   } catch (_) { }
 
+  const labels = {
+    videos: locale === "ne" ? "भिडियोहरू" : "Videos",
+    empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
+    prev: locale === "ne" ? "‹ अघिल्लो" : "‹ Prev",
+    next: locale === "ne" ? "अर्को ›" : "Next ›",
+  };
+
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "Videos" },
+        { label: labels.videos },
       ]}
       maxWidth="max-w-7xl"
     >
       <div className="mb-10 border-b border-gray-100 pb-6">
-        <h1 className="text-3xl font-bold text-[#003580]">🎥 Videos</h1>
+        <h1 className="text-3xl font-bold text-[#003580]">🎥 {labels.videos}</h1>
       </div>
 
       {docs.length === 0 ? (
-        <p className="page-empty text-center py-20 text-gray-400">No data available</p>
+        <p className="page-empty text-center py-20 text-gray-400 font-bold">{labels.empty}</p>
       ) : (
         <div className="video-grid video-grid-page">
           {docs.map((video: any) => {
@@ -98,15 +111,15 @@ export default async function VideoGalleryPage({
         <div className="page-pagination mt-12">
           {currentPage > 1 && (
             <Link href={`/gallery/videos?page=${currentPage - 1}`} className="page-nav-btn">
-              ‹ Prev
+              {labels.prev}
             </Link>
           )}
-          <span className="page-num">
-            {currentPage} / {totalPages}
+          <span className="page-num font-bold">
+            {locale === "ne" ? toNepaliNum(currentPage) : currentPage} / {locale === "ne" ? toNepaliNum(totalPages) : totalPages}
           </span>
           {currentPage < totalPages && (
             <Link href={`/gallery/videos?page=${currentPage + 1}`} className="page-nav-btn">
-              Next ›
+              {labels.next}
             </Link>
           )}
         </div>

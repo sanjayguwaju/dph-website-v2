@@ -1,3 +1,7 @@
+"use client";
+
+import { getLocaleClient } from "@/utils/locale-client";
+import { useState, useEffect } from "react";
 import { ArticleCard } from "./article-card";
 
 interface RelatedArticlesProps {
@@ -15,12 +19,20 @@ interface RelatedArticlesProps {
 }
 
 export function RelatedArticles({ articles }: RelatedArticlesProps) {
+  const [locale, setLocale] = useState("ne");
+
+  useEffect(() => {
+    setLocale(getLocaleClient());
+  }, []);
+
   if (articles.length === 0) return null;
+
+  const title = locale === "ne" ? "सम्बन्धित लेखहरू" : "Related Articles";
 
   return (
     <section className="px-page py-section container mx-auto">
       <div className="mx-auto max-w-5xl">
-        <h2 className="text-ink-50 mb-8 text-2xl font-bold">Related Articles</h2>
+        <h2 className="text-ink-50 mb-8 text-2xl font-bold">{title}</h2>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {articles.map((article) => (

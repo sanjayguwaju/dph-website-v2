@@ -1,14 +1,17 @@
 import { getPayloadClient } from "@/lib/payload";
 import { cache } from "react";
+import { getLocale } from "@/utils/locale-server";
 
 export const getHomepageStaff = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const staff = await payload.find({
       collection: "staff",
       where: {
         and: [{ showOnHomepage: { equals: true } }, { isActive: { equals: true } }],
       },
+      locale: locale as any,
       sort: "order",
       limit: 6,
       depth: 1,
@@ -22,16 +25,17 @@ export const getHomepageStaff = cache(async () => {
 export const getHomepageServices = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const services = await payload.find({
       collection: "services",
       where: { isActive: { equals: true } },
+      locale: locale as any,
       sort: "order",
       limit: 50,
       depth: 1,
     });
     return services.docs;
   } catch (error) {
-    // Silently fail - error is not user-facing
     return [];
   }
 });
@@ -39,12 +43,14 @@ export const getHomepageServices = cache(async () => {
 export const getHomepageNews = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const [featured, recent] = await Promise.all([
       payload.find({
         collection: "news",
         where: {
           and: [{ status: { equals: "published" } }, { isFeatured: { equals: true } }],
         },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 1,
         depth: 1,
@@ -52,6 +58,7 @@ export const getHomepageNews = cache(async () => {
       payload.find({
         collection: "news",
         where: { status: { equals: "published" } },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 5,
         depth: 1,
@@ -66,10 +73,12 @@ export const getHomepageNews = cache(async () => {
 export const getNoticesByType = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const [notices, news, pressReleases, publications, bids] = await Promise.all([
       payload.find({
         collection: "notices",
         where: { status: { equals: "published" } },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 8,
         depth: 1,
@@ -77,6 +86,7 @@ export const getNoticesByType = cache(async () => {
       payload.find({
         collection: "news",
         where: { and: [{ status: { equals: "published" } }, { type: { equals: "news" } }] },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 8,
         depth: 1,
@@ -84,6 +94,7 @@ export const getNoticesByType = cache(async () => {
       payload.find({
         collection: "news",
         where: { and: [{ status: { equals: "published" } }, { type: { equals: "press-release" } }] },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 8,
         depth: 1,
@@ -91,6 +102,7 @@ export const getNoticesByType = cache(async () => {
       payload.find({
         collection: "news",
         where: { and: [{ status: { equals: "published" } }, { type: { equals: "publication" } }] },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 8,
         depth: 1,
@@ -98,6 +110,7 @@ export const getNoticesByType = cache(async () => {
       payload.find({
         collection: "news",
         where: { and: [{ status: { equals: "published" } }, { type: { equals: "bid" } }] },
+        locale: locale as any,
         sort: "-publishedDate",
         limit: 8,
         depth: 1,
@@ -124,12 +137,14 @@ export const getNoticesByType = cache(async () => {
 export const getPhotoGalleryPreview = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const albums = await payload.find({
       collection: "photo-gallery",
       where: { isActive: { equals: true } },
+      locale: locale as any,
       sort: "-publishedDate",
       limit: 8,
-      depth: 2,        // depth:2 to hydrate nested images[] items
+      depth: 2,
     });
     return albums.docs || [];
   } catch (error) {
@@ -137,13 +152,14 @@ export const getPhotoGalleryPreview = cache(async () => {
   }
 });
 
-
 export const getVideoGalleryPreview = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const videos = await payload.find({
       collection: "video-gallery",
       where: { isActive: { equals: true } },
+      locale: locale as any,
       sort: "-publishedDate",
       limit: 6,
       depth: 0,
@@ -157,9 +173,11 @@ export const getVideoGalleryPreview = cache(async () => {
 export const getQuickLinks = cache(async () => {
   try {
     const payload = await getPayloadClient();
+    const locale = await getLocale();
     const links = await payload.find({
       collection: "quick-links",
       where: { isActive: { equals: true } },
+      locale: locale as any,
       sort: "order",
       limit: 20,
       depth: 0,
@@ -173,7 +191,8 @@ export const getQuickLinks = cache(async () => {
 export const getOpdStats = cache(async () => {
   try {
     const payload = await getPayloadClient();
-    return await payload.findGlobal({ slug: "opd-stats" });
+    const locale = await getLocale();
+    return await payload.findGlobal({ slug: "opd-stats", locale: locale as any });
   } catch (error) {
     return {};
   }

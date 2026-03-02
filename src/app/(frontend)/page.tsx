@@ -30,14 +30,21 @@ import { QuickAccessLinks } from "@/components/sections/quick-access-links";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { EmergencyFloatingButton } from "@/components/ui/emergency-float";
 
+import { getLocale } from "@/utils/locale-server";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
+  const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalNameEn || "Amppipal Hospital";
+  const hospitalName = s.hospitalName || "Amppipal Hospital";
+
+  const description = locale === "ne"
+    ? "गण्डकी प्रदेश सरकार, स्वास्थ्य मन्त्रालय"
+    : "Government of Nepal, Ministry of Health and Population";
 
   return {
     title: hospitalName,
-    description: "Government of Nepal, Ministry of Health and Population",
+    description: description,
   };
 }
 
@@ -55,6 +62,7 @@ export default async function HomePage() {
     quickLinks,
     opdStats,
     aboutPage,
+    locale,
   ] = await Promise.all([
     getHeroSlides(),
     getSiteSettings(),
@@ -67,6 +75,7 @@ export default async function HomePage() {
     getQuickLinks(),
     getOpdStats(),
     import("@/lib/queries/pages").then((m) => m.getPageBySlug("about")),
+    getLocale(),
   ]);
 
   const s = settings as any;
@@ -96,12 +105,12 @@ export default async function HomePage() {
         <div className="home-content-col">
           {/* About Us */}
           <ScrollReveal delay={100}>
-            <AboutUs aboutText={s.aboutUs} content={ap?.content} />
+            <AboutUs aboutText={s.aboutUs} content={ap?.content} locale={locale} />
           </ScrollReveal>
 
           {/* News & Activities */}
           <ScrollReveal delay={200}>
-            <NewsActivities featured={newsData.featured as any} recent={newsData.recent as any} />
+            <NewsActivities featured={newsData.featured as any} recent={newsData.recent as any} locale={locale} />
           </ScrollReveal>
 
           {/* Notices Tabs */}
@@ -120,9 +129,10 @@ export default async function HomePage() {
           {/* Facebook Widget */}
           <ScrollReveal delay={400}>
             <FacebookWidget
-              pageName={s.facebookPageName || s.hospitalNameNe}
+              pageName={s.facebookPageName || s.hospitalName}
               followerCount={s.facebookFollowers}
               facebookUrl={s.facebook || "https://facebook.com"}
+              locale={locale}
             />
           </ScrollReveal>
 
@@ -133,7 +143,7 @@ export default async function HomePage() {
 
           {/* Visitor Counter */}
           <ScrollReveal delay={600}>
-            <VisitorCounter />
+            <VisitorCounter locale={locale} />
           </ScrollReveal>
         </aside>
       </div>
@@ -150,7 +160,7 @@ export default async function HomePage() {
 
       {/* ── Video Gallery ─────────────────────────────────── */}
       <ScrollReveal>
-        <VideoGallery videos={videos as any} />
+        <VideoGallery videos={videos as any} locale={locale} />
       </ScrollReveal>
 
       {/* ── Quick Access Links ────────────────────────────── */}
@@ -159,14 +169,14 @@ export default async function HomePage() {
           ...quickLinks as any,
           {
             id: 'online-appointment',
-            label: 'Online Appointment',
+            label: locale === "ne" ? 'अनलाइन टिकट' : 'Online Appointment',
             icon: '📅',
             url: '/appointments'
           }
         ]} />
       </ScrollReveal>
 
-      <EmergencyFloatingButton />
+      <EmergencyFloatingButton phone={s.emergencyNumber} locale={locale} />
     </>
   );
 }

@@ -4,19 +4,29 @@ import { RichText } from "@/components/RichText";
 
 export async function AboutUs({
   aboutText,
-  content
+  content,
+  locale = "ne"
 }: {
   aboutText?: string | null;
   content?: any;
+  locale?: string;
 }) {
   // Don't render if no content available
   if (!aboutText && !content) return null;
+
+  const labels = {
+    title: locale === "ne" ? "हाम्रो बारेमा" : "About Us",
+    readMore: locale === "ne" ? "थप पढ्नुहोस्" : "Read More",
+    fallback: locale === "ne"
+      ? "अम्पिपाल अस्पताल पालुङटार नगरबासीको स्वास्थ्य सेवामा समर्पित एक सुलभ संस्था हो।"
+      : "Amppipal Hospital is a government institution dedicated to quality healthcare for all."
+  };
 
   return (
     <section className="about-section-common">
       <ScrollReveal animation="animate-in fade-in" duration={600}>
         <div className="section-header-v2">
-          <h2 className="section-heading-v2">About Us</h2>
+          <h2 className="section-heading-v2">{labels.title}</h2>
         </div>
       </ScrollReveal>
 
@@ -28,12 +38,12 @@ export async function AboutUs({
             </div>
           ) : (
             <p className="about-text-refined line-clamp-6">
-              {aboutText || "Amppipal Hospital is a government hospital providing quality healthcare services to people of Palungtar Municipality and surrounding areas."}
+              {aboutText || labels.fallback}
             </p>
           )}
           <div className="about-action">
-            <Link href="/about" className="btn-read-more-red">
-              Read More <span>›</span>
+            <Link href="/about" className="btn-read-more-red" aria-label={labels.readMore}>
+              {labels.readMore} <span>›</span>
             </Link>
           </div>
         </div>

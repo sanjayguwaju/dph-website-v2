@@ -22,14 +22,22 @@ function getYouTubeEmbedUrl(url: string): string | null {
   }
 }
 
-export async function VideoGallery({ videos }: { videos: Video[] }) {
+export async function VideoGallery({
+  videos,
+  locale = "ne"
+}: {
+  videos: Video[];
+  locale?: string;
+}) {
   if (videos.length === 0) return null;
+
+  const title = locale === "ne" ? "भिडियो ग्यालरी" : "Video Gallery";
 
   return (
     <section className="gallery-section-v2" style={{ borderTop: '1px solid #eee' }}>
       <div className="gallery-header-v2">
         <div className="gallery-header-line"></div>
-        <h2>Video Gallery</h2>
+        <h2>{title}</h2>
         <div className="gallery-header-line"></div>
       </div>
       <div className="video-grid">

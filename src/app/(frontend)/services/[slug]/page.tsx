@@ -11,8 +11,24 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+import { getLocale } from "@/utils/locale-server";
+
+const CATEGORY_LABELS: Record<string, { ne: string, en: string }> = {
+  opd: { ne: "ओपीडी", en: "OPD" },
+  ipd: { ne: "आईपीडी", en: "IPD" },
+  emergency: { ne: "आकस्मिक", en: "Emergency" },
+  diagnostic: { ne: "निदान", en: "Diagnostic" },
+  "maternal-child": { ne: "मातृ तथा बाल स्वास्थ्य", en: "Maternal & Child" },
+  specialized: { ne: "विशेषज्ञ सेवा", en: "Specialized" },
+  support: { ne: "सहायक सेवा", en: "Support" },
+  other: { ne: "अन्य", en: "Other" },
+};
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getLocale();
+  const hospitalName = locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital";
+
   try {
     const payload = await getPayloadClient();
     const result = await payload.find({
@@ -20,22 +36,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       where: {
         or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
       },
+      locale: locale as any,
       limit: 1,
       depth: 0,
     });
     const service = result.docs[0];
     if (!service) return { title: "Not Found" };
     return {
-      title: `${service.name} | Amppipal Hospital`,
+      title: `${service.name} | ${hospitalName}`,
       description: (service.shortDescription as string) || undefined,
     };
   } catch (_) {
-    return { title: "Service | Amppipal Hospital" };
+    return { title: locale === "ne" ? `सेवा | ${hospitalName}` : `Service | ${hospitalName}` };
   }
 }
 
 export default async function ServiceDetailPage({ params }: Props) {
   const { slug } = await params;
+  const locale = await getLocale();
 
   let service: any = null;
   let relatedServices: any[] = [];
@@ -48,6 +66,7 @@ export default async function ServiceDetailPage({ params }: Props) {
       where: {
         or: [{ slug: { equals: slug } }, { id: { equals: slug } }],
       },
+      locale: locale as any,
       limit: 1,
       depth: 1,
     });
@@ -65,6 +84,7 @@ export default async function ServiceDetailPage({ params }: Props) {
               { isActive: { equals: true } }
             ]
           },
+          locale: locale as any,
           limit: 3,
           depth: 0,
         });
@@ -75,13 +95,27 @@ export default async function ServiceDetailPage({ params }: Props) {
 
   if (!service) notFound();
 
-  const siteUrl = "https://dph.gandaki.gov.np";
+  const siteUrl = "https://amppipalhospital.gov.np";
   const shareUrl = `${siteUrl}/services/${service.slug || service.id}`;
+
+  const labels = {
+    services: locale === "ne" ? "सेवाहरू" : "Services",
+    back: locale === "ne" ? "सेवाहरूमा फर्कनुहोस्" : "Back to Services",
+    time: locale === "ne" ? "समय" : "Time",
+    fee: locale === "ne" ? "शुल्क" : "Fee",
+    free: locale === "ne" ? "नि:शुल्क" : "Free",
+    department: locale === "ne" ? "विभाग" : "Department",
+    related: locale === "ne" ? "सम्बन्धित सेवाहरू" : "Related Services",
+    helpHint: locale === "ne" ? "थप जानकारीको लागि, कृपया हाम्रो हेल्प डेस्कमा सम्पर्क गर्नुहोस्।" : "For more information, please contact our help desk.",
+    contactUs: locale === "ne" ? "हामीलाई सम्पर्क गर्नुहोस्" : "Contact Us",
+  };
+
+  const categoryLabel = CATEGORY_LABELS[service.category as string]?.[locale as 'ne' | 'en'] || service.category;
 
   return (
     <PageLayout
       breadcrumbs={[
-        { label: "Services", href: "/services" },
+        { label: labels.services, href: "/services" },
         { label: service.name as string },
       ]}
       maxWidth="max-w-4xl"
@@ -92,7 +126,7 @@ export default async function ServiceDetailPage({ params }: Props) {
           className="inline-flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[var(--brand-blue)] transition-colors mb-6 group"
         >
           <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
-          Back to Services
+          {labels.back}
         </Link>
 
         <div className="flex flex-col md:flex-row md:items-center gap-6 pb-8 border-b border-gray-100">
@@ -102,7 +136,7 @@ export default async function ServiceDetailPage({ params }: Props) {
           <div className="flex-1">
             {service.category && (
               <span className="inline-block px-3 py-1 bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider rounded-full mb-3 border border-green-100">
-                {service.category}
+                {categoryLabel}
               </span>
             )}
             <h1 className="text-3xl md:text-4xl font-extrabold text-[#003580] leading-tight">
@@ -123,7 +157,7 @@ export default async function ServiceDetailPage({ params }: Props) {
             <Clock size={20} />
           </div>
           <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Time</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{labels.time}</p>
             <p className="text-gray-900 font-bold">{service.time ? (service.time as string) : "-"}</p>
           </div>
         </div>
@@ -133,8 +167,8 @@ export default async function ServiceDetailPage({ params }: Props) {
             <CircleDollarSign size={20} />
           </div>
           <div>
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Fee</p>
-            <p className="text-gray-900 font-bold">{service.fee ? (service.fee as string) : "Free"}</p>
+            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{labels.fee}</p>
+            <p className="text-gray-900 font-bold">{service.fee ? (service.fee as string) : labels.free}</p>
           </div>
         </div>
       </div>
@@ -142,7 +176,7 @@ export default async function ServiceDetailPage({ params }: Props) {
       <div className="flex justify-between items-center mb-10 pb-8 border-b border-gray-50 flex-wrap gap-4">
         <div className="flex items-center gap-2 text-sm text-gray-400 font-medium">
           <LayoutGrid size={16} />
-          Department
+          {labels.department}
         </div>
         <ServiceShareButtons title={service.name as string} shareUrl={shareUrl} />
       </div>
@@ -156,7 +190,7 @@ export default async function ServiceDetailPage({ params }: Props) {
       {/* Related Services */}
       {relatedServices.length > 0 && (
         <section className="mt-20 pt-12 border-t border-gray-100">
-          <h2 className="text-2xl font-bold text-[#003580] mb-8">Related Services</h2>
+          <h2 className="text-2xl font-bold text-[#003580] mb-8">{labels.related}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {relatedServices.map((item: any) => (
               <Link
@@ -177,9 +211,9 @@ export default async function ServiceDetailPage({ params }: Props) {
 
       {/* Footer hint */}
       <div className="mt-20 p-10 rounded-3xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 text-center shadow-sm">
-        <p className="text-gray-500 font-medium mb-6">For more information, please contact our help desk.</p>
-        <Link href="/contact" className="inline-flex items-center gap-2 px-8 py-3 bg-[var(--brand-blue)] text-white rounded-full text-sm font-bold shadow-lg shadow-blue-900/10 hover:bg-[#002a66] transition-all">
-          Contact Us →
+        <p className="text-gray-500 font-medium mb-6">{labels.helpHint}</p>
+        <Link href="/about" className="inline-flex items-center gap-2 px-8 py-3 bg-[var(--brand-blue)] text-white rounded-full text-sm font-bold shadow-lg shadow-blue-900/10 hover:bg-[#002a66] transition-all">
+          {labels.contactUs} →
         </Link>
       </div>
     </PageLayout>
