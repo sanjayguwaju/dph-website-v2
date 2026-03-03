@@ -23,14 +23,13 @@ import { OpdStatsBanner } from "@/components/sections/opd-stats-banner";
 import { ServicesGrid } from "@/components/sections/services-grid";
 import { NoticesTabs } from "@/components/sections/notices-tabs";
 import { OptimizedPhotoGallery } from "@/components/sections/optimized-photo-gallery";
-
-export const revalidate = 60;
 import { VideoGallery } from "@/components/sections/video-gallery";
 import { QuickAccessLinks } from "@/components/sections/quick-access-links";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { EmergencyFloatingButton } from "@/components/ui/emergency-float";
-
 import { getLocale } from "@/utils/locale-server";
+
+export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
