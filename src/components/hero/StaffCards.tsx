@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getLocalizedValue } from "@/lib/utils/localized";
 import { memo, useMemo } from "react";
+import { User, Phone, Mail, ChevronRight } from "lucide-react";
 
 type StaffMember = {
     id: string;
@@ -29,11 +30,10 @@ function Avatar({
     name: string;
     color: string;
 }) {
-    const initial = name ? name.charAt(0) : "?";
     return (
         <div
             className="staff-avatar-wrapper-v3"
-            style={{ backgroundColor: color, flexShrink: 0 }}
+            style={{ backgroundColor: color + '20', borderColor: color }}
         >
             {photoUrl ? (
                 <Image
@@ -44,7 +44,9 @@ function Avatar({
                     className="staff-avatar-img-v3"
                 />
             ) : (
-                <span className="staff-avatar-initial">{initial}</span>
+                <div className="flex items-center justify-center w-full h-full text-white" style={{ backgroundColor: color }}>
+                    <User size={32} />
+                </div>
             )}
         </div>
     );
@@ -97,8 +99,9 @@ export const StaffCards = memo(function StaffCards({
                         key={member.id}
                         animation="animate-in fade-in slide-in-from-right-10"
                         duration={500}
+                        delay={idx * 100}
                     >
-                        <div className="staff-card-v3">
+                        <div className="staff-card-v3 group/card">
                             <Avatar
                                 photoUrl={photoUrl}
                                 name={name}
@@ -109,23 +112,25 @@ export const StaffCards = memo(function StaffCards({
                                 <p className="staff-role-v3">
                                     {getLocalizedValue(member.designation)}
                                 </p>
-                                <h3 className="staff-name-v3">
+                                <h3 className="staff-name-v3 transition-colors group-hover/card:text-[#1e40af]">
                                     {name}
                                 </h3>
 
                                 {(member.phone || member.email) && (
                                     <div className="staff-contact-v3">
                                         {member.phone && (
-                                            <span className="staff-phone-v3">
-                                                📞 {getLocalizedValue(member.phone)}
+                                            <span className="staff-phone-v3 flex items-center gap-1">
+                                                <Phone size={10} className="text-slate-400" />
+                                                {getLocalizedValue(member.phone)}
                                             </span>
                                         )}
                                         {member.phone && member.email && (
                                             <span className="staff-contact-sep">|</span>
                                         )}
                                         {member.email && (
-                                            <span className="staff-email-v3">
-                                                ✉️ {getLocalizedValue(member.email)}
+                                            <span className="staff-email-v3 flex items-center gap-1">
+                                                <Mail size={10} className="text-slate-400" />
+                                                {getLocalizedValue(member.email)}
                                             </span>
                                         )}
                                     </div>
@@ -137,7 +142,7 @@ export const StaffCards = memo(function StaffCards({
                                         className="staff-btn-v3"
                                     >
                                         {isChair ? labels.boardMembers : labels.viewDetails}
-                                        <span className="ml-2 text-lg">›</span>
+                                        <ChevronRight size={14} className="ml-1 transition-transform group-hover/card:translate-x-1" />
                                     </Link>
                                 </div>
                             </div>
