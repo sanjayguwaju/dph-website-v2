@@ -73,12 +73,15 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids, 
   const [active, setActive] = useState<TabId>("notices");
   const [loading, setLoading] = useState(false);
   const [locale, setLocale] = useState(initialLocale || "ne");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!initialLocale) {
-      setLocale(getLocaleClient());
+    setMounted(true);
+    const activeLocale = getLocaleClient();
+    if (activeLocale !== locale) {
+      setLocale(activeLocale);
     }
-  }, [initialLocale]);
+  }, [locale]);
 
   const tabs: { id: TabId; label: Record<string, string> }[] = [
     { id: "notices", label: { ne: "सूचनाहरू", en: "Notices" } },

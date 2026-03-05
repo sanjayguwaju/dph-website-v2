@@ -12,8 +12,7 @@ import {
   getOpdStats,
 } from "@/lib/queries/homepage";
 
-import { HeroSlider } from "@/components/sections";
-import { StaffCards } from "@/components/sections/staff-cards";
+import { HeroSection } from "@/components/hero/hero-section";
 import { AboutUs } from "@/components/sections/about-us";
 import { NewsActivities } from "@/components/sections/news-activities";
 import { NepaliCalendar } from "@/components/sections/nepali-calendar";
@@ -83,20 +82,11 @@ export default async function HomePage() {
   return (
     <>
       {/* ── Top Hero Section (Slider + Staff) ──────────────────────── */}
-      <div className="hero-staff-container">
-        <div className="hero-staff-inner">
-          <ScrollReveal className="hero-column" animation="fade-in zoom-in" duration={800}>
-            {heroSlides.length > 0 && <HeroSlider slides={heroSlides} />}
-          </ScrollReveal>
-          <ScrollReveal className="staff-column" delay={200}>
-            <StaffCards staff={staff as any} />
-          </ScrollReveal>
-        </div>
-      </div>
+      <HeroSection slides={heroSlides} staff={staff as any} locale={locale} />
 
       {/* ── OPD Stats Banner ─────────────────────────────────────── */}
       <ScrollReveal>
-        <OpdStatsBanner stats={opdStats as any} />
+        <OpdStatsBanner stats={opdStats as any} locale={locale} />
       </ScrollReveal>
 
       {/* ── Main Layout (Content + Sidebar) ────────────────────────── */}
@@ -120,6 +110,7 @@ export default async function HomePage() {
               pressReleases={noticesData.pressReleases as any}
               publications={noticesData.publications as any}
               bids={noticesData.bids as any}
+              locale={locale}
             />
           </ScrollReveal>
         </div>
@@ -149,7 +140,7 @@ export default async function HomePage() {
 
       {/* ── Services Grid Full Width ────────────────────────────── */}
       <ScrollReveal>
-        <ServicesGrid services={services as any} />
+        <ServicesGrid services={services as any} locale={locale} />
       </ScrollReveal>
 
       {/* ── Photo Gallery ─────────────────────────────────── */}
