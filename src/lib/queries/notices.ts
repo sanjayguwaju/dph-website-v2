@@ -36,7 +36,7 @@ export const getPopupNotices = cache(async (): Promise<Notice[]> => {
       depth: 1,
     });
 
-    return notices.docs || [];
+    return notices.docs ? JSON.parse(JSON.stringify(notices.docs)) : [];
   } catch (error) {
     return [];
   }
@@ -53,7 +53,7 @@ export const getNoticeById = cache(async (id: string, depth = 1) => {
       limit: 1,
       depth,
     });
-    return (result.docs[0] as Notice) || null;
+    return result.docs[0] ? JSON.parse(JSON.stringify(result.docs[0])) : null;
   } catch (error) {
     return null;
   }

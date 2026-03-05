@@ -44,7 +44,7 @@ export default async function PhotoGalleryPage({
       page: currentPage,
       depth: 2,
     });
-    docs = result.docs;
+    docs = JSON.parse(JSON.stringify(result.docs));
     totalPages = result.totalPages;
   } catch (_) { }
 
@@ -66,14 +66,14 @@ export default async function PhotoGalleryPage({
     >
       <div className="mb-8 pb-6 border-b border-gray-100 flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--brand-blue)] flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-(--brand-blue) flex items-center gap-3">
             📷 {labels.photos}
           </h1>
           <p className="text-sm text-gray-500 mt-1 font-bold">
             {locale === "ne" ? toNepaliNum(docs.length) : docs.length} {labels.albums} · {locale === "ne" ? toNepaliNum(totalImages) : totalImages} {labels.photoCount}
           </p>
         </div>
-        <Link href="/gallery/videos" className="text-sm font-bold text-[var(--brand-blue)] hover:underline flex items-center gap-1">
+        <Link href="/gallery/videos" className="text-sm font-bold text-(--brand-blue) hover:underline flex items-center gap-1">
           🎥 {labels.videos} →
         </Link>
       </div>

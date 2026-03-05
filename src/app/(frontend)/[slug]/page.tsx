@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
 import { getPageBySlug } from "@/lib/queries/pages";
 import { getSiteSettings } from "@/lib/queries/globals";
 import { RichText } from "@/components/RichText";
@@ -93,11 +92,11 @@ export default async function DynamicPage({ params }: PageProps) {
       ]}
       maxWidth="max-w-5xl"
     >
-      <div className="mb-12 border-b border-gray-100 pb-8 text-center bg-white rounded-3xl p-10 shadow-sm border border-gray-50">
+      <div className="mb-12 border-b border-gray-100 pb-8 text-center bg-white rounded-3xl p-10 shadow-sm border">
         <h1 className="text-4xl font-extrabold text-[#003580] mb-4">
           {page.title}
         </h1>
-        <div className="w-20 h-1.5 bg-gradient-to-r from-[#2563eb] to-[#003580] mx-auto rounded-full"></div>
+        <div className="w-20 h-1.5 bg-linear-to-r from-[#2563eb] to-[#003580] mx-auto rounded-full"></div>
       </div>
 
       <div className="grid grid-cols-1 gap-12">

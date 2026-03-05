@@ -10,7 +10,7 @@ export const getSiteSettings = cache(async () => {
       slug: "site-settings",
       locale: locale as any,
     });
-    return settings || {};
+    return settings ? JSON.parse(JSON.stringify(settings)) : {};
   } catch (error) {
     return {};
   }
@@ -25,7 +25,7 @@ export const getNavigation = cache(async () => {
       locale: locale as any,
       depth: 2,
     });
-    return nav || {};
+    return nav ? JSON.parse(JSON.stringify(nav)) : {};
   } catch (error) {
     return {};
   }
@@ -40,7 +40,7 @@ export const getFooter = cache(async () => {
       locale: locale as any,
       depth: 2,
     });
-    return footer || {};
+    return footer ? JSON.parse(JSON.stringify(footer)) : {};
   } catch (error) {
     return {};
   }
