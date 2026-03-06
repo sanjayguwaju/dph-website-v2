@@ -23,7 +23,12 @@ export function HeroSlider({ slides }: HeroSliderProps) {
     const touchStartX = useRef<number | null>(null);
     const count = slides?.length ?? 0;
 
-    useEffect(() => { setLocale(getLocaleClient()); }, []);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setLocale(getLocaleClient());
+        setMounted(true);
+    }, []);
 
     const goTo = useCallback(
         (index: number) => setCurrent(((index % count) + count) % count),
@@ -58,7 +63,9 @@ export function HeroSlider({ slides }: HeroSliderProps) {
         );
     }
 
-    const ctaLabel = locale === "ne" ? "थप जान्नुहोस्" : "Learn More";
+    const ctaLabel = mounted
+        ? (locale === "ne" ? "थप जान्नुहोस्" : "Learn More")
+        : "थप जान्नुहोस्";
 
     return (
         <div
@@ -190,9 +197,15 @@ export function HeroSlider({ slides }: HeroSliderProps) {
 
             {/* Slide counter badge */}
             <div className="absolute top-4 right-4 z-20 px-3 py-1 bg-black/30 backdrop-blur-md rounded-full border border-white/10 text-white/90 text-xs font-bold tracking-widest">
-                {locale === "ne" ? toNepaliNum(current + 1) : current + 1}
+                {mounted
+                    ? (locale === "ne" ? toNepaliNum(current + 1) : current + 1)
+                    : (toNepaliNum(current + 1))
+                }
                 <span className="mx-1 opacity-40">/</span>
-                {locale === "ne" ? toNepaliNum(count) : count}
+                {mounted
+                    ? (locale === "ne" ? toNepaliNum(count) : count)
+                    : (toNepaliNum(count))
+                }
             </div>
 
             {/* Progress bar */}
