@@ -80,7 +80,7 @@ export default async function HomePage() {
   const ap = aboutPage as any;
 
   return (
-    <>
+    <main className="animate-in fade-in zoom-in-[0.98] duration-1000 ease-out fill-mode-both">
       {/* ── Top Hero Section (Slider + Staff) ──────────────────────── */}
       <HeroSection slides={heroSlides} staff={staff as any} />
 
@@ -167,6 +167,6 @@ export default async function HomePage() {
       </ScrollReveal>
 
       <EmergencyFloatingButton phone={s.emergencyNumber} locale={locale} />
-    </>
+    </main>
   );
 }

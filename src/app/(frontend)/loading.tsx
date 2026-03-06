@@ -17,7 +17,7 @@ export default function Loading() {
 
   if (isHome) {
     return (
-      <div className="flex flex-col gap-0">
+      <div className="flex flex-col gap-0 animate-in fade-in zoom-in-[0.98] duration-1000 ease-out fill-mode-both">
         {/* Hero Section Skeleton */}
         <HeroSkeleton />
 
