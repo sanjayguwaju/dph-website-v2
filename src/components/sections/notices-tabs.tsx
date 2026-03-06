@@ -6,6 +6,8 @@ import { toNepaliNum } from "@/utils/nepali-date";
 import { getLocalizedValue } from "@/lib/utils/localized";
 import { getLocaleClient } from "@/utils/locale-client";
 import { formatDate } from "@/utils/format";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 
 type NoticeItem = {
   id: string;
@@ -73,12 +75,15 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids, 
   const [active, setActive] = useState<TabId>("notices");
   const [loading, setLoading] = useState(false);
   const [locale, setLocale] = useState(initialLocale || "ne");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!initialLocale) {
-      setLocale(getLocaleClient());
+    setMounted(true);
+    const activeLocale = getLocaleClient();
+    if (activeLocale !== locale) {
+      setLocale(activeLocale);
     }
-  }, [initialLocale]);
+  }, [locale]);
 
   const tabs: { id: TabId; label: Record<string, string> }[] = [
     { id: "notices", label: { ne: "सूचनाहरू", en: "Notices" } },
@@ -115,57 +120,59 @@ export function NoticesTabs({ notices, news, pressReleases, publications, bids, 
 
   return (
     <section className="notices-tabs-section">
-      <div className="notices-tabs-header">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => handleTabChange(tab.id)}
-            className={`notices-tab${active === tab.id ? " active" : ""}`}
-            aria-selected={active === tab.id}
-            role="tab"
-          >
-            {tab.label[locale] || tab.label.en}
-            {dataMap[tab.id].length > 0 && (
-              <span className="notices-tab-count">
-                {locale === "ne" ? toNepaliNum(dataMap[tab.id].length) : dataMap[tab.id].length}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-      <div className="notices-tab-body" role="tabpanel">
-        {loading ? (
-          <div className="p-8 space-y-4 animate-pulse">
-            {Array(3).fill(0).map((_, i) => (
-              <div key={i} className="flex gap-4 items-center">
-                <div className="w-12 h-12 bg-gray-100 rounded-xl"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-100 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-50 rounded w-1/4"></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : items.length === 0 ? (
-          <p className="notices-empty text-center py-12 text-gray-400 font-bold">
-            {locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available"}
-          </p>
-        ) : (
-          items.map((item) => (
-            <NoticeRow
-              key={item.id}
-              item={item}
-              href={hrefMap[active](item)}
-              locale={locale}
-            />
-          ))
-        )}
-        <div className="notices-tab-footer">
-          <Link href={`/${active === "notices" ? "notices" : "news"}`} className="section-view-all">
-            {locale === "ne" ? "सबै हेर्नुहोस्" : "View All"}
-          </Link>
+      <ScrollReveal animation="flip-up" duration={800}>
+        <div className="notices-tabs-header">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => handleTabChange(tab.id)}
+              className={`notices-tab${active === tab.id ? " active" : ""}`}
+              aria-selected={active === tab.id}
+              role="tab"
+            >
+              {tab.label[locale] || tab.label.en}
+              {dataMap[tab.id].length > 0 && (
+                <span className="notices-tab-count">
+                  {locale === "ne" ? toNepaliNum(dataMap[tab.id].length) : dataMap[tab.id].length}
+                </span>
+              )}
+            </button>
+          ))}
         </div>
-      </div>
+        <div className="notices-tab-body" role="tabpanel">
+          {loading ? (
+            <div className="p-8 space-y-6">
+              {Array(4).fill(0).map((_, i) => (
+                <div key={i} className="flex gap-4 items-center">
+                  <Skeleton className="w-12 h-12 flex-shrink-0" />
+                  <div className="flex-1 space-y-2">
+                    <Skeleton className="h-5 w-3/4" />
+                    <Skeleton className="h-4 w-1/4" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : items.length === 0 ? (
+            <p className="notices-empty text-center py-12 text-gray-400 font-bold">
+              {locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available"}
+            </p>
+          ) : (
+            items.map((item) => (
+              <NoticeRow
+                key={item.id}
+                item={item}
+                href={hrefMap[active](item)}
+                locale={locale}
+              />
+            ))
+          )}
+          <div className="notices-tab-footer">
+            <Link href={`/${active === "notices" ? "notices" : "news"}`} className="section-view-all">
+              {locale === "ne" ? "सबै हेर्नुहोस्" : "View All"}
+            </Link>
+          </div>
+        </div>
+      </ScrollReveal>
     </section>
   );
 }

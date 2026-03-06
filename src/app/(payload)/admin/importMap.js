@@ -35,7 +35,6 @@ import { AdminLogo as AdminLogo_1519062be06c6f010a03d3cd4e40f8fb } from '@/compo
 import { AfterDashboard as AfterDashboard_73d31bfc2a5cbdf5e9a4bc0a5f7fb979 } from '@/components/Admin/AfterDashboard'
 import { BeforeDashboard as BeforeDashboard_38646185cdf97cdc1988d32be82f7290 } from '@/components/Admin/BeforeDashboard'
 import { default as default_e5727cf75af5a5f3715e1efb9b6b07eb } from '@/components/NavBadgeProvider'
-import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { AdminDashboardLayout as AdminDashboardLayout_8253ee2f6f15e0bd0bb026302e555b02 } from '@/components/Admin/AdminDashboard'
 import { ReportsView as ReportsView_08e6a8fd284768e2de05d16c5694a474 } from '@/components/Admin/ReportsView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
@@ -78,7 +77,6 @@ export const importMap = {
   "@/components/Admin/AfterDashboard#AfterDashboard": AfterDashboard_73d31bfc2a5cbdf5e9a4bc0a5f7fb979,
   "@/components/Admin/BeforeDashboard#BeforeDashboard": BeforeDashboard_38646185cdf97cdc1988d32be82f7290,
   "@/components/NavBadgeProvider#default": default_e5727cf75af5a5f3715e1efb9b6b07eb,
-  "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@/components/Admin/AdminDashboard#AdminDashboardLayout": AdminDashboardLayout_8253ee2f6f15e0bd0bb026302e555b02,
   "@/components/Admin/ReportsView#ReportsView": ReportsView_08e6a8fd284768e2de05d16c5694a474,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1

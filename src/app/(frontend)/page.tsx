@@ -12,8 +12,7 @@ import {
   getOpdStats,
 } from "@/lib/queries/homepage";
 
-import { HeroSlider } from "@/components/sections";
-import { StaffCards } from "@/components/sections/staff-cards";
+import { HeroSection } from "@/components/hero/hero-section";
 import { AboutUs } from "@/components/sections/about-us";
 import { NewsActivities } from "@/components/sections/news-activities";
 import { NepaliCalendar } from "@/components/sections/nepali-calendar";
@@ -81,52 +80,44 @@ export default async function HomePage() {
   const ap = aboutPage as any;
 
   return (
-    <>
+    <main className="animate-in fade-in zoom-in-[0.98] duration-1000 ease-out fill-mode-both">
       {/* ── Top Hero Section (Slider + Staff) ──────────────────────── */}
-      <div className="hero-staff-container">
-        <div className="hero-staff-inner">
-          <ScrollReveal className="hero-column" animation="fade-in zoom-in" duration={800}>
-            {heroSlides.length > 0 && <HeroSlider slides={heroSlides} />}
-          </ScrollReveal>
-          <ScrollReveal className="staff-column" delay={200}>
-            <StaffCards staff={staff as any} />
-          </ScrollReveal>
-        </div>
-      </div>
+      <HeroSection slides={heroSlides} staff={staff as any} />
 
       {/* ── OPD Stats Banner ─────────────────────────────────────── */}
-      <ScrollReveal>
-        <OpdStatsBanner stats={opdStats as any} />
+      <ScrollReveal animation="flip-up" duration={700}>
+        <OpdStatsBanner stats={opdStats as any} locale={locale} />
       </ScrollReveal>
 
       {/* ── Main Layout (Content + Sidebar) ────────────────────────── */}
       <div className="home-main-layout">
         <div className="home-content-col">
           {/* About Us */}
-          <ScrollReveal delay={100}>
+          <ScrollReveal animation="fade-up" duration={700} delay={0}>
             <AboutUs aboutText={s.aboutUs} content={ap?.content} locale={locale} />
           </ScrollReveal>
 
           {/* News & Activities */}
-          <ScrollReveal delay={200}>
+          <ScrollReveal animation="fade-up" duration={700} delay={100}>
             <NewsActivities featured={newsData.featured as any} recent={newsData.recent as any} locale={locale} />
           </ScrollReveal>
 
           {/* Notices Tabs */}
-          <ScrollReveal delay={300}>
+          <ScrollReveal animation="fade-up" duration={700} delay={200}>
             <NoticesTabs
               notices={noticesData.notices as any}
               news={noticesData.news as any}
               pressReleases={noticesData.pressReleases as any}
               publications={noticesData.publications as any}
               bids={noticesData.bids as any}
+              locale={locale}
             />
           </ScrollReveal>
         </div>
 
         <aside className="home-sidebar-col">
           {/* Facebook Widget */}
-          <ScrollReveal delay={400}>
+          <ScrollReveal animation="fade-up" duration={600} delay={150}>
             <FacebookWidget
               pageName={s.facebookPageName || s.hospitalName}
               followerCount={s.facebookFollowers}
@@ -136,34 +127,34 @@ export default async function HomePage() {
           </ScrollReveal>
 
           {/* Nepali Calendar */}
-          <ScrollReveal delay={500}>
+          <ScrollReveal animation="fade-up" duration={600} delay={250}>
             <NepaliCalendar />
           </ScrollReveal>
 
           {/* Visitor Counter */}
-          <ScrollReveal delay={600}>
+          <ScrollReveal animation="fade-up" duration={600} delay={350}>
             <VisitorCounter locale={locale} />
           </ScrollReveal>
         </aside>
       </div>
 
       {/* ── Services Grid Full Width ────────────────────────────── */}
-      <ScrollReveal>
-        <ServicesGrid services={services as any} />
+      <ScrollReveal animation="flip-up" duration={800}>
+        <ServicesGrid services={services as any} locale={locale} />
       </ScrollReveal>
 
       {/* ── Photo Gallery ─────────────────────────────────── */}
-      <ScrollReveal>
+      <ScrollReveal animation="zoom-in" duration={700}>
         <OptimizedPhotoGallery albums={photoAlbums as any} />
       </ScrollReveal>
 
       {/* ── Video Gallery ─────────────────────────────────── */}
-      <ScrollReveal>
+      <ScrollReveal animation="fade-up" duration={700}>
         <VideoGallery videos={videos as any} locale={locale} />
       </ScrollReveal>
 
       {/* ── Quick Access Links ────────────────────────────── */}
-      <ScrollReveal>
+      <ScrollReveal animation="zoom-in" duration={600}>
         <QuickAccessLinks links={[
           ...quickLinks as any,
           {
@@ -176,6 +167,6 @@ export default async function HomePage() {
       </ScrollReveal>
 
       <EmergencyFloatingButton phone={s.emergencyNumber} locale={locale} />
-    </>
+    </main>
   );
 }

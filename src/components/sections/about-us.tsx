@@ -24,13 +24,13 @@ export async function AboutUs({
 
   return (
     <section className="about-section-common">
-      <ScrollReveal animation="animate-in fade-in" duration={600}>
+      <ScrollReveal animation="flip-up" duration={700}>
         <div className="section-header-v2">
           <h2 className="section-heading-v2">{labels.title}</h2>
         </div>
       </ScrollReveal>
 
-      <ScrollReveal animation="animate-in fade-in" duration={600} delay={200}>
+      <ScrollReveal animation="flip-up" duration={700} delay={200}>
         <div className="about-content-refined">
           {content ? (
             <div className="about-text-refined prose-editorial line-clamp-6">

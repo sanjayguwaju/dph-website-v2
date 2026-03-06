@@ -76,13 +76,11 @@ export async function Header() {
     "https://upload.wikimedia.org/wikipedia/commons/2/23/Emblem_of_Nepal.svg";
 
   return (
-    <HeaderScrollWrapper>
+    <div className="header-main-v3">
       <header className="hospital-header-v3">
-
         {/* ── Row 1: Branding ─────────────────────────────────────────── */}
         <div className="hospital-branding-row-v3 relative">
           <div className="container-refined flex items-center justify-between py-4">
-
             {/* Left: Government Logo / Emblem */}
             <div className="header-logo-container flex-shrink-0">
               <Link href="/" aria-label="Go to homepage">
@@ -94,7 +92,6 @@ export async function Header() {
                   priority
                   className="header-logo-img"
                   style={{ width: "auto", height: "auto" }}
-                  // Inline sizes hint – emblem is always ≤100px
                   sizes="100px"
                 />
               </Link>
@@ -105,46 +102,30 @@ export async function Header() {
               <p className="header-gov-text">{govermentName}</p>
               <p className="header-ministry-text">{ministryName}</p>
               <h1 className="header-hospital-title">{hospitalName}</h1>
-              <p className="header-location-text">
-                {address}
-              </p>
+              <p className="header-location-text">{address}</p>
             </div>
 
             {/* Right: Animated Nepal Flag */}
             <div className="header-flag-container flex-shrink-0" aria-hidden="true">
               <AnimatedNepalFlag height={90} />
             </div>
-
           </div>
         </div>
 
         {/* ── Row 2: Navigation Bar ────────────────────────────────────── */}
         <div className="hospital-nav-bar-v3">
           <div className="container-refined flex items-center w-full">
-
             {/* Mobile hamburger */}
-            <MobileMenu
-              items={navItems}
-              ctaLabel={ctaLabel}
-              ctaHref={ctaHref}
-            />
+            <MobileMenu items={navItems} ctaLabel={ctaLabel} ctaHref={ctaHref} />
 
             {/* Desktop nav */}
-            <nav
-              className="header-desktop-nav flex-1 flex items-center"
-              aria-label="Main navigation"
-            >
+            <nav className="header-desktop-nav flex-1 flex items-center" aria-label="Main navigation">
               <Link href="/" className="nav-home-icon-v3" aria-label="Home">
                 <Home size={20} fill="currentColor" />
               </Link>
 
               {navigation.map((item, i) => {
-                const href = resolveHref(
-                  item.type,
-                  item.category,
-                  item.page,
-                  item.customUrl,
-                );
+                const href = resolveHref(item.type, item.category, item.page, item.customUrl);
                 const hasSub = item.subMenu && item.subMenu.length > 0;
 
                 return (
@@ -153,9 +134,7 @@ export async function Header() {
                       href={href}
                       className="nav-link-v3"
                       target={item.openInNewTab ? "_blank" : undefined}
-                      rel={
-                        item.openInNewTab ? "noopener noreferrer" : undefined
-                      }
+                      rel={item.openInNewTab ? "noopener noreferrer" : undefined}
                     >
                       {item.label}
                       {hasSub && (
@@ -170,12 +149,7 @@ export async function Header() {
                         {item.subMenu?.map((sub, j) => (
                           <Link
                             key={sub.id || j}
-                            href={resolveHref(
-                              sub.type,
-                              sub.category,
-                              sub.page,
-                              sub.customUrl,
-                            )}
+                            href={resolveHref(sub.type, sub.category, sub.page, sub.customUrl)}
                             className="dropdown-link-v3"
                             role="menuitem"
                           >
@@ -199,6 +173,6 @@ export async function Header() {
         {/* ── Row 3: Highlights / Breaking-news Ticker ──────────────────── */}
         <Marquee />
       </header>
-    </HeaderScrollWrapper>
+    </div>
   );
 }

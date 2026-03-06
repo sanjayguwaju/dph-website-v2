@@ -1,8 +1,9 @@
 "use client";
 
-import { HeroSlider } from "./HeroSlider";
-import { StaffCards } from "./StaffCards";
+import { HeroSlider } from "./hero-slider";
+import { StaffCards } from "./staff-cards";
 import type { HeroSlide } from "@/payload-types";
+import "./hero.css";
 
 type StaffMember = {
     id: string;
@@ -22,7 +23,7 @@ interface HeroSectionProps {
 
 export function HeroSection({ slides, staff }: HeroSectionProps) {
     return (
-        <section className="hero-section">
+        <section className="hero-section mx-auto max-w-[1400px]">
             <HeroSlider slides={slides} />
             <StaffCards staff={staff} />
         </section>

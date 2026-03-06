@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X, ChevronLeft, ChevronRight, Image as ImageIcon } from "lucide-react";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getLocalizedValue } from "@/lib/utils/localized";
 import { getLocaleClient } from "@/utils/locale-client";
 import { toNepaliNum } from "@/utils/nepali-date";
@@ -193,45 +194,51 @@ export function OptimizedPhotoGallery({ albums }: { albums: Album[] }) {
 
           {/* Cards Grid */}
           <div className="gallery-cards-grid">
-            {visibleItems.map((item) => (
-              <Link
+            {visibleItems.map((item, i) => (
+              <ScrollReveal
                 key={item.albumId}
-                href={`/gallery/photos?album=${item.albumId}`}
-                className="gallery-card"
-                aria-label={locale === "ne" ? `एल्बम हेर्नुहोस्: ${item.alt}` : `View album: ${item.alt}`}
+                animation="zoom-in"
+                delay={i * 100}
+                duration={600}
               >
-                <div className="gallery-card-image-wrap">
-                  {failedImages.has(item.url) ? (
-                    <div className="gallery-card-error">
-                      <ImageIcon size={24} />
-                    </div>
-                  ) : (
-                    <>
-                      {!loadedImages.has(item.url) && (
-                        <div className="gallery-card-skeleton" />
-                      )}
-                      <Image
-                        src={item.url}
-                        alt={item.alt}
-                        fill
-                        className={`gallery-card-image ${loadedImages.has(item.url) ? 'loaded' : 'loading'}`}
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        onLoad={() => handleImageLoad(item.url)}
-                        onError={() => handleImageError(item.url)}
-                      />
-                      {item.imageCount > 0 && (
-                        <span className="gallery-card-badge">
-                          {locale === "ne" ? toNepaliNum(item.imageCount) : item.imageCount} {labels.photos}
-                        </span>
-                      )}
-                    </>
-                  )}
-                </div>
-                <div className="gallery-card-content">
-                  <p className="gallery-card-caption">{item.alt}</p>
-                  <span className="gallery-card-view-btn">{labels.viewDetails}</span>
-                </div>
-              </Link>
+                <Link
+                  href={`/gallery/photos?album=${item.albumId}`}
+                  className="gallery-card"
+                  aria-label={locale === "ne" ? `एल्बम हेर्नुहोस्: ${item.alt}` : `View album: ${item.alt}`}
+                >
+                  <div className="gallery-card-image-wrap">
+                    {failedImages.has(item.url) ? (
+                      <div className="gallery-card-error">
+                        <ImageIcon size={24} />
+                      </div>
+                    ) : (
+                      <>
+                        {!loadedImages.has(item.url) && (
+                          <div className="gallery-card-skeleton" />
+                        )}
+                        <Image
+                          src={item.url}
+                          alt={item.alt}
+                          fill
+                          className={`gallery-card-image ${loadedImages.has(item.url) ? 'loaded' : 'loading'}`}
+                          sizes="(max-width: 768px) 100vw, 33vw"
+                          onLoad={() => handleImageLoad(item.url)}
+                          onError={() => handleImageError(item.url)}
+                        />
+                        {item.imageCount > 0 && (
+                          <span className="gallery-card-badge">
+                            {locale === "ne" ? toNepaliNum(item.imageCount) : item.imageCount} {labels.photos}
+                          </span>
+                        )}
+                      </>
+                    )}
+                  </div>
+                  <div className="gallery-card-content">
+                    <p className="gallery-card-caption">{item.alt}</p>
+                    <span className="gallery-card-view-btn">{labels.viewDetails}</span>
+                  </div>
+                </Link>
+              </ScrollReveal>
             ))}
           </div>
 
