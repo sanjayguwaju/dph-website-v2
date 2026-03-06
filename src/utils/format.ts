@@ -1,6 +1,11 @@
 import { format, formatDistanceToNow, isToday, isYesterday } from "date-fns";
 import { toNepaliNum, getNepaliRelativeTime } from "./nepali-date";
 
+const AD_MONTHS_NE = [
+  "जनवरी", "फेब्रुअरी", "मार्च", "अप्रिल", "मे", "जुन",
+  "जुलाई", "अगस्ट", "सेप्टेम्बर", "अक्टोबर", "नोभेम्बर", "डिसेम्बर"
+];
+
 export function formatDate(
   date: string | Date,
   formatStr: "short" | "long" | "relative" = "long",
@@ -12,8 +17,18 @@ export function formatDate(
     if (formatStr === "relative") {
       return getNepaliRelativeTime(d);
     }
-    // For other formats, use toLocaleDateString for now or custom nepali date
-    return d.toLocaleDateString("ne-NP", { dateStyle: formatStr === "short" ? "medium" : "full" });
+
+    // Stable manual formatting for AD date in Nepali script
+    const day = toNepaliNum(d.getDate());
+    const month = AD_MONTHS_NE[d.getMonth()];
+    const year = toNepaliNum(d.getFullYear());
+
+    if (formatStr === "short") {
+      return `${year} ${month} ${day}`;
+    }
+
+    // Long format: e.g. २०२६ फेब्रुअरी २४
+    return `${year} ${month} ${day}`;
   }
 
   if (formatStr === "relative") {

@@ -15,7 +15,7 @@ export function HeaderScrollWrapper({ children, threshold = 120 }: HeaderScrollW
 
   useEffect(() => {
     // Scroll threshold to start considering hiding branding
-    const HIDE_THRESHOLD = 300;
+    const HIDE_THRESHOLD = 140;
 
     if (scrollY > HIDE_THRESHOLD) {
       // Meaningful scroll down: hide branding

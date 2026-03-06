@@ -52,15 +52,14 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         />
       </head>
       <body suppressHydrationWarning className="relative bg-white min-h-screen font-sans text-slate-900 antialiased">
-        {/* Sticky Site Header Block */}
-        <header className="site-header-sticky-v3 relative z-[1050]">
-          {/* Accessibility + Date + Emergency + Social */}
-          <TopBar
-            contactPhone={s.contactPhone}
-            emergencyNumber={s.emergencyNumber}
-          />
+        {/* Accessibility + Date + Emergency + Social - ALWAYS FIXED */}
+        <TopBar
+          contactPhone={s.contactPhone}
+          emergencyNumber={s.emergencyNumber}
+        />
 
-          {/* Hospital Logo + Navigation */}
+        {/* Branding + Logo + Nav (Not Sticky anymore) */}
+        <header className="site-header-sticky-v3 relative z-[1050]">
           <Header />
         </header>
 

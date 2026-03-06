@@ -15,12 +15,15 @@ type Service = {
   slug?: string | null;
 };
 
-export const ServicesGrid = memo(function ServicesGrid({ services }: { services: Service[] }) {
-  const [locale, setLocale] = useState("ne");
+export const ServicesGrid = memo(function ServicesGrid({ services, locale: initialLocale }: { services: Service[], locale?: string }) {
+  const [locale, setLocale] = useState(initialLocale || "ne");
 
   useEffect(() => {
-    setLocale(getLocaleClient());
-  }, []);
+    const activeLocale = getLocaleClient();
+    if (activeLocale !== locale) {
+      setLocale(activeLocale);
+    }
+  }, [locale]);
 
   if (services.length === 0) return null;
 
