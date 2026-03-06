@@ -1,18 +1,102 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import {
+  HeroSkeleton,
+  StatsSkeleton,
+  SectionHeaderSkeleton,
+  GridSkeleton,
+  TabsSkeleton,
+  SidebarSkeleton,
+  Skeleton
+} from "@/components/ui/skeleton";
+
 export default function Loading() {
-  return (
-    <div className="flex min-h-[60vh] w-full items-center justify-center p-8">
-      <div className="flex flex-col items-center gap-6">
-        <div className="relative group">
-          <div className="h-16 w-16 animate-spin rounded-full border-[3px] border-[var(--brand-blue)]/20 border-t-[var(--brand-red)]"></div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="h-8 w-8 animate-pulse rounded-full bg-[var(--brand-blue)]/10"></div>
+  const pathname = usePathname();
+  const isHome = pathname === "/" || pathname === "/ne" || pathname === "/en";
+
+  if (isHome) {
+    return (
+      <div className="flex flex-col gap-0">
+        {/* Hero Section Skeleton */}
+        <HeroSkeleton />
+
+        {/* Stats Banner Skeleton */}
+        <div className="bg-[var(--color-ink-700)]/5">
+          <StatsSkeleton />
+        </div>
+
+        {/* Main Content Layout Skeleton */}
+        <div className="container-refined py-12">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+            {/* Main Content Column */}
+            <div className="space-y-16 lg:col-span-8">
+              {/* About Us Skeleton */}
+              <section>
+                <SectionHeaderSkeleton />
+                <div className="space-y-4">
+                  <Skeleton className="h-[200px] w-full rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-full" />
+                    <Skeleton className="h-4 w-3/4" />
+                  </div>
+                </div>
+              </section>
+
+              {/* News & Activities Skeleton */}
+              <section>
+                <SectionHeaderSkeleton />
+                <GridSkeleton count={3} />
+              </section>
+
+              {/* Notices Tabs Skeleton */}
+              <section>
+                <SectionHeaderSkeleton />
+                <TabsSkeleton />
+              </section>
+            </div>
+
+            {/* Sidebar Column */}
+            <aside className="lg:col-span-4">
+              <SidebarSkeleton />
+            </aside>
           </div>
         </div>
-        <p className="animate-pulse text-lg font-bold tracking-wide text-[var(--brand-blue)] uppercase">
-          Loading...
-        </p>
+
+        {/* Services Grid Skeleton */}
+        <div className="bg-[var(--color-ink-700)]/5 py-16">
+          <div className="container-refined">
+            <SectionHeaderSkeleton />
+            <GridSkeleton count={6} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Generic Subpage Skeleton
+  return (
+    <div className="container-refined py-12">
+      <div className="grid grid-cols-1 gap-12 lg:grid-cols-12">
+        <div className="space-y-8 lg:col-span-8">
+          <SectionHeaderSkeleton />
+          <Skeleton className="aspect-video w-full rounded-xl" />
+          <div className="space-y-4">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-2/3" />
+          </div>
+          <div className="space-y-4 pt-8">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </div>
+        <aside className="lg:col-span-4">
+          <SidebarSkeleton />
+        </aside>
       </div>
     </div>
   );

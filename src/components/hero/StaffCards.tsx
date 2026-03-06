@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { getLocalizedValue } from "@/lib/utils/localized";
-import { memo, useMemo } from "react";
-import { User, Phone, Mail, ChevronRight } from "lucide-react";
+import { getLocaleClient } from "@/utils/locale-client";
+import { memo, useMemo, useState, useEffect } from "react";
 
 type StaffMember = {
     id: string;
@@ -30,23 +30,22 @@ function Avatar({
     name: string;
     color: string;
 }) {
+    const initial = name ? name.charAt(0) : "?";
     return (
         <div
             className="staff-avatar-wrapper-v3"
-            style={{ backgroundColor: color + '20', borderColor: color }}
+            style={{ backgroundColor: color, flexShrink: 0 }}
         >
             {photoUrl ? (
                 <Image
                     src={photoUrl}
                     alt={name}
-                    width={96}
-                    height={96}
+                    width={76}
+                    height={76}
                     className="staff-avatar-img-v3"
                 />
             ) : (
-                <div className="flex items-center justify-center w-full h-full text-white" style={{ backgroundColor: color }}>
-                    <User size={32} />
-                </div>
+                <span className="staff-avatar-initial">{initial}</span>
             )}
         </div>
     );
@@ -54,11 +53,13 @@ function Avatar({
 
 export const StaffCards = memo(function StaffCards({
     staff = [],
-    locale,
 }: {
     staff: StaffMember[];
-    locale: string;
 }) {
+    const [locale, setLocale] = useState("ne");
+
+    useEffect(() => { setLocale(getLocaleClient()); }, []);
+
     const sorted = useMemo(
         () =>
             [...(staff ?? [])]
@@ -97,11 +98,11 @@ export const StaffCards = memo(function StaffCards({
                 return (
                     <ScrollReveal
                         key={member.id}
-                        animation="animate-in fade-in slide-in-from-right-10"
-                        duration={500}
-                        delay={idx * 100}
+                        animation="flip-up"
+                        duration={700}
+                        delay={idx * 150}
                     >
-                        <div className="staff-card-v3 group/card">
+                        <div className="staff-card-v3">
                             <Avatar
                                 photoUrl={photoUrl}
                                 name={name}
@@ -112,24 +113,22 @@ export const StaffCards = memo(function StaffCards({
                                 <p className="staff-role-v3">
                                     {getLocalizedValue(member.designation)}
                                 </p>
-                                <h3 className="staff-name-v3 transition-colors group-hover/card:text-[#1e40af]">
+                                <h3 className="staff-name-v3">
                                     {name}
                                 </h3>
 
                                 {(member.phone || member.email) && (
                                     <div className="staff-contact-v3">
                                         {member.phone && (
-                                            <span className="staff-phone-v3 flex items-center gap-1">
-                                                <Phone size={10} className="text-slate-400" />
+                                            <span className="staff-phone-v3">
                                                 {getLocalizedValue(member.phone)}
                                             </span>
                                         )}
                                         {member.phone && member.email && (
-                                            <span className="staff-contact-sep">|</span>
+                                            <span className="staff-contact-sep"> | </span>
                                         )}
                                         {member.email && (
-                                            <span className="staff-email-v3 flex items-center gap-1">
-                                                <Mail size={10} className="text-slate-400" />
+                                            <span className="staff-email-v3">
                                                 {getLocalizedValue(member.email)}
                                             </span>
                                         )}
@@ -142,7 +141,6 @@ export const StaffCards = memo(function StaffCards({
                                         className="staff-btn-v3"
                                     >
                                         {isChair ? labels.boardMembers : labels.viewDetails}
-                                        <ChevronRight size={14} className="ml-1 transition-transform group-hover/card:translate-x-1" />
                                     </Link>
                                 </div>
                             </div>
