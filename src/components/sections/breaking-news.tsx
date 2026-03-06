@@ -16,15 +16,19 @@ import { getLocaleClient } from "@/utils/locale-client";
 import { useState, useEffect } from "react";
 
 export function BreakingNews({ articles }: BreakingNewsProps) {
+  const [mounted, setMounted] = useState(false);
   const [locale, setLocale] = useState("ne");
 
   useEffect(() => {
     setLocale(getLocaleClient());
+    setMounted(true);
   }, []);
 
   if (articles.length === 0) return null;
 
-  const label = locale === "ne" ? "ताजा समाचार" : "Breaking";
+  const label = mounted
+    ? (locale === "ne" ? "ताजा समाचार" : "Breaking")
+    : "ताजा समाचार";
 
   return (
     <div className="overflow-hidden bg-[var(--color-crimson)] text-white">

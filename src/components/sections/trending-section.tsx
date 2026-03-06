@@ -25,15 +25,19 @@ import { toNepaliNum } from "@/utils/nepali-date";
 import { useState, useEffect } from "react";
 
 export function TrendingSection({ articles }: TrendingSectionProps) {
+  const [mounted, setMounted] = useState(false);
   const [locale, setLocale] = useState("ne");
 
   useEffect(() => {
     setLocale(getLocaleClient());
+    setMounted(true);
   }, []);
 
   if (articles.length === 0) return null;
 
-  const title = locale === "ne" ? "अहिले चर्चित" : "Trending Now";
+  const title = mounted
+    ? (locale === "ne" ? "अहिले चर्चित" : "Trending Now")
+    : "अहिले चर्चित";
 
   return (
     <section className="border-ink-800 py-section border-y">

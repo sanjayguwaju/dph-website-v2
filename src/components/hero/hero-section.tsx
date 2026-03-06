@@ -18,20 +18,13 @@ type StaffMember = {
 interface HeroSectionProps {
     slides: HeroSlide[];
     staff: StaffMember[];
-    locale: string;
 }
 
-export function HeroSection({ slides, staff, locale }: HeroSectionProps) {
+export function HeroSection({ slides, staff }: HeroSectionProps) {
     return (
-        <div className="container-refined py-6">
-            <section className="hero-section" aria-label="Hospital Hero Slider and Important People">
-                <div className="hero-slider-v3">
-                    <HeroSlider slides={slides} locale={locale} />
-                </div>
-                <aside className="staff-cards-list">
-                    <StaffCards staff={staff} locale={locale} />
-                </aside>
-            </section>
-        </div>
+        <section className="hero-section">
+            <HeroSlider slides={slides} />
+            <StaffCards staff={staff} />
+        </section>
     );
 }

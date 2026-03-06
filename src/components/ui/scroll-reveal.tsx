@@ -1,72 +1,76 @@
 "use client";
 
-import React, { useEffect, useRef, useState, Children } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface ScrollRevealProps {
   children: React.ReactNode;
   className?: string;
-  animation?: string;
+  /** One of: 'fade-up' | 'fade-in' | 'zoom-in' | 'flip-up' | or any Tailwind animate-* string */
+  animation?: "fade-up" | "fade-in" | "zoom-in" | "flip-up" | string;
   delay?: number;
   duration?: number;
   threshold?: number;
   once?: boolean;
 }
 
+// Pre-built transform presets: [hidden styles, visible styles]
+const PRESETS: Record<string, [string, string]> = {
+  "fade-up": ["opacity-0 translate-y-10", "opacity-100 translate-y-0"],
+  "fade-in": ["opacity-0", "opacity-100"],
+  "zoom-in": ["opacity-0 scale-95", "opacity-100 scale-100"],
+  "flip-up": ["opacity-0 -translate-y-6", "opacity-100 translate-y-0"],
+
+  // Legacy / passthrough aliases
+  "animate-flip-up": ["opacity-0 translate-y-8", "opacity-100 translate-y-0"],
+  "animate-zoom-in": ["opacity-0 scale-95", "opacity-100 scale-100"],
+};
+
 export function ScrollReveal({
   children,
   className,
-  animation = "animate-in fade-in slide-in-from-bottom-10",
+  animation = "fade-up",
   delay = 0,
-  duration = 500,
-  threshold = 0.1,
+  duration = 600,
+  threshold = 0.12,
   once = true,
 }: ScrollRevealProps) {
-  const [isVisible, setIsVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
-  // Don't render if children are empty/null/undefined
-  const hasChildren = Children.count(children) > 0 && children != null;
-
   useEffect(() => {
-    if (!hasChildren) return;
+    const el = ref.current;
+    if (!el) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setIsVisible(true);
+          setVisible(true);
           if (once) observer.disconnect();
         } else if (!once) {
-          setIsVisible(false);
+          setVisible(false);
         }
       },
       { threshold }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
+    observer.observe(el);
     return () => observer.disconnect();
-  }, [once, threshold, hasChildren]);
+  }, [once, threshold]);
 
-  // Don't render wrapper at all if no children
-  if (!hasChildren) return null;
+  const [hiddenCls, visibleCls] = PRESETS[animation] ?? PRESETS["fade-up"];
 
   return (
     <div
       ref={ref}
       className={cn(
-        "transition-all ease-out",
-        isVisible
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-8",
-        isVisible && animation,
+        "transition-all ease-out will-change-transform",
+        visible ? visibleCls : hiddenCls,
         className
       )}
       style={{
         transitionDuration: `${duration}ms`,
-        animationDelay: `${delay}ms`,
-        animationFillMode: "forwards",
+        transitionDelay: `${delay}ms`,
       }}
     >
       {children}

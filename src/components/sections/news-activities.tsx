@@ -57,7 +57,7 @@ export async function NewsActivities({
         {/* Left: Featured News */}
         <div className="lg:w-7/12">
           {featured && (
-            <ScrollReveal animation="animate-in fade-in slide-in-from-left-10" duration={600}>
+            <ScrollReveal animation="flip-up" duration={800}>
               <Link href={`/news/${featured.slug || featured.id}`} className="group block relative overflow-hidden rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 h-full">
                 <div className="aspect-[16/11] relative overflow-hidden h-full">
                   {featuredImg ? (
@@ -65,7 +65,7 @@ export async function NewsActivities({
                       src={featuredImg}
                       alt={featured.title}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      className="object-cover transition-all duration-700 group-hover:scale-[1.03] group-hover:brightness-110 group-hover:contrast-105"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   ) : (
@@ -74,7 +74,7 @@ export async function NewsActivities({
                     </div>
                   )}
                   {/* Thick dark gradient to ensure text readability */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,0,0,0.88)] via-[rgba(0,0,0,0.68)] to-transparent opacity-90 transition-opacity group-hover:opacity-100"></div>
 
                   {/* Content overlayed on image */}
                   <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-10 z-10">
@@ -99,8 +99,8 @@ export async function NewsActivities({
               <ScrollReveal
                 key={item.id}
                 delay={i * 100}
-                animation="animate-in fade-in slide-in-from-right-10"
-                duration={500}
+                animation="flip-up"
+                duration={700}
               >
                 <Link href={`/news/${item.slug || item.id}`} className="group flex gap-4 p-3 rounded-lg bg-white border border-gray-200 hover:shadow-md transition-all duration-200">
                   <div className="w-[120px] h-[80px] shrink-0 relative rounded overflow-hidden bg-gray-50 border border-gray-100">
@@ -109,7 +109,7 @@ export async function NewsActivities({
                         src={thumbUrl}
                         alt={item.title}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                       />
                     ) : (
                       <div className="absolute inset-0 flex flex-col items-center justify-center text-red-500">

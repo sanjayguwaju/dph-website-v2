@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { User, Users, Bed, Activity, HeartPulse } from "lucide-react";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { formatNepaliNumber } from "@/utils/nepali-date";
 import { getLocaleClient } from "@/utils/locale-client";
 import { formatDate } from "@/utils/format";
@@ -113,27 +114,35 @@ export function OpdStatsBanner({ stats, locale: initialLocale }: { stats: OpdSta
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-10">
         {groups.map((group, gIdx) => (
-          <div key={gIdx} className="group flex flex-col bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-[28px] p-1 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden backdrop-blur-sm">
-            <div className="p-6">
-              <h3 className="text-primary dark:text-blue-400 font-black text-sm uppercase tracking-widest mb-6 text-center opacity-80 group-hover:opacity-100 transition-opacity">{group.title}</h3>
-              <div className="flex flex-col gap-4">
-                {group.items.map((item, iIdx) => (
-                  <div key={iIdx} className="flex items-center justify-between py-4 px-5 bg-slate-50 dark:bg-slate-900/50 rounded-[20px] transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-md border border-transparent hover:border-slate-100 dark:hover:border-slate-700">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800 shadow-sm" style={{ color: item.color }}>
-                        {item.icon}
+          <ScrollReveal
+            key={gIdx}
+            animation="flip-up"
+            delay={gIdx * 100}
+            duration={700}
+            className="h-full"
+          >
+            <div className="group flex flex-col h-full bg-white dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 rounded-[28px] p-1 shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden backdrop-blur-sm">
+              <div className="p-6">
+                <h3 className="text-primary dark:text-blue-400 font-black text-sm uppercase tracking-widest mb-6 text-center opacity-80 group-hover:opacity-100 transition-opacity">{group.title}</h3>
+                <div className="flex flex-col gap-4">
+                  {group.items.map((item, iIdx) => (
+                    <div key={iIdx} className="flex items-center justify-between py-4 px-5 bg-slate-50 dark:bg-slate-900/50 rounded-[20px] transition-all hover:bg-white dark:hover:bg-slate-800 hover:shadow-md border border-transparent hover:border-slate-100 dark:hover:border-slate-700">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-white dark:bg-slate-800 shadow-sm" style={{ color: item.color }}>
+                          {item.icon}
+                        </div>
+                        <span className="text-slate-600 dark:text-slate-300 font-bold text-xs uppercase tracking-wide">{item.label}</span>
                       </div>
-                      <span className="text-slate-600 dark:text-slate-300 font-bold text-xs uppercase tracking-wide">{item.label}</span>
+                      <span className="text-slate-900 dark:text-white font-black text-2xl tracking-tight">{formatNum(item.value)}</span>
                     </div>
-                    <span className="text-slate-900 dark:text-white font-black text-2xl tracking-tight">{formatNum(item.value)}</span>
-                  </div>
-                ))}
+                  ))}
+                </div>
+              </div>
+              <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 mt-auto">
+                <div className="h-full bg-primary" style={{ width: '40%', opacity: 0.6 }}></div>
               </div>
             </div>
-            <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-700 mt-auto">
-              <div className="h-full bg-primary" style={{ width: '40%', opacity: 0.6 }}></div>
-            </div>
-          </div>
+          </ScrollReveal>
         ))}
       </div>
     </section>

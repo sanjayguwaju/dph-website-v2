@@ -16,18 +16,20 @@ type Service = {
 };
 
 export const ServicesGrid = memo(function ServicesGrid({ services, locale: initialLocale }: { services: Service[], locale?: string }) {
+  const [mounted, setMounted] = useState(false);
   const [locale, setLocale] = useState(initialLocale || "ne");
 
   useEffect(() => {
     const activeLocale = getLocaleClient();
-    if (activeLocale !== locale) {
-      setLocale(activeLocale);
-    }
-  }, [locale]);
+    setLocale(activeLocale);
+    setMounted(true);
+  }, []);
 
   if (services.length === 0) return null;
 
-  const headerTitle = locale === "ne" ? "हाम्रा सेवाहरु" : "Our Services";
+  const headerTitle = mounted
+    ? (locale === "ne" ? "हाम्रा सेवाहरु" : "Our Services")
+    : (initialLocale === "ne" ? "हाम्रा सेवाहरु" : "Our Services");
 
   return (
     <section className="services-section-v3">
@@ -43,7 +45,7 @@ export const ServicesGrid = memo(function ServicesGrid({ services, locale: initi
             <ScrollReveal
               key={service.id}
               delay={i * 30}
-              animation="animate-in fade-in zoom-in"
+              animation="zoom-in"
               duration={400}
             >
               <Link
