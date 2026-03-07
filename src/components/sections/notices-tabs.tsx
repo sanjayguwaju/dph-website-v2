@@ -45,8 +45,8 @@ function NoticeRow({ item, href, locale }: { item: NoticeItem | NewsItem; href: 
         <div className="pdf-line-decor"></div>
       </div>
       <div className="notices-row-content">
-        <Link href={href} className="notices-row-title">
-          {getLocalizedValue(item.title)}
+        <Link href={href} className="notices-row-title" prefetch={false}>
+          <span suppressHydrationWarning>{getLocalizedValue(item.title)}</span>
         </Link>
         {item.publishedDate && (
           <span className="notices-row-date">

@@ -10,14 +10,15 @@ interface BreakingNewsProps {
     title: string;
     slug: string;
   }>;
+  initialLocale?: string;
 }
 
 import { getLocaleClient } from "@/utils/locale-client";
 import { useState, useEffect } from "react";
 
-export function BreakingNews({ articles }: BreakingNewsProps) {
+export function BreakingNews({ articles, initialLocale = "ne" }: BreakingNewsProps) {
   const [mounted, setMounted] = useState(false);
-  const [locale, setLocale] = useState("ne");
+  const [locale, setLocale] = useState(initialLocale);
 
   useEffect(() => {
     setLocale(getLocaleClient());

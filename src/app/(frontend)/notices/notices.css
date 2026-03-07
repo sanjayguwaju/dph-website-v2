@@ -1,0 +1,188 @@
+.notices-container {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.notices-title-wrap {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.notices-page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #111;
+    display: inline-block;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.notices-page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 20%;
+    right: 20%;
+    height: 3px;
+    background: #dc2626;
+}
+
+/* Filter Section */
+.filter-section {
+    background: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.filter-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.filter-input,
+.filter-select {
+    padding: 0.6rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    width: 100%;
+}
+
+.date-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.clear-date-btn {
+    position: absolute;
+    right: 8px;
+    background: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.btn-search {
+    background: #16a34a;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-reset {
+    background: #dc2626;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 4px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+/* Notice List */
+.notice-item-list {
+    border-top: 1px solid #eaeef2;
+}
+
+.notice-ui-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding: 1.25rem 0.5rem;
+    border-bottom: 1px solid #eaeef2;
+    transition: background 0.2s;
+}
+
+.notice-ui-item:hover {
+    background: #fbfcfe;
+}
+
+.pdf-icon-wrap {
+    background: #fff;
+    border: 1px solid #ffdada;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 54px;
+    flex-shrink: 0;
+}
+
+.pdf-icon-inner {
+    background: #dc2626;
+    color: white;
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.notice-info-wrap {
+    flex: 1;
+}
+
+.notice-ui-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+    display: block;
+    text-decoration: none;
+}
+
+.notice-ui-title:hover {
+    color: #2563eb;
+}
+
+.notice-ui-date {
+    display: block;
+    font-size: 0.85rem;
+    color: #3b82f6;
+    font-weight: 500;
+}
+
+@media (max-width: 640px) {
+    .filter-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -8,11 +8,15 @@ import { FileText, Download, Calendar, ChevronRight, Bell } from "lucide-react";
 import { getLocale } from "@/utils/locale-server";
 import { toNepaliNum } from "@/utils/nepali-date";
 
+import { PageLayout } from "@/components/layout/page-layout";
+import { NoticeFilter } from "@/components/notices/NoticeFilter";
+import "./notices.css";
+
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getSiteSettings();
   const locale = await getLocale();
   const s = settings as any;
-  const hospitalName = s.hospitalName || (locale === "ne" ? "अम्पिपाल अस्पताल" : "Amppipal Hospital");
+  const hospitalName = s.hospitalName || (locale === "ne" ? "धौलागिरी प्रादेशिक अस्पताल" : "Dhaulagiri Provincial Hospital");
 
   const title = locale === "ne" ? `सूचनाहरू | ${hospitalName}` : `Notices | ${hospitalName}`;
   const description = locale === "ne"
@@ -25,14 +29,18 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-import { PageLayout } from "@/components/layout/page-layout";
-
 export default async function NoticesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    title?: string;
+    category?: string;
+    fromDate?: string;
+    toDate?: string;
+  }>;
 }) {
-  const [{ page }, locale] = await Promise.all([
+  const [{ page, title, fromDate, toDate }, locale] = await Promise.all([
     searchParams,
     getLocale()
   ]);
@@ -45,9 +53,30 @@ export default async function NoticesPage({
 
   try {
     const payload = await getPayloadClient();
+
+    // Build query
+    const where: any = {
+      status: { equals: "published" },
+    };
+
+    if (title) {
+      where.title = { contains: title };
+    }
+
+    if (fromDate || toDate) {
+      const dateQuery: any = {};
+      if (fromDate) dateQuery.greater_than_equal = new Date(fromDate);
+      if (toDate) {
+        const end = new Date(toDate);
+        end.setHours(23, 59, 59, 999);
+        dateQuery.less_than_equal = end;
+      }
+      where.publishedDate = dateQuery;
+    }
+
     const result = await payload.find({
       collection: "notices",
-      where: { status: { equals: "published" } },
+      where,
       sort: "-publishedDate",
       limit,
       page: currentPage,
@@ -61,13 +90,10 @@ export default async function NoticesPage({
 
   const labels = {
     title: locale === "ne" ? "सूचनाहरू" : "Notices",
-    countText: locale === "ne"
-      ? `${toNepaliNum(totalDocs)} आधिकारिक सूचना र घोषणाहरू`
-      : `${totalDocs} official notices and announcements`,
     empty: locale === "ne" ? "कुनै डेटा उपलब्ध छैन" : "No data available",
-    view: locale === "ne" ? "हेर्नुहोस्" : "View",
     prev: locale === "ne" ? "‹ अघिल्लो" : "‹ Prev",
     next: locale === "ne" ? "अर्को ›" : "Next ›",
+    publishedDate: locale === "ne" ? "प्रकाशित मिति" : "Published Date",
   };
 
   return (
@@ -77,101 +103,69 @@ export default async function NoticesPage({
       ]}
       maxWidth="max-w-7xl"
     >
-      <div className="mb-8 border-b border-gray-100 pb-6">
-        <h1 className="text-3xl font-bold text-[#003580] mb-2 flex items-center gap-2">
-          <Bell size={28} className="text-[#dc2626]" />
-          {labels.title}
-        </h1>
-        <p className="text-gray-500">
-          {labels.countText}
-        </p>
-      </div>
+      <div className="notices-container">
+        <div className="notices-title-wrap">
+          <h1 className="notices-page-title">{labels.title}</h1>
+        </div>
 
-      {/* Notices list */}
-      <div className="space-y-4">
-        {docs.length === 0 ? (
-          <p className="page-empty text-center py-20 text-gray-400 font-bold">{labels.empty}</p>
-        ) : (
-          docs.map((notice: any) => {
-            const file =
-              notice.file && typeof notice.file === "object" ? notice.file : null;
-            const hasPdf = file?.url;
+        <NoticeFilter locale={locale} />
 
-            return (
-              <div key={notice.id} className="bg-white border border-gray-100 shadow-sm rounded-lg overflow-hidden hover:border-[#2563eb] transition-colors p-5 flex flex-col md:flex-row items-start md:items-center gap-6">
-                {/* PDF icon badge */}
-                <div className="hidden md:flex flex-col items-center justify-center bg-[#fff8f8] border border-[#ffe4e4] rounded px-3 py-2 shrink-0">
-                  <FileText size={20} className="text-[#dc2626]" />
-                  <span className="text-[10px] font-bold text-[#dc2626] mt-0.5">PDF</span>
-                </div>
+        <div className="notice-item-list">
+          {docs.length === 0 ? (
+            <p className="page-empty text-center py-20 text-gray-400 font-bold">{labels.empty}</p>
+          ) : (
+            docs.map((notice: any) => {
+              const file = notice.file && typeof notice.file === "object" ? notice.file : null;
+              const fileUrl = file?.url || notice.externalFile || "#";
 
-                {/* Content */}
-                <div className="flex-1 min-w-0">
-                  <Link
-                    href={`/notices/${notice.id}`}
-                    className="text-lg font-bold text-black hover:text-[#2563eb] transition-colors leading-snug line-clamp-2 block mb-1"
-                  >
-                    {notice.title}
-                  </Link>
-                  <div className="flex items-center gap-4 text-[13px] text-gray-500 mb-2">
-                    {notice.publishedDate && (
-                      <time className="flex items-center gap-1">
-                        <Calendar size={13} className="opacity-70" />
-                        {formatDate(notice.publishedDate, "short", locale)}
-                      </time>
-                    )}
+              return (
+                <div key={notice.id} className="notice-ui-item">
+                  <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="pdf-icon-wrap" title="Download PDF">
+                    <div className="pdf-icon-inner">
+                      <Download size={20} />
+                      <span className="text-[10px] font-bold mt-0.5">PDF</span>
+                    </div>
+                  </a>
+
+                  <div className="notice-info-wrap">
+                    <Link href={`/notices/${notice.id}`} className="notice-ui-title">
+                      {notice.title}
+                    </Link>
+                    <span className="notice-ui-date">
+                      {labels.publishedDate}: {notice.publishedDate ? notice.publishedDate.split('T')[0] : ''}
+                    </span>
                   </div>
-                  {notice.description && (
-                    <p className="text-sm text-gray-600 line-clamp-1">{notice.description}</p>
-                  )}
                 </div>
-
-                {/* Actions */}
-                <div className="flex items-center gap-3 shrink-0 w-full md:w-auto mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-gray-50">
-                  <Link
-                    href={`/notices/${notice.id}`}
-                    className="flex-1 md:flex-none inline-flex items-center justify-center gap-1.5 px-6 py-2 bg-[#2563eb] text-white text-sm font-semibold rounded hover:bg-blue-700 transition-colors"
-                  >
-                    {labels.view}
-                    <ChevronRight size={14} />
-                  </Link>
-                  {hasPdf && (
-                    <a
-                      href={file.url}
-                      download={file.filename}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="p-2 bg-gray-50 text-gray-600 rounded border border-gray-100 hover:bg-gray-100 transition-colors"
-                      title="Download"
-                    >
-                      <Download size={18} />
-                    </a>
-                  )}
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="page-pagination mt-12">
-          {currentPage > 1 && (
-            <Link href={`/notices?page=${currentPage - 1}`} className="page-nav-btn">
-              {labels.prev}
-            </Link>
-          )}
-          <span className="page-num">
-            {locale === "ne" ? toNepaliNum(currentPage) : currentPage} / {locale === "ne" ? toNepaliNum(totalPages) : totalPages}
-          </span>
-          {currentPage < totalPages && (
-            <Link href={`/notices?page=${currentPage + 1}`} className="page-nav-btn">
-              {labels.next}
-            </Link>
+              );
+            })
           )}
         </div>
-      )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-12 bg-gray-50 p-4 rounded-lg">
+            {currentPage > 1 && (
+              <Link
+                href={`/notices?page=${currentPage - 1}${title ? `&title=${title}` : ''}${fromDate ? `&fromDate=${fromDate}` : ''}${toDate ? `&toDate=${toDate}` : ''}`}
+                className="px-4 py-2 bg-white border border-gray-200 rounded text-sm font-semibold hover:bg-gray-50 transition-colors"
+              >
+                {labels.prev}
+              </Link>
+            )}
+            <span className="text-sm font-bold text-gray-600">
+              {locale === "ne" ? toNepaliNum(currentPage) : currentPage} / {locale === "ne" ? toNepaliNum(totalPages) : totalPages}
+            </span>
+            {currentPage < totalPages && (
+              <Link
+                href={`/notices?page=${currentPage + 1}${title ? `&title=${title}` : ''}${fromDate ? `&fromDate=${fromDate}` : ''}${toDate ? `&toDate=${toDate}` : ''}`}
+                className="px-4 py-2 bg-white border border-gray-200 rounded text-sm font-semibold hover:bg-gray-50 transition-colors"
+              >
+                {labels.next}
+              </Link>
+            )}
+          </div>
+        )}
+      </div>
     </PageLayout>
   );
 }

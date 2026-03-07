@@ -36,6 +36,8 @@ import { QuickLinks } from "./collections/QuickLinks";
 
 import { Appointments } from "./collections/Appointments";
 import { Feedback } from "./collections/Feedback";
+import { Sections } from "./collections/Sections";
+import { Timeline } from "./collections/Timeline";
 
 // ── Globals ───────────────────────────────────────────────────────────────────
 import { SiteSettings } from "./globals/SiteSettings";
@@ -116,6 +118,8 @@ export default buildConfig({
     // Forms
     Appointments,
     Feedback,
+    Sections,
+    Timeline,
   ],
   globals: [SiteSettings, Navigation, Footer, OpdStats],
   editor,

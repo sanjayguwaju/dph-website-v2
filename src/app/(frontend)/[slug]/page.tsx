@@ -43,22 +43,6 @@ export default async function DynamicPage({ params }: PageProps) {
     notFound();
   }
 
-  let committeeMembers: any[] = [];
-  if (slug === "committee") {
-    try {
-      const payload = await getPayloadClient();
-      const res = await payload.find({
-        collection: "staff",
-        where: {
-          role: { equals: "management-committee" },
-          isActive: { equals: true },
-        },
-        sort: "order",
-        locale: locale as any,
-      });
-      committeeMembers = res.docs;
-    } catch (_) { }
-  }
 
   let contactSettings: any = null;
 
@@ -82,7 +66,6 @@ export default async function DynamicPage({ params }: PageProps) {
       ? "के तपाईंसँग कुनै प्रश्न वा सुझाव छ? हामीलाई सन्देश पठाउनुहोस् र हामी तपाईंलाई छिट्टै सम्पर्क गर्नेछौं।"
       : "Have a question or suggestion? Send us a message and we'll get back to you.",
     location: locale === "ne" ? "हाम्रो स्थान" : "Our Location",
-    committee: locale === "ne" ? "व्यवस्थापन समिति" : "Management Committee",
   };
 
   return (
@@ -163,49 +146,6 @@ export default async function DynamicPage({ params }: PageProps) {
         )}
       </div>
 
-      {slug === "committee" && committeeMembers.length > 0 && (
-        <section className="mt-12">
-          <h2 className="text-2xl font-bold text-black border-l-4 border-[#2563eb] pl-4 mb-8">
-            {labels.committee}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {committeeMembers.map((member) => {
-              const photo = member.photo && typeof member.photo === "object" ? member.photo : null;
-              const photoUrl = photo?.url || member.externalPhoto || null;
-              return (
-                <div key={member.id} className="committee-member-card bg-white border border-gray-100 rounded-2xl p-6 text-center shadow-sm hover:shadow-md transition-shadow">
-                  <div className="mb-4 flex justify-center">
-                    {photoUrl ? (
-                      <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-blue-50 shadow-inner">
-                        <Image
-                          src={photoUrl}
-                          alt={member.name}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="w-32 h-32 rounded-full bg-gray-100 flex items-center justify-center text-4xl">
-                        👤
-                      </div>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-1">{member.name}</h3>
-                  <p className="text-[#2563eb] font-semibold text-sm mb-3">{member.designation}</p>
-
-                  <div className="flex flex-col gap-1 text-sm text-gray-500">
-                    {member.phone && (
-                      <p className="flex items-center justify-center gap-1.5 font-bold">
-                        <span>📞</span> {locale === "ne" ? toNepaliNum(member.phone) : member.phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      )}
     </PageLayout>
   );
 }

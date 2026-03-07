@@ -76,8 +76,13 @@ export default async function VideoGalleryPage({
       ]}
       maxWidth="max-w-7xl"
     >
-      <div className="mb-10 border-b border-gray-100 pb-6">
-        <h1 className="text-3xl font-bold text-[#003580]">🎥 {labels.videos}</h1>
+      <div className="text-center mb-12">
+        <h1 className="text-3xl font-bold text-[#111] mb-2">{labels.videos}</h1>
+        <div className="mt-4">
+          <Link href="/gallery/photos" className="text-sm font-bold text-[#1b59a8] hover:underline">
+            ← {locale === "ne" ? "फोटोहरू" : "Photos"}
+          </Link>
+        </div>
       </div>
 
       {docs.length === 0 ? (

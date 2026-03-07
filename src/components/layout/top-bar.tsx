@@ -10,14 +10,15 @@ type FontSize = "sm" | "md" | "lg";
 interface TopBarProps {
   contactPhone?: string | null;
   emergencyNumber?: string | null;
+  initialLocale?: string;
 }
 
-export function TopBar({ contactPhone, emergencyNumber }: TopBarProps) {
+export function TopBar({ contactPhone, emergencyNumber, initialLocale = "ne" }: TopBarProps) {
   const [fontSize, setFontSize] = useState<FontSize>("md");
   const [isDark, setIsDark] = useState(false);
   const [nepaliDate, setNepaliDate] = useState("");
   const [mounted, setMounted] = useState(false);
-  const [currentLocale, setCurrentLocale] = useState("ne");
+  const [currentLocale, setCurrentLocale] = useState(initialLocale);
 
   const applyFontSize = useCallback((size: FontSize) => {
     document.documentElement.classList.remove("text-sm-mode", "text-md-mode", "text-lg-mode");

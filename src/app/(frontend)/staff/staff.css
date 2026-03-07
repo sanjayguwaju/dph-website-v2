@@ -1,0 +1,182 @@
+.staff-page-wrapper {
+    padding-bottom: 60px;
+}
+
+.staff-header {
+    margin-bottom: 3.5rem;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.staff-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 2.5rem;
+    margin-top: 1rem;
+}
+
+/* Print Button Styling */
+.btn-print-box {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 2rem;
+}
+
+.btn-print {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #17a2b8;
+    color: #fff !important;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 0.95rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: opacity 0.2s;
+}
+
+.btn-print:hover {
+    opacity: 0.9;
+}
+
+/* Featured Staff Member - matching Chairman style */
+.featured-staff-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3.5rem;
+    background: #fff;
+    border: 1px solid #dc3545;
+    /* Thin red border like management box */
+    border-radius: 4px;
+    padding: 3rem 1rem;
+}
+
+.featured-staff-card {
+    text-align: center;
+    width: 100%;
+    max-width: 500px;
+}
+
+.featured-photo-wrap {
+    background: #fff;
+    padding: 5px;
+    border: 1px solid #ddd;
+    margin: 0 auto 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    width: 180px;
+    height: 220px;
+}
+
+.featured-name {
+    color: #333;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+    text-decoration: none;
+    display: block;
+}
+
+.featured-designation {
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+}
+
+.featured-contact-info {
+    color: #555;
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* Staff Grid View */
+.staff-grid-v2 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+}
+
+@media (min-width: 768px) {
+    .staff-grid-v2 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .staff-grid-v2 {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.staff-card-v2 {
+    background-color: #fff;
+    border: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.staff-card-photo-wrap {
+    flex-shrink: 0;
+    width: 140px;
+    height: 160px;
+    background-color: #fff;
+    padding: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 15px;
+}
+
+.staff-card-photo-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.staff-card-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.staff-name-link {
+    color: #333 !important;
+    font-weight: 700;
+    font-size: 1.15rem;
+    text-decoration: none;
+    margin-bottom: 4px;
+}
+
+.staff-designation {
+    font-weight: 600;
+    color: #444;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+}
+
+.staff-contact-details {
+    margin-top: auto;
+    font-size: 1rem;
+    color: #555;
+    line-height: 1.5;
+}
+
+/* Dark Mode Adjustments */
+[data-theme='dark'] .featured-staff-card,
+[data-theme='dark'] .staff-card-v2 {
+    background-color: #1a1a1a;
+    border-color: #333;
+}
+
+[data-theme='dark'] .featured-designation,
+[data-theme='dark'] .staff-designation,
+[data-theme='dark'] .featured-contact-info,
+[data-theme='dark'] .staff-contact-details {
+    color: #ccc;
+}

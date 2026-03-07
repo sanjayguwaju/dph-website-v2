@@ -22,15 +22,15 @@ export async function PageLayout({
   maxWidth = "max-w-7xl",
 }: PageLayoutProps) {
   const locale = await getLocale();
-  const homeLabel = locale === "ne" ? "गृह पृष्ठ" : "Home";
+  const homeLabel = locale === "ne" ? "गृहपृष्ठ" : "Home";
 
   return (
     <>
       <div className="breadcrumb-wrap-v3">
         <div className="container px-page">
           <nav className="breadcrumb-nav-v3" aria-label="Breadcrumb">
-            <Link href="/" className="breadcrumb-link-v3">
-              {homeLabel}
+            <Link href="/" className="breadcrumb-link-v3" prefetch={false}>
+              <span suppressHydrationWarning>{homeLabel}</span>
             </Link>
             {breadcrumbs.map((item, i) => (
               <div key={i} className="breadcrumb-item-v3">
@@ -50,7 +50,7 @@ export async function PageLayout({
         </div>
       </div>
 
-      <main className={`container bg-white px-page py-8 md:py-16 ${className}`}>
+      <main className={`flex-1 bg-[var(--background)] px-page py-8 md:py-16 ${className}`}>
         <div className={`${maxWidth} mx-auto`}>
           {children}
         </div>

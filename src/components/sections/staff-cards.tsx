@@ -75,15 +75,18 @@ export const StaffCards = memo(function StaffCards({
     if (!sorted.length) return null;
 
     const labels = {
-        viewDetails: locale === "ne" ? "पुरा विवरण" : "View Details",
+        viewDetails: locale === "ne" ? "थप हेर्नुहोस्" : "Learn More",
+        boardSection: locale === "ne" ? "मुख्य पदाधिकारीहरू" : "KEY OFFICIALS",
         boardMembers:
             locale === "ne"
-                ? "व्यवस्थापन समितिका पदाधिकारीहरू"
+                ? "समिति सदस्यहरू"
                 : "Board Members",
     };
 
     return (
         <div className="staff-cards-list">
+            <h4 className="staff-section-title">{labels.boardSection}</h4>
+
             {sorted.map((member, idx) => {
                 const photo =
                     member.photo && typeof member.photo === "object"
@@ -93,13 +96,14 @@ export const StaffCards = memo(function StaffCards({
                     photo?.url || (member as any).externalPhoto || null;
                 const isChair = member.role === "chair";
                 const name = getLocalizedValue(member.name);
-                const avatarBg = AVATAR_COLORS[(member.id?.length ?? idx) % AVATAR_COLORS.length];
+                const avatarBg = AVATAR_COLORS[idx % AVATAR_COLORS.length];
 
                 return (
                     <ScrollReveal
                         key={member.id}
-                        animation="animate-in fade-in slide-in-from-right-10"
-                        duration={500}
+                        animation="fade-left"
+                        duration={800}
+                        delay={idx * 150}
                     >
                         <div className="staff-card-v3">
                             <Avatar
@@ -115,24 +119,6 @@ export const StaffCards = memo(function StaffCards({
                                 <h3 className="staff-name-v3">
                                     {name}
                                 </h3>
-
-                                {(member.phone || member.email) && (
-                                    <div className="staff-contact-v3">
-                                        {member.phone && (
-                                            <span className="staff-phone-v3">
-                                                {getLocalizedValue(member.phone)}
-                                            </span>
-                                        )}
-                                        {member.phone && member.email && (
-                                            <span className="staff-contact-sep"> | </span>
-                                        )}
-                                        {member.email && (
-                                            <span className="staff-email-v3">
-                                                {getLocalizedValue(member.email)}
-                                            </span>
-                                        )}
-                                    </div>
-                                )}
 
                                 <div className="staff-actions-v3">
                                     <Link

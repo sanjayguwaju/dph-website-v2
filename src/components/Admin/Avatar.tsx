@@ -1,4 +1,4 @@
-"use client";
+
 
 import React from "react";
 
@@ -13,10 +13,10 @@ interface AvatarProps {
 export const Avatar: React.FC<AvatarProps> = ({ user }) => {
   const initials = user?.name
     ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
     : user?.email?.[0].toUpperCase() || "U";
 
   if (user?.avatar) {

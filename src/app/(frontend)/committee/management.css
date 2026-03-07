@@ -1,0 +1,112 @@
+.management-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-bottom: 5rem;
+}
+
+.management-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 2rem;
+}
+
+.management-box {
+    background: #fff;
+    border: 1px solid #dc3545;
+    /* Thin red border */
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.management-top-row {
+    display: flex;
+    justify-content: center;
+    padding: 2.5rem 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+/* Make Chairman card larger */
+.management-top-row .member-photo {
+    width: 180px;
+    height: 220px;
+}
+
+.management-top-row .member-name {
+    font-size: 1.35rem;
+    margin-top: 0.75rem;
+}
+
+.management-top-row .member-role {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.management-top-row .member-mobile {
+    font-size: 1.05rem;
+}
+
+.management-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 2rem;
+    row-gap: 3.5rem;
+    padding: 3rem 1rem;
+}
+
+@media (max-width: 768px) {
+    .management-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .management-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.member-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.member-photo-wrapper {
+    background: #fff;
+    padding: 5px;
+    border: 1px solid #ddd;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.member-photo {
+    width: 140px;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+.member-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.member-role {
+    font-size: 1.05rem;
+    color: #444;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.member-mobile {
+    font-size: 1rem;
+    color: #555;
+    font-weight: 400;
+}

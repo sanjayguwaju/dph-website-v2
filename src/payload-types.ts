@@ -86,6 +86,8 @@ export interface Config {
     'quick-links': QuickLink;
     appointments: Appointment;
     feedback: Feedback;
+    sections: Section;
+    timeline: Timeline;
     redirects: Redirect;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
@@ -113,6 +115,8 @@ export interface Config {
     'quick-links': QuickLinksSelect<false> | QuickLinksSelect<true>;
     appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
     feedback: FeedbackSelect<false> | FeedbackSelect<true>;
+    sections: SectionsSelect<false> | SectionsSelect<true>;
+    timeline: TimelineSelect<false> | TimelineSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -701,6 +705,35 @@ export interface Feedback {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sections".
+ */
+export interface Section {
+  id: string;
+  name: string;
+  /**
+   * URL-friendly identifier
+   */
+  slug?: string | null;
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "timeline".
+ */
+export interface Timeline {
+  id: string;
+  year: string;
+  description: string;
+  order?: number | null;
+  isActive?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "redirects".
  */
 export interface Redirect {
@@ -821,6 +854,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'feedback';
         value: string | Feedback;
+      } | null)
+    | ({
+        relationTo: 'sections';
+        value: string | Section;
+      } | null)
+    | ({
+        relationTo: 'timeline';
+        value: string | Timeline;
       } | null)
     | ({
         relationTo: 'redirects';
@@ -1278,6 +1319,30 @@ export interface FeedbackSelect<T extends boolean = true> {
   message?: T;
   status?: T;
   adminResponse?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sections_select".
+ */
+export interface SectionsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  order?: T;
+  isActive?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "timeline_select".
+ */
+export interface TimelineSelect<T extends boolean = true> {
+  year?: T;
+  description?: T;
+  order?: T;
+  isActive?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -1,0 +1,62 @@
+.section-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 1.5rem 0 4rem;
+}
+
+@media (max-width: 1024px) {
+    .section-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .section-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .section-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.section-card {
+    background-color: #ffffff;
+    border: 3px solid #238545;
+    /* Dark green border */
+    border-radius: 6px;
+    padding: 3rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    text-decoration: none;
+    color: #238545;
+    /* Dark green text */
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    min-height: 140px;
+}
+
+.section-card:hover {
+    background-color: #238545;
+    color: #ffffff;
+    transform: scale(1.1);
+    /* The card popping out effect */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    position: relative;
+}
+
+.section-page-title {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 1.5rem;
+    margin-top: 1rem;
+}

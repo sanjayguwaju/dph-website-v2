@@ -12,7 +12,7 @@ import {
   getOpdStats,
 } from "@/lib/queries/homepage";
 
-import { HeroSection } from "@/components/hero/hero-section";
+import { HeroSection } from "@/components/sections/hero-section";
 import { AboutUs } from "@/components/sections/about-us";
 import { NewsActivities } from "@/components/sections/news-activities";
 import { NepaliCalendar } from "@/components/sections/nepali-calendar";
@@ -79,6 +79,33 @@ export default async function HomePage() {
   const s = settings as any;
   const ap = aboutPage as any;
 
+  // Sanitize Payload docs to plain objects before passing to Client Components.
+  // Payload attaches locale descriptor objects ({label, code, toString: fn}) to fields
+  // which cannot be serialized across the Server -> Client boundary.
+  const sanitizeDoc = (doc: any): any => {
+    if (!doc || typeof doc !== "object") return doc;
+    if (Array.isArray(doc)) return doc.map(sanitizeDoc);
+    const plain: Record<string, any> = {};
+    for (const key of Object.keys(doc)) {
+      const val = doc[key];
+      if (typeof val === "function") continue; // strip functions
+      if (val && typeof val === "object" && typeof val.toString === "function" && val.constructor?.name !== "Object" && val.constructor?.name !== "Array") {
+        // Possible Payload locale object or Date
+        if (val instanceof Date) { plain[key] = val.toISOString(); continue; }
+        continue; // skip non-plain objects with custom prototypes
+      }
+      plain[key] = sanitizeDoc(val);
+    }
+    return plain;
+  };
+
+  const safeNotices = (noticesData.notices as any[]).map(sanitizeDoc);
+  const safeNews = (noticesData.news as any[]).map(sanitizeDoc);
+  const safePressReleases = (noticesData.pressReleases as any[]).map(sanitizeDoc);
+  const safePublications = (noticesData.publications as any[]).map(sanitizeDoc);
+  const safeBids = (noticesData.bids as any[]).map(sanitizeDoc);
+
+
   return (
     <main className="animate-in fade-in zoom-in-[0.98] duration-1000 ease-out fill-mode-both">
       {/* ── Top Hero Section (Slider + Staff) ──────────────────────── */}
@@ -102,14 +129,14 @@ export default async function HomePage() {
             <NewsActivities featured={newsData.featured as any} recent={newsData.recent as any} locale={locale} />
           </ScrollReveal>
 
-          {/* Notices Tabs */}
+          {/* Notices Tabs - NoticesTabs is a Client Component, only pass sanitized plain data */}
           <ScrollReveal animation="fade-up" duration={700} delay={200}>
             <NoticesTabs
-              notices={noticesData.notices as any}
-              news={noticesData.news as any}
-              pressReleases={noticesData.pressReleases as any}
-              publications={noticesData.publications as any}
-              bids={noticesData.bids as any}
+              notices={safeNotices}
+              news={safeNews}
+              pressReleases={safePressReleases}
+              publications={safePublications}
+              bids={safeBids}
               locale={locale}
             />
           </ScrollReveal>

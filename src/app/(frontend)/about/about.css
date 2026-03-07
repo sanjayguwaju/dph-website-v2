@@ -1,0 +1,138 @@
+.about-page-wrapper {
+    padding-bottom: 60px;
+}
+
+.about-header {
+    margin-bottom: 3.5rem;
+    margin-top: 1.5rem;
+    text-align: center;
+}
+
+.about-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 2.5rem;
+    margin-top: 1rem;
+}
+
+.about-content {
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: var(--foreground);
+    text-align: justify;
+    margin-bottom: 4rem;
+    font-weight: 500;
+}
+
+.about-history-section {
+    margin-bottom: 4rem;
+}
+
+.about-history-title {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: var(--foreground);
+}
+
+.timeline-list {
+    list-style: none;
+    padding: 0;
+    position: relative;
+    padding-left: 20px;
+}
+
+.timeline-list::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    bottom: 5px;
+    width: 3px;
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
+.timeline-item {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 13px;
+    height: 13px;
+    background: #fff;
+    border: 3px solid #1b59a8;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.timeline-year {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #1b59a8;
+    margin-bottom: 6px;
+}
+
+.timeline-desc {
+    color: var(--slate-600);
+    font-weight: 500;
+    line-height: 1.6;
+    font-size: 1.05rem;
+}
+
+.share-section {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 50px 0;
+}
+
+.share-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 3px;
+    color: #ffffff !important;
+    font-weight: 800;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: transform 0.2s ease;
+    text-transform: capitalize;
+}
+
+.share-btn:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.share-btn.facebook {
+    background-color: #1877f2;
+}
+
+.share-btn.twitter {
+    background-color: #00aced;
+}
+
+.share-btn.google {
+    background-color: #db4437;
+}
+
+.view-count-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    color: var(--color-emerald) !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+}

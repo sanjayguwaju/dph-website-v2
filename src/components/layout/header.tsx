@@ -128,18 +128,20 @@ export async function Header() {
                 const href = resolveHref(item.type, item.category, item.page, item.customUrl);
                 const hasSub = item.subMenu && item.subMenu.length > 0;
 
+                const isMedia = item.label === "Media" || item.label === "मिडिया";
+
                 return (
                   <div key={item.id || i} className="nav-item-v3 group">
                     <Link
                       href={href}
-                      className="nav-link-v3"
+                      className={`nav-link-v3 ${isMedia ? 'is-media' : ''}`}
                       target={item.openInNewTab ? "_blank" : undefined}
                       rel={item.openInNewTab ? "noopener noreferrer" : undefined}
                     >
                       {item.label}
                       {hasSub && (
                         <span className="nav-arrow-v3" aria-hidden="true">
-                          ▼
+                          ▾
                         </span>
                       )}
                     </Link>

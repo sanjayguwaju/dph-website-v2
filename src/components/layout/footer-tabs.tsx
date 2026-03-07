@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { ExternalLink } from "lucide-react";
 
 export function FooterTabs({ locale = "ne" }: { locale?: string }) {
   const [activeTab, setActiveTab] = useState("province");
@@ -59,7 +60,7 @@ export function FooterTabs({ locale = "ne" }: { locale?: string }) {
         {getLinks().map((link, i) => (
           <li key={i}>
             <Link href={link.href} target="_blank" rel="noopener noreferrer" className="footer-tab-link-item">
-              <span className="footer-link-icon">🔗</span>
+              <ExternalLink size={14} className="opacity-40" />
               {link.label}
             </Link>
           </li>

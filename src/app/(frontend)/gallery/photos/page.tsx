@@ -64,18 +64,16 @@ export default async function PhotoGalleryPage({
       breadcrumbs={[{ label: labels.photos }]}
       maxWidth="max-w-7xl"
     >
-      <div className="mb-8 pb-6 border-b border-gray-100 flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-(--brand-blue) flex items-center gap-3">
-            📷 {labels.photos}
-          </h1>
-          <p className="text-sm text-gray-500 mt-1 font-bold">
-            {locale === "ne" ? toNepaliNum(docs.length) : docs.length} {labels.albums} · {locale === "ne" ? toNepaliNum(totalImages) : totalImages} {labels.photoCount}
-          </p>
+      <div className="text-center mb-12">
+        <h1 className="text-3xl font-bold text-[#111] mb-2">{labels.photos}</h1>
+        <p className="text-sm text-gray-500 font-bold">
+          {locale === "ne" ? toNepaliNum(docs.length) : docs.length} {labels.albums} · {locale === "ne" ? toNepaliNum(totalImages) : totalImages} {labels.photoCount}
+        </p>
+        <div className="mt-4">
+          <Link href="/gallery/videos" className="text-sm font-bold text-[#1b59a8] hover:underline">
+            {labels.videos} →
+          </Link>
         </div>
-        <Link href="/gallery/videos" className="text-sm font-bold text-(--brand-blue) hover:underline flex items-center gap-1">
-          🎥 {labels.videos} →
-        </Link>
       </div>
 
       <PhotoGalleryClient albums={docs as any} />

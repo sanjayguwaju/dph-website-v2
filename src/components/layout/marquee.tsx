@@ -14,7 +14,7 @@ export async function Marquee() {
   return (
     <div className="marquee-bar" role="region" aria-label="Latest notices ticker">
       <div className="bn-label">
-        <span>{locale === "ne" ? "ताजा समाचार" : "Breaking News"}</span>
+        <span>{locale === "ne" ? "ताजा समाचार" : "Highlights"}</span>
       </div>
       <div className="marquee-track-wrap">
         <div className="marquee-track animate-marquee">
